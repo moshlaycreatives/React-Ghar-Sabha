@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "label": "Dashboard",
+        "path": "/dashboard",
+        "icon": "Equalizer"
+    },
+    {
+        "id": 2,
+        "label": "Members",
+        "path": "/dashboard/members",
+        "icon": "LayersOutlined"
+    },
+    {
+        "id": 3,
+        "label": "Chats",
+        "path": "/dashboard/chats",
+        "icon": "ShoppingCartOutlined"
+    },
+    {
+        "id": 4,
+        "label": "Events",
+        "path": "/dashboard/events",
+        "icon": "ShoppingCartCheckoutOutlined"
+    },
+    {
+        "id": 5,
+        "label": "Temples",
+        "path": "/dashboard/temples",
+        "icon": "ShoppingBagOutlined"
+    },
+    {
+        "id": 6,
+        "label": "Donations",
+        "path": "/dashboard/donations",
+        "icon": "PeopleAltOutlined"
+    },
+    {
+        "id": 7,
+        "label": "Temple Donations",
+        "path": "/dashboard/temple-donations",
+        "icon": "PeopleAltOutlined"
+    },
+    {
+        "id": 8,
+        "label": "Donation History",
+        "path": "/dashboard/donation-history",
+        "icon": "PeopleAltOutlined"
+    },
+    {
+        "id": 9,
+        "label": "DEvent Banners",
+        "path": "/dashboard/event-banners",
+        "icon": "PeopleAltOutlined"
+    }
+]
