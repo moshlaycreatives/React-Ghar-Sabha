@@ -24,7 +24,7 @@ const Dashboard = () => {
             </Box>
 
 
-            <Box mt={5}>
+            <Box mt={3}>
                 <Grid container spacing={2}>
                     <Grid size={{ xs: 12, md: 3 }}>
                         <Box sx={{
@@ -32,7 +32,7 @@ const Dashboard = () => {
                             borderRadius: "15px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
-                            height:"130px"
+                            height: "140px"
                         }}>
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
@@ -70,7 +70,7 @@ const Dashboard = () => {
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             mt: "15px",
-                            height:"130px"
+                            height: "140px"
                         }}>
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
@@ -109,7 +109,7 @@ const Dashboard = () => {
                             borderRadius: "15px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
-                            height:"130px"
+                            height: "140px"
                         }}>
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
@@ -149,7 +149,7 @@ const Dashboard = () => {
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             mt: "15px",
-                            height:"130px"
+                            height: "140px"
                         }}>
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
@@ -189,6 +189,12 @@ const Dashboard = () => {
                 </Grid>
             </Box>
 
+            <Box mt={2}>
+                <SecondSection />
+            </Box>
+            <Box mt={2}>
+                <ThirdSection />
+            </Box>
 
 
 
