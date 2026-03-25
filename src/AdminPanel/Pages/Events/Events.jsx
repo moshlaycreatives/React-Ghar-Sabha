@@ -20,28 +20,28 @@ const eventsData = [
     {
         id: "1",
         image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply du mmy text",
+        title: "Lorem Ipsum is simply dummy",
         location: "India - Gujraat - Ahmadabad",
         dateRange: "16 Mar 2026 - 20 Mar 2026",
     },
     {
         id: "2",
         image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply du mmy text",
+        title: "Lorem Ipsum is simply dummy",
         location: "India - Gujraat - Ahmadabad",
         dateRange: "16 Mar 2026 - 20 Mar 2026",
     },
     {
         id: "3",
         image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply du mmy text",
+        title: "Lorem Ipsum is simply dummy",
         location: "India - Gujraat - Ahmadabad",
         dateRange: "16 Mar 2026 - 20 Mar 2026",
     },
     {
         id: "4",
         image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply du mmy text",
+        title: "Lorem Ipsum is simply dummy",
         location: "India - Gujraat - Ahmadabad",
         dateRange: "16 Mar 2026 - 20 Mar 2026",
     },
@@ -75,7 +75,7 @@ const Event = () => {
                         <Box>
                             <Typography
                                 sx={{
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 600,
                                     fontSize: { xs: "26px", md: "36px" },
                                     color: "#2F2F2F",
@@ -203,29 +203,30 @@ const Event = () => {
                                     flex: 1,
                                     display: "flex",
                                     flexDirection: "column",
-                                    gap: 1,
+                                  
                                     bgcolor: "#FFFFFF",
                                     backgroundColor: "#FFFFFF",
                                 }}
                             >
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "16px",
                                         lineHeight: 1.35,
                                         color: "#2F2F2F",
+                                        mb:"4px"
                                     }}
                                 >
                                     {ev.title}
                                 </Typography>
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 400,
                                         fontSize: "14px",
                                         lineHeight: 1.4,
-                                        color: "#7A7A7A",
+                                        color: "#848286",
                                     }}
                                 >
                                     {ev.location}
@@ -241,10 +242,10 @@ const Event = () => {
                                 >
                                     <Typography
                                         sx={{
-                                            fontFamily: "Outfit",
+                                            fontFamily: "Inter",
                                             fontWeight: 400,
-                                            fontSize: "13px",
-                                            color: "#7A7A7A",
+                                            fontSize: "15px",
+                                            color: "#2F2F2F",
                                         }}
                                     >
                                         {ev.dateRange}
@@ -285,13 +286,13 @@ const Event = () => {
             >
                 <MenuItem
                     onClick={handleMenuClose}
-                    sx={{ fontFamily: "Outfit", fontSize: 14 }}
+                    sx={{ fontFamily: "Inter", fontSize: 14 }}
                 >
                     Edit
                 </MenuItem>
                 <MenuItem
                     onClick={handleMenuClose}
-                    sx={{ fontFamily: "Outfit", fontSize: 14, color: "error.main" }}
+                    sx={{ fontFamily: "Inter", fontSize: 14, color: "error.main" }}
                 >
                     Delete
                 </MenuItem>

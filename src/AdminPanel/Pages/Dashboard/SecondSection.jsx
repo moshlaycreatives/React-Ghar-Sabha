@@ -129,27 +129,33 @@ const Donation = [
 ]
 
 
+const cardShellSx = {
+    boxShadow: "0px 4px 30px 0px #0000001A",
+    borderRadius: "20px",
+    backgroundColor: "white",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+};
+
+const tableSx = { border: "1px solid #EFEFEF", width: "100%" };
+
 
 const SecondSection = () => {
     return (
         <>
 
             <Box>
-                <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                <Grid container spacing={2} alignItems="stretch">
+                    <Grid size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
 
-                        <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "20px",
-                            backgroundColor: "white",
-
-
-                        }}>
+                        <Box sx={cardShellSx}>
 
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', padding: "15px" }}>
                                 <Typography
                                     style={{
-                                        fontFamily: 'Outfit',
+                                        fontFamily: 'Inter',
                                         fontWeight: 500,
                                         fontSize: '22px',
                                         lineHeight: '31px',
@@ -161,7 +167,7 @@ const SecondSection = () => {
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
                                     <Typography
                                         style={{
-                                            fontFamily: 'Outfit',
+                                            fontFamily: 'Inter',
                                             fontWeight: 400,
                                             fontSize: '16px',
                                             lineHeight: '31px',
@@ -172,14 +178,13 @@ const SecondSection = () => {
                                     </Typography>
                                 </Box>
                             </Box >
-                            <Box>
-                                <Box style={{ overflowX: "auto" }}>
-                                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "25rem" }}>
+                            <Box sx={{ pb: "15px", width: "100%" }}>
+                                <Table sx={tableSx}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>User</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>User</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
 
                                             </TableRow>
                                         </TableHead>
@@ -193,15 +198,15 @@ const SecondSection = () => {
                                                                 alt={row.Country}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                                             />
-                                                            <Typography sx={{ fontFamily: "Outfit", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
                                                                 {row.Country}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
                                                         {row.User}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
                                                         {row.Amount}
                                                     </TableCell>
 
@@ -209,26 +214,19 @@ const SecondSection = () => {
                                             ))}
                                         </TableBody>
                                     </Table>
-                                </Box>
                             </Box>
                         </Box>
 
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
 
-                        <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "20px",
-                            backgroundColor: "white",
-
-
-                        }}>
+                        <Box sx={cardShellSx}>
 
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', padding: "15px" }}>
                                 <Typography
                                     style={{
-                                        fontFamily: 'Outfit',
+                                        fontFamily: 'Inter',
                                         fontWeight: 500,
                                         fontSize: '22px',
                                         lineHeight: '31px',
@@ -240,7 +238,7 @@ const SecondSection = () => {
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
                                     <Typography
                                         style={{
-                                            fontFamily: 'Outfit',
+                                            fontFamily: 'Inter',
                                             fontWeight: 400,
                                             fontSize: '16px',
                                             lineHeight: '31px',
@@ -253,14 +251,13 @@ const SecondSection = () => {
                             </Box >
 
 
-                            <Box>
-                                <Box style={{ overflowX: "auto" }}>
-                                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "20rem" }}>
+                            <Box sx={{ pb: "15px", width: "100%" }}>
+                                <Table sx={tableSx}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
 
                                             </TableRow>
                                         </TableHead>
@@ -274,39 +271,34 @@ const SecondSection = () => {
                                                                 alt={row.Name}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                                             />
-                                                            <Typography sx={{ fontFamily: "Outfit", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
                                                                 {row.Name}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
                                                         {row.Country}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
                                                         {row.Amount}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
-                                </Box>
                             </Box>
                         </Box>
 
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 4 }} sx={{ display: "flex" }}>
 
-                        <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "20px",
-                            backgroundColor: "white",
-                        }}>
+                        <Box sx={cardShellSx}>
 
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', padding: "15px" }}>
                                 <Typography
                                     style={{
-                                        fontFamily: 'Outfit',
+                                        fontFamily: 'Inter',
                                         fontWeight: 500,
                                         fontSize: '22px',
                                         lineHeight: '31px',
@@ -318,7 +310,7 @@ const SecondSection = () => {
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
                                     <Typography
                                         style={{
-                                            fontFamily: 'Outfit',
+                                            fontFamily: 'Inter',
                                             fontWeight: 400,
                                             fontSize: '16px',
                                             lineHeight: '31px',
@@ -331,14 +323,13 @@ const SecondSection = () => {
                             </Box >
 
 
-                            <Box>
-                                <Box style={{ overflowX: "auto" }}>
-                                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "25rem" }}>
+                            <Box sx={{ pb: "15px", width: "100%" }}>
+                                <Table sx={tableSx}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Needed</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Still Needed</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Needed</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Still Needed</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -351,28 +342,25 @@ const SecondSection = () => {
                                                                 alt={row.Name}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                                             />
-                                                            <Typography sx={{ fontFamily: "Outfit", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
                                                                 {row.Name}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
                                                         {row.Total}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
                                                         {row.Still}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
-                                </Box>
                             </Box>
                         </Box>
 
                     </Grid>
-
-
 
                 </Grid>
             </Box>

@@ -85,7 +85,7 @@ const Profile = () => {
 
       <Box>
         <Typography style={{
-          fontFamily: "Outfit",
+          fontFamily: "Inter",
           fontWeight: 500,
           fontSize: "16px",
           color: "#F36100"
@@ -93,7 +93,7 @@ const Profile = () => {
           Kunal Verma
         </Typography>
         <Typography style={{
-          fontFamily: "Outfit",
+          fontFamily: "Inter",
           fontWeight: 400,
           fontSize: "14px",
           color: "#6D6E71"

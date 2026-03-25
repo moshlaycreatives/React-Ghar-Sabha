@@ -15,23 +15,23 @@
         "id": 3,
         "label": "Chats",
         "path": "/dashboard/chats",
-        "icon": "ShoppingCartOutlined"
+        "icon": "SmsOutlined"
     },
     {
         "id": 4,
         "label": "Events",
         "path": "/dashboard/events",
-        "icon": "ShoppingCartCheckoutOutlined"
+        "icon": "InsertInvitationOutlined"
     },
     {
         "id": 5,
         "label": "Temples",
         "path": "/dashboard/temples",
-        "icon": "ShoppingBagOutlined"
+        "icon": "TempleBuddhistOutlined"
     },
     {
         "id": 6,
-        "label": "Donations",
+        "label": "Other Donations",
         "path": "/dashboard/donations",
         "icon": "PeopleAltOutlined"
     },
@@ -43,13 +43,13 @@
     },
     {
         "id": 8,
-        "label": "Donation History",
+        "label": "Other Donation History",
         "path": "/dashboard/donation-history",
         "icon": "PeopleAltOutlined"
     },
     {
         "id": 9,
-        "label": "DEvent Banners",
+        "label": "Event Banners",
         "path": "/dashboard/event-banners",
         "icon": "PeopleAltOutlined"
     }

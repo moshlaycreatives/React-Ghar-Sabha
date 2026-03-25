@@ -82,7 +82,7 @@ const ThirdSection = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', padding: "15px" }}>
                                 <Typography
                                     style={{
-                                        fontFamily: 'Outfit',
+                                        fontFamily: 'Inter',
                                         fontWeight: 500,
                                         fontSize: '22px',
                                         lineHeight: '31px',
@@ -94,7 +94,7 @@ const ThirdSection = () => {
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
                                     <Typography
                                         style={{
-                                            fontFamily: 'Outfit',
+                                            fontFamily: 'Inter',
                                             fontWeight: 400,
                                             fontSize: '16px',
                                             lineHeight: '31px',
@@ -112,10 +112,10 @@ const ThirdSection = () => {
                                     <Table sx={{ border: "1px solid #EFEFEF", minWidth: "30rem" }}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donation</TableCell>
-                                                <TableCell style={{ fontFamily: "Outfit", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donors</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donation</TableCell>
+                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donors</TableCell>
 
                                             </TableRow>
                                         </TableHead>
@@ -129,18 +129,18 @@ const ThirdSection = () => {
                                                                 alt={row.Name}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                                             />
-                                                            <Typography sx={{ fontFamily: "Outfit", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
                                                                 {row.Name}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
                                                         {row.Country}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
                                                         {row.Donaye}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Outfit", fontSize: "14px", color: "#2F2F2F" }}>
+                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F" }}>
                                                         {row.Donsr}
                                                     </TableCell>
                                                 </TableRow>
@@ -165,7 +165,7 @@ const ThirdSection = () => {
                         >
                             <Typography
                                 sx={{
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "22px",
                                     lineHeight: "31px",
@@ -209,7 +209,7 @@ const ThirdSection = () => {
                             >
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                         fontWeight: 500,
                                         fontSize: "16px",
                                         color: "#2F2F2F",
@@ -219,7 +219,7 @@ const ThirdSection = () => {
                                 </Typography>
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                         fontWeight: 700,
                                         fontSize: "16px",
                                         color: "#2F2F2F",

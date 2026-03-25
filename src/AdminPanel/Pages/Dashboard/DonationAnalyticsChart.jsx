@@ -72,14 +72,14 @@ function CustomTooltip({ active, payload, label }) {
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             }}
         >
-            <Typography sx={{ fontFamily: "Outfit", fontSize: 12, color: "#666", mb: 0.5 }}>
+            <Typography sx={{ fontFamily: "Inter", fontSize: 12, color: "#666", mb: 0.5 }}>
                 {label}
             </Typography>
             {payload.map((entry) => (
                 <Typography
                     key={entry.dataKey}
                     sx={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontSize: 13,
                         fontWeight: 600,
                         color: entry.color,
@@ -152,7 +152,7 @@ const DonationAnalyticsChart = () => {
             >
                 <Typography
                     sx={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontWeight: 700,
                         fontSize: "15px",
                         lineHeight: 1.2,
@@ -181,7 +181,7 @@ const DonationAnalyticsChart = () => {
                                     px: 1.25,
                                     py: 0.35,
                                     borderRadius: "100px",
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontSize: "11px",
                                     fontWeight: selected ? 600 : 500,
                                     textTransform: "none",
@@ -232,7 +232,7 @@ const DonationAnalyticsChart = () => {
                             tick={{
                                 fill: "#8A8A8A",
                                 fontSize: 9,
-                                fontFamily: "Outfit",
+                                fontFamily: "Inter",
                             }}
                             height={28}
                         />
@@ -242,7 +242,7 @@ const DonationAnalyticsChart = () => {
                             tick={{
                                 fill: "#8A8A8A",
                                 fontSize: 9,
-                                fontFamily: "Outfit",
+                                fontFamily: "Inter",
                             }}
                             tickFormatter={formatYAxis}
                             domain={[0, chartMaxY]}

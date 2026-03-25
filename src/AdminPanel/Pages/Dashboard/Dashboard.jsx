@@ -12,7 +12,7 @@ const Dashboard = () => {
             <Box>
                 <Typography
                     style={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontWeight: 600,
                         fontSize: "36px",
                         lineHeight: "31px",
@@ -37,7 +37,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "25px",
                                         lineHeight: "31px",
@@ -53,7 +53,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "30px",
                                         lineHeight: "31px",
@@ -75,9 +75,9 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
-                                        fontSize: "25px",
+                                        fontSize: "23.5px",
                                         lineHeight: "31px",
                                         color: "#2F2F2F"
                                     }}>
@@ -91,7 +91,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "30px",
                                         lineHeight: "31px",
@@ -114,7 +114,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "25px",
                                         lineHeight: "31px",
@@ -130,7 +130,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "30px",
                                         lineHeight: "31px",
@@ -154,7 +154,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "25px",
                                         lineHeight: "31px",
@@ -170,7 +170,7 @@ const Dashboard = () => {
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
                                 <Typography
                                     style={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 600,
                                         fontSize: "30px",
                                         lineHeight: "31px",

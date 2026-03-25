@@ -108,7 +108,7 @@ const Login = () => {
 
                     <Box>
                         <Typography style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Inter",
                             fontWeight: 600,
                             fontSize: "26px",
                             color: "#2B2B2B",
@@ -118,7 +118,7 @@ const Login = () => {
                             Sign In
                         </Typography>
                         {/* <Typography style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Inter",
                             fontWeight: 400,
                             fontSize: "20px",
                             color: "#2B2B2B",
@@ -130,7 +130,7 @@ const Login = () => {
                     <Grid container sx={{ padding: "10px" }}>
                         <Grid size={{ xs: 12, md: 12 }}>
                             <Typography style={{
-                                fontFamily: "Poppins",
+                                fontFamily: "Inter",
                                 fontWeight: 400,
                                 fontSize: "18px",
                                 lineHeight: "31px",
@@ -146,7 +146,7 @@ const Login = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <Typography style={{
-                                fontFamily: "Poppins",
+                                fontFamily: "Inter",
                                 fontWeight: 400,
                                 fontSize: "18px",
                                 lineHeight: "31px",
@@ -164,7 +164,7 @@ const Login = () => {
                             />
                             <Button
                                 sx={{
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 500,
                                     fontSize: "20px",
                                     lineHeight: "31px",

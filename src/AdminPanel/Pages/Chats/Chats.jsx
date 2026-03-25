@@ -25,7 +25,7 @@ const carouselThumb = "/image/Deventimage.png";
 /** Base shell; selected = orange ring, unselected = subtle grey border */
 const carouselCardShellBaseSx = {
     flexShrink: 0,
-    width: { xs: 184, sm: 224 },
+    width: { xs: 184, sm: 240 },
     boxSizing: "border-box",
     borderRadius: "18px",
     bgcolor: "#FFFFFF",
@@ -74,7 +74,7 @@ const Chats = () => {
         >
             <Typography
                 sx={{
-                    fontFamily: "Outfit",
+                    fontFamily: "Inter",
                     fontWeight: 600,
                     fontSize: { xs: "26px", md: "36px" },
                     color: "#2F2F2F",
@@ -130,7 +130,7 @@ const Chats = () => {
                                     >
                                         <Typography
                                             sx={{
-                                                fontFamily: "Outfit",
+                                                fontFamily: "Inter",
                                                 fontWeight: 700,
                                                 fontSize: { xs: "18px", sm: "22px" },
                                                 lineHeight: 1.2,
@@ -162,13 +162,12 @@ const Chats = () => {
                                 )}
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
-                                        fontWeight: item.kind === "brand" ? 600 : 500,
-                                        fontSize: item.kind === "brand" ? "14px" : "12px",
+                                        fontFamily: "Inter",
+                                        fontWeight: item.kind === "brand" ? 600 : 600,
+                                        fontSize: item.kind === "brand" ? "14px" : "14px",
                                         lineHeight: 1.35,
                                         color: "#2F2F2F",
-                                        textAlign: "center",
-                                        mt: 1.25,
+                                        margin: "10px 0px 10px 10px"
                                     }}
                                 >
                                     {item.caption}
@@ -206,7 +205,7 @@ const Chats = () => {
                         >
                             <Typography
                                 sx={{
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "18px",
                                     color: "#2F2F2F",
@@ -246,7 +245,7 @@ const Chats = () => {
                                     width: 48,
                                     height: 48,
                                     bgcolor: ORANGE,
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "14px",
                                 }}
@@ -264,7 +263,7 @@ const Chats = () => {
                                 >
                                     <Typography
                                         sx={{
-                                            fontFamily: "Outfit",
+                                            fontFamily: "Inter",
                                             fontWeight: 700,
                                             fontSize: "15px",
                                             color: "#2F2F2F",
@@ -274,7 +273,7 @@ const Chats = () => {
                                     </Typography>
                                     <Typography
                                         sx={{
-                                            fontFamily: "Outfit",
+                                            fontFamily: "Inter",
                                             fontWeight: 400,
                                             fontSize: "12px",
                                             color: GREY_MUTED,
@@ -286,7 +285,7 @@ const Chats = () => {
                                 </Box>
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 400,
                                         fontSize: "13px",
                                         color: GREY_MUTED,
@@ -334,7 +333,7 @@ const Chats = () => {
                                     width: 48,
                                     height: 48,
                                     bgcolor: ORANGE,
-                                    fontFamily: "Outfit",
+                                    fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "14px",
                                 }}
@@ -344,7 +343,7 @@ const Chats = () => {
                             <Box>
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 700,
                                         fontSize: "16px",
                                         color: "#2F2F2F",
@@ -354,7 +353,7 @@ const Chats = () => {
                                 </Typography>
                                 <Typography
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontWeight: 400,
                                         fontSize: "13px",
                                         color: GREY_MUTED,
@@ -408,7 +407,7 @@ const Chats = () => {
                                     placeholder="Type your message..."
                                     fullWidth
                                     sx={{
-                                        fontFamily: "Outfit",
+                                        fontFamily: "Inter",
                                         fontSize: "15px",
                                         color: "#2F2F2F",
                                         py: 1,
@@ -449,7 +448,7 @@ function DateDivider({ label }) {
     return (
         <Typography
             sx={{
-                fontFamily: "Outfit",
+                fontFamily: "Inter",
                 fontWeight: 500,
                 fontSize: "12px",
                 color: GREY_MUTED,
@@ -484,7 +483,7 @@ function OutgoingText({ text, time }) {
             >
                 <Typography
                     sx={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontWeight: 400,
                         fontSize: "14px",
                         lineHeight: 1.45,
@@ -495,7 +494,7 @@ function OutgoingText({ text, time }) {
                 </Typography>
                 <Typography
                     sx={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontSize: "11px",
                         color: GREY_MUTED,
                         textAlign: "right",
@@ -510,7 +509,7 @@ function OutgoingText({ text, time }) {
                     width: 36,
                     height: 36,
                     bgcolor: ORANGE,
-                    fontFamily: "Outfit",
+                    fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
                 }}
@@ -548,7 +547,7 @@ function OutgoingImage({ time, src }) {
                 />
                 <Typography
                     sx={{
-                        fontFamily: "Outfit",
+                        fontFamily: "Inter",
                         fontSize: "11px",
                         color: GREY_MUTED,
                         textAlign: "right",
@@ -564,7 +563,7 @@ function OutgoingImage({ time, src }) {
                     width: 36,
                     height: 36,
                     bgcolor: ORANGE,
-                    fontFamily: "Outfit",
+                    fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
                 }}
@@ -605,7 +604,7 @@ function OutgoingEventPoll({ time, imageSrc }) {
                 <Box sx={{ px: 2, py: 1.5 }}>
                     <Typography
                         sx={{
-                            fontFamily: "Outfit",
+                            fontFamily: "Inter",
                             fontWeight: 600,
                             fontSize: "14px",
                             color: "#2F2F2F",
@@ -629,7 +628,7 @@ function OutgoingEventPoll({ time, imageSrc }) {
                     />
                     <Typography
                         sx={{
-                            fontFamily: "Outfit",
+                            fontFamily: "Inter",
                             fontWeight: 600,
                             fontSize: "13px",
                             color: ORANGE,
@@ -640,7 +639,7 @@ function OutgoingEventPoll({ time, imageSrc }) {
                     </Typography>
                     <Typography
                         sx={{
-                            fontFamily: "Outfit",
+                            fontFamily: "Inter",
                             fontSize: "11px",
                             color: GREY_MUTED,
                             textAlign: "right",
@@ -656,7 +655,7 @@ function OutgoingEventPoll({ time, imageSrc }) {
                     width: 36,
                     height: 36,
                     bgcolor: ORANGE,
-                    fontFamily: "Outfit",
+                    fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
                 }}

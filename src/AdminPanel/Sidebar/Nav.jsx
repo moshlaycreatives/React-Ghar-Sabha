@@ -75,7 +75,7 @@ const Nav = ({ menuData }) => {
       return <img src={iconName} alt="icon" style={imageStyle} />;
     } else {
       const iconStyle = {
-        color: isActive ? "white" : "#737679",
+        color: isActive ? "#F36100" : "#737679",
       };
       const Icon = MuiIcons[iconName];
       return Icon ? <Icon style={iconStyle} /> : null;
@@ -83,12 +83,12 @@ const Nav = ({ menuData }) => {
   };
 
   const drawer = (
-    <div style={{ backgroundColor: "#FFFFFF", height: "100vh", width: "290px" }}>
+    <div style={{ backgroundColor: "#FFFFFF", height: "100vh", width: "310px" }}>
       {ProfileData.map((item, index) => (
         <Box
           key={index}
           style={{
-            margin: "40px 0px 18px 0px",
+            margin: "20px 0px 15px 0px",
             // backgroundColor: "#FFA201",
             height: "100px",
             display: "flex",
@@ -120,9 +120,12 @@ const Nav = ({ menuData }) => {
               onClick={isSignOut ? handleSignOut : undefined}
               style={{
                 backgroundColor: isActive ? "#FBEEE5" : "transparent",
-                color: isActive ? "#F36100" : "#6D6E71",
-                width: "205px",
-                margin: "8px auto",
+                color: isActive ? "#F36100" : "#2F2F2F",
+                // width: "265px",
+                margin: "7px 17px",
+                fontFamily: "Inter",
+                fontSize:"18px",
+                fontWeight: 400,
                 borderRadius: "8px",
               }}
             >
@@ -138,7 +141,7 @@ const Nav = ({ menuData }) => {
                 sx={{
                   "& .MuiTypography-root": {
                     fontSize: "21px",
-                    fontFamily: "Outfit",
+                    fontFamily: "Inter",
                     fontWeight: 400,
                     lineHeight: "26px",
                   },
@@ -183,7 +186,7 @@ const Nav = ({ menuData }) => {
               </IconButton>
               <Box sx={{ margin: { xs: "0px", md: "0px 0px 0px 260px" }, }}>
                 <Typography sx={{
-                  fontFamily: "Outfit",
+                  fontFamily: "Inter",
                   fontWeight: 600,
                   fontSize: { xs: "18px", md: "36px" },
                   color: "#222222"
