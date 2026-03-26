@@ -12,6 +12,8 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
+import CreateEventPopup from "./CreateEventPopup.jsx";
 
 
 
@@ -50,8 +52,10 @@ const eventsData = [
 
 
 const Event = () => {
+    const navigate = useNavigate();
     const [menuAnchor, setMenuAnchor] = useState(null);
     const menuOpen = Boolean(menuAnchor);
+    const [createEventOpen, setCreateEventOpen] = useState(false);
 
     const handleMenuOpen = (e) => {
         e.stopPropagation();
@@ -61,6 +65,11 @@ const Event = () => {
     const handleMenuClose = () => {
         setMenuAnchor(null);
     };
+
+    const handleDetail = () => {
+        navigate(`/dashboard/events-detail`)
+    }
+
 
     return (
         <>
@@ -113,6 +122,7 @@ const Event = () => {
                             }}
                             variant="outlined"
                             startIcon={<AddIcon />}
+                            onClick={() => setCreateEventOpen(true)}
                         >
                             Create Event
                         </Button>
@@ -124,7 +134,7 @@ const Event = () => {
                 {eventsData.map((ev) => (
                     <Grid key={ev.id} size={{ xs: 12, sm: 6, md: 3 }}>
                         <Card
-                           
+
                             sx={{
                                 borderRadius: "14px",
                                 overflow: "hidden",
@@ -203,7 +213,7 @@ const Event = () => {
                                     flex: 1,
                                     display: "flex",
                                     flexDirection: "column",
-                                  
+
                                     bgcolor: "#FFFFFF",
                                     backgroundColor: "#FFFFFF",
                                 }}
@@ -215,7 +225,7 @@ const Event = () => {
                                         fontSize: "16px",
                                         lineHeight: 1.35,
                                         color: "#2F2F2F",
-                                        mb:"4px"
+                                        mb: "4px"
                                     }}
                                 >
                                     {ev.title}
@@ -237,7 +247,7 @@ const Event = () => {
                                         display: "flex",
                                         justifyContent: "space-between",
                                         alignItems: "center",
-                                        
+
                                     }}
                                 >
                                     <Typography
@@ -262,6 +272,7 @@ const Event = () => {
                                             color: "#FFFFFF",
                                             "&:hover": { bgcolor: "#d95600" },
                                         }}
+                                        onClick={() => handleDetail()}
                                     >
                                         <VisibilityIcon sx={{ fontSize: 20 }} />
                                     </IconButton>
@@ -271,6 +282,14 @@ const Event = () => {
                     </Grid>
                 ))}
             </Grid>
+
+            <CreateEventPopup
+                open={createEventOpen}
+                onClose={() => setCreateEventOpen(false)}
+                onCreateEvent={(_payload) => {
+                    // TODO: wire API when ready
+                }}
+            />
 
             <Menu
                 anchorEl={menuAnchor}

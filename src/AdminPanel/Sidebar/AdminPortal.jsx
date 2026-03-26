@@ -15,7 +15,9 @@ import Donations from "../Pages/Donations/Donations";
 import TempleDonations from "../Pages/TempleDonations/TempleDonations";
 import DonationHistory from "../Pages/DonationHistory/DonationHistory";
 import EventBanners from "../Pages/EventBanners.jsx/EventBanners";
-
+import MemberDetail from "../Pages/Members/MemberDetail";
+import EventsDetail from "../Pages/Events/EventsDetail";
+import DonationsDetail from "../Pages/Donations/DonationsDetail";
 
 
 
@@ -65,8 +67,9 @@ const AdminPortal = () => {
                     <Route path="temple-donations" element={<TempleDonations />} />
                     <Route path="donation-history" element={<DonationHistory />} />
                     <Route path="event-banners" element={<EventBanners />} />
-
-
+                    <Route path="member-detail" element={<MemberDetail />} />
+                    <Route path="events-detail" element={<EventsDetail />} />
+                    <Route path="donation-detail" element={<DonationsDetail />} />
 
 
                 </Routes>

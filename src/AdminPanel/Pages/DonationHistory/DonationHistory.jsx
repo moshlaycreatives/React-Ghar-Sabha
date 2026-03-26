@@ -12,6 +12,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -50,6 +51,7 @@ const eventsData = [
 
 
 const DonationHistory = () => {
+    const navigate = useNavigate();
     const [menuAnchor, setMenuAnchor] = useState(null);
     const menuOpen = Boolean(menuAnchor);
 
@@ -61,6 +63,10 @@ const DonationHistory = () => {
     const handleMenuClose = () => {
         setMenuAnchor(null);
     };
+
+    const handleDetail = () => [
+        navigate(`/dashboard/donation-detail`)
+    ]
 
     return (
         <>
@@ -86,7 +92,7 @@ const DonationHistory = () => {
                             </Typography>
                         </Box>
                     </Grid>
-                   
+
                 </Grid>
             </Box>
 
@@ -232,6 +238,7 @@ const DonationHistory = () => {
                                             color: "#FFFFFF",
                                             "&:hover": { bgcolor: "#d95600" },
                                         }}
+                                        onClick={() => handleDetail()}
                                     >
                                         <VisibilityIcon sx={{ fontSize: 20 }} />
                                     </IconButton>

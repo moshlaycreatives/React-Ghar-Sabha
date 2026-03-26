@@ -12,6 +12,8 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
+import AddDonationPopup from "./AddDonationPopup";
 
 
 
@@ -50,8 +52,10 @@ const eventsData = [
 
 
 const Donations = () => {
+    const navigate = useNavigate();
     const [menuAnchor, setMenuAnchor] = useState(null);
     const menuOpen = Boolean(menuAnchor);
+    const [addDonationOpen, setAddDonationOpen] = useState(false);
 
     const handleMenuOpen = (e) => {
         e.stopPropagation();
@@ -61,6 +65,10 @@ const Donations = () => {
     const handleMenuClose = () => {
         setMenuAnchor(null);
     };
+
+    const handleDetail = () => [
+        navigate(`/dashboard/donation-detail`)
+    ]
 
     return (
         <>
@@ -113,6 +121,7 @@ const Donations = () => {
                             }}
                             variant="outlined"
                             startIcon={<AddIcon />}
+                            onClick={() => setAddDonationOpen(true)}
                         >
                             Add Donation
                         </Button>
@@ -262,6 +271,7 @@ const Donations = () => {
                                             color: "#FFFFFF",
                                             "&:hover": { bgcolor: "#d95600" },
                                         }}
+                                        onClick={() => handleDetail()}
                                     >
                                         <VisibilityIcon sx={{ fontSize: 20 }} />
                                     </IconButton>
@@ -297,6 +307,11 @@ const Donations = () => {
                     Delete
                 </MenuItem>
             </Menu>
+
+            <AddDonationPopup
+                open={addDonationOpen}
+                onClose={() => setAddDonationOpen(false)}
+            />
         </>
     );
 };

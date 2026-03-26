@@ -17,6 +17,7 @@ const UPCOMING_EVENT_IMAGE = "/image/upcoming-event-banner.png";
 const TOTAL_ATTENDEES = "12,545";
 const ATTENDANCE_PROGRESS = 40; // %
 
+
 const Data = [
     {
         Id: "1",
@@ -68,13 +69,15 @@ const ThirdSection = () => {
         <>
 
             <Box>
-                <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 7 }}>
+                <Grid container spacing={2} alignItems="stretch">
+                    <Grid size={{ xs: 12, md: 7 }} sx={{ display: "flex" }}>
 
                         <Box sx={{
                             boxShadow: "0px 4px 30px 0px #0000001A",
                             borderRadius: "20px",
                             backgroundColor: "white",
+                            height: "100%",
+                            width: "100%",
                         
 
                         }}>
@@ -153,7 +156,7 @@ const ThirdSection = () => {
 
                     </Grid>
 
-                    <Grid size={{ xs: 12, md: 5 }}>
+                    <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex" }}>
                         <Box
                             sx={{
                                 boxShadow: "0px 4px 30px 0px #0000001A",
@@ -161,6 +164,7 @@ const ThirdSection = () => {
                                 backgroundColor: "white",
                                 p: "20px",
                                 height: "100%",
+                                width: "100%",
                             }}
                         >
                             <Typography
