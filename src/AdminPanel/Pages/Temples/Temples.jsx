@@ -1,10 +1,19 @@
-import { useState } from "react";
-import { Box, Grid, Typography, Card, CardContent, Button } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import {
+    DashboardPageHeader,
+    DashboardToolbarButton,
+} from "../../../components/DashboardPageHeader.jsx";
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+import DeleteTemple from "./DeleteTemple.jsx";
 import {
     Table,
     TableBody,
@@ -16,118 +25,12 @@ import {
 
 
 
-const memberData = [
-    {
-        Id: "1",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "2",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "3",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "4",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "5",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-]
-
-
-
 const Temples = () => {
+    const navigate = useNavigate();
+    const [templeData, settempleData] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuUserId, setMenuUserId] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const open = Boolean(anchorEl);
 
 
@@ -142,66 +45,45 @@ const Temples = () => {
         setMenuUserId(null);
     };
 
+    const handleAddtemple = () => {
+        navigate(`/dashboard/add-temple`)
+    };
+
+
+    const GetAlltemple = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminAddTemple}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            settempleData(response?.data?.data?.temples || []);
+        } catch (error) {
+            settempleData([]);
+            toast.error(error.response?.data?.message || "Failed to fetch temple");
+        }
+    };
+
+
+    useEffect(() => {
+        GetAlltemple();
+    }, []);
+
+
+
     return (
         <>
 
 
-            <Box>
-                <Grid
-                    container
-                    spacing={2}
-                    alignItems="center"
-                    sx={{ justifyContent: "space-between" }}
-                >
-                    <Grid size={{ xs: 12, md: "auto" }}>
-                        <Box>
-                            <Typography
-                                sx={{
-                                    fontFamily: "Inter",
-                                    fontWeight: 600,
-                                    fontSize: { xs: "26px", md: "36px" },
-                                    color: "#2F2F2F",
-                                }}>
-                                Dashboard<span style={{ color: "#F36100" }}>/Temples</span>
-                            </Typography>
-                        </Box>
-                    </Grid>
-                    <Grid
-                        size={{ xs: 12, md: "auto" }}
-                        sx={{
-                            display: "flex",
-                            justifyContent: { xs: "stretch", md: "flex-end" },
-                        }}
-                    >
-                        <Button
-                            sx={{
-                                backgroundColor: "#F36100",
-                                border: "1px solid #F36100",
-                                color: "#FFFFFF",
-                                fontSize: "16px",
-                                lineHeight: "16px",
-                                fontWeight: 400,
-                                textTransform: "none",
-                                width: { xs: "100%", md: "auto" },
-                                minWidth: { md: 160 },
-                                height: "50px",
-                                borderRadius: "10px",
-                                "&:hover": {
-                                    backgroundColor: "#d95600",
-                                    borderColor: "#d95600",
-                                },
-                            }}
-                            variant="outlined"
-                            startIcon={<AddIcon />}
-                        >
-                            Add Temple
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Box>
+            <DashboardPageHeader
+                accentSegment="Temples"
 
-
-
+                action={
+                    <DashboardToolbarButton onClick={handleAddtemple} startIcon={<AddIcon />}>
+                        Add Temple
+                    </DashboardToolbarButton>
+                }
+            />
 
 
             <Box sx={{
@@ -227,32 +109,32 @@ const Temples = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {memberData?.map((row) => (
-                                <TableRow key={row.Id}>
-                                    <TableCell>{row.MId}</TableCell>
+                            {templeData?.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.customId}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <img
-                                                src={row.TImage}
-                                                alt={row.TempleName}
+                                                src={row.images?.[0] || "/image/Tpimage.png"}
+                                                alt={row.title}
                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                             />
                                             <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                {row.TempleName}
+                                                {row.title}
                                             </Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{row.Phone}</TableCell>
-                                    <TableCell>{row.Mail}</TableCell>
-                                    <TableCell>{row.WhatsAppNo}</TableCell>
-                                    <TableCell>{row.Country}</TableCell>
+                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell>{row.email}</TableCell>
+                                    <TableCell>{row.whatsappNumber}</TableCell>
+                                    <TableCell>{row.country}</TableCell>
 
                                     <TableCell>
                                         <IconButton
                                             aria-controls={open ? 'demo-positioned-menu' : undefined}
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
-                                            onClick={(e) => handleMenuClick(e, row._id)}
+                                            onClick={(e) => handleMenuClick(e, row.id)}
                                         >
                                             <MoreVertIcon />
                                         </IconButton>
@@ -260,7 +142,7 @@ const Temples = () => {
                                             id="demo-positioned-menu"
                                             aria-labelledby="demo-positioned-button"
                                             anchorEl={anchorEl}
-                                            open={open && menuUserId === row._id}
+                                            open={open && menuUserId === row.id}
                                             onClose={handleClose}
                                             anchorOrigin={{
                                                 vertical: 'top',
@@ -272,10 +154,19 @@ const Temples = () => {
                                             }}
                                         >
 
-                                            <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
+                                            <MenuItem 
+                                                onClick={() => navigate(`/dashboard/edit-temple/${menuUserId}`)}
+                                                sx={{ color: "#ED4040", gap: "5px" }}
+                                            >
                                                 {/* <MdBlockFlipped fontSize="20px" /> */}
-                                                Block</MenuItem>
-                                            <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
+                                                Edit</MenuItem>
+                                            <MenuItem 
+                                                onClick={() => {
+                                                    setIsDeleteModalOpen(true);
+                                                    setAnchorEl(null);
+                                                }}
+                                                sx={{ color: "#ED4040", gap: "5px" }}
+                                            >
                                                 {/* <RiDeleteBinLine fontSize="20px" /> */}
                                                 Delete</MenuItem>
 
@@ -292,6 +183,13 @@ const Temples = () => {
 
 
             </Box>
+
+            <DeleteTemple
+                open={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                id={menuUserId}
+                onDelete={GetAlltemple}
+            />
 
         </>
     )

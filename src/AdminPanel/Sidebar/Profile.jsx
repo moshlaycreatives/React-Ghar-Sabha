@@ -28,7 +28,6 @@ const Profile = () => {
     localStorage.removeItem("productType")
     localStorage.removeItem("UserId")
     localStorage.removeItem("UserName")
-    localStorage.removeItem("productType")
     navigate('/')
   }
 

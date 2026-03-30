@@ -1,11 +1,9 @@
 import React, { Fragment } from "react";
-import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Nav from "./Nav";
 import menuData from "./menuData";
-import { useNavigate } from "react-router-dom";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Members from "../Pages/Members/Members";
 import Chats from "../Pages/Chats/Chats";
@@ -14,10 +12,12 @@ import Temples from "../Pages/Temples/Temples";
 import Donations from "../Pages/Donations/Donations";
 import TempleDonations from "../Pages/TempleDonations/TempleDonations";
 import DonationHistory from "../Pages/DonationHistory/DonationHistory";
-import EventBanners from "../Pages/EventBanners.jsx/EventBanners";
+import EventBanners from "../Pages/EventBanners/EventBanners";
 import MemberDetail from "../Pages/Members/MemberDetail";
 import EventsDetail from "../Pages/Events/EventsDetail";
 import DonationsDetail from "../Pages/Donations/DonationsDetail";
+import AddTemple from "../Pages/Temples/AddTemple";
+import EditTemple from "../Pages/Temples/EditTemple";
 
 
 
@@ -40,19 +40,6 @@ const Root = styled(Box)(({ theme }) => ({
 }));
 
 const AdminPortal = () => {
-    const navigate = useNavigate();
-
-
-
-    // useEffect(() => {
-
-    //     const token = localStorage.getItem("token");
-    //     if (!token) {
-
-    //         navigate("/");
-    //     }
-    // }, [navigate]);
-
     return (
         <Fragment>
             <Nav menuData={menuData} />
@@ -70,6 +57,8 @@ const AdminPortal = () => {
                     <Route path="member-detail" element={<MemberDetail />} />
                     <Route path="events-detail" element={<EventsDetail />} />
                     <Route path="donation-detail" element={<DonationsDetail />} />
+                    <Route path="add-temple" element={<AddTemple />} />
+                    <Route path="edit-temple/:id" element={<EditTemple />} />
 
 
                 </Routes>

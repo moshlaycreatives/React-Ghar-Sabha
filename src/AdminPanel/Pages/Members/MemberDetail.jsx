@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
 import {
     Table,
@@ -7,6 +8,11 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+
 
 
 
@@ -51,6 +57,10 @@ const Donation = [
 
 
 const MemberDetail = () => {
+    const location = useLocation();
+    const { id } = location.state || ""
+    const [memberDetail, setmemberDetail] = useState(null);
+
     const topCardSx = {
         boxShadow: "0px 4px 30px 0px #0000001A",
         borderRadius: "15px",
@@ -68,6 +78,26 @@ const MemberDetail = () => {
         minHeight: "550px",
         height: "100%",
     };
+
+
+    const GetAllmenber = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.GetAdminAllUser}/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setmemberDetail(response?.data?.data?.users || []);
+        } catch (error) {
+            setmemberDetail([]);
+            toast.error(error.response?.data?.message);
+        }
+    };
+
+
+    useEffect(() => {
+        GetAllmenber();
+    }, []);
 
     return (
         <>
@@ -331,7 +361,7 @@ const MemberDetail = () => {
                                     color: '#2F2F2F',
                                 }}
                             >
-                                Active Donation Needs
+                                Donation History
                             </Typography>
                         </Box >
 

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, useTheme } from "@mui/material";
 import {
     BarChart,
     Bar,
@@ -9,9 +9,6 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
-
-const ORANGE = "#FF5C00";
-const CHARCOAL = "#2D2D2D";
 
 const MONTHLY_DATA = [
     { label: "Jan", primary: 400000, secondary: 260000 },
@@ -93,6 +90,10 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 const DonationAnalyticsChart = () => {
+    const theme = useTheme();
+    const primaryBar = theme.palette.primary.main;
+    const secondaryBar = theme.palette.text.primary;
+
     const [range, setRange] = useState("month");
 
     const data = useMemo(() => {
@@ -256,14 +257,14 @@ const DonationAnalyticsChart = () => {
                         <Bar
                             dataKey="primary"
                             name="Online"
-                            fill={ORANGE}
+                            fill={primaryBar}
                             radius={[4, 4, 0, 0]}
                             maxBarSize={28}
                         />
                         <Bar
                             dataKey="secondary"
                             name="In-person"
-                            fill={CHARCOAL}
+                            fill={secondaryBar}
                             radius={[4, 4, 0, 0]}
                             maxBarSize={28}
                         />

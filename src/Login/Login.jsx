@@ -3,8 +3,8 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Grid from '@mui/material/Grid';
-// import axios from "axios";
-// import { endpoints } from "../../apiEndpoints";
+import axios from "axios";
+import { endpoints } from "../apiEndpoints";
 // import toast from "react-hot-toast";
 
 
@@ -27,25 +27,25 @@ const Login = () => {
 
 
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    //     try {
-    //         const response = await axios.post(endpoints.LoginUser, {
-    //             email: email,
-    //             password: password,
-    //         });
+        try {
+            const response = await axios.post(endpoints.LoginUser, {
+                email: email,
+                password: password,
+            });
 
-    //         if (response.data.success) {
-    //             localStorage.setItem("token", response.data.token);
-    //         }
-    //         handleOpen()
-    //         toast.success(response.data.message)
-    //     } catch (error) {
-    //         toast.error(error.response.data.message);
-    //         console.error("Login error:", error);
-    //     }
-    // };
+            if (response.data.success) {
+                localStorage.setItem("token", response.data.token);
+            }
+            handleOpen()
+            toast.success(response.data.message)
+        } catch (error) {
+            toast.error(error.response.data.message);
+            console.error("Login error:", error);
+        }
+    };
 
 
 
@@ -176,7 +176,7 @@ const Login = () => {
                                     borderRadius: "12px",
                                     margin: "40px 0px 10px 0px"
                                 }}
-                                onClick={handleOpen}
+                                onClick={handleSubmit}
                             >
                                 Sign In
                             </Button>

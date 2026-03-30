@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
@@ -13,112 +13,18 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
 
 
-const memberData = [
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "2",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "3",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "4",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "5",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-    {
-        Id: "6",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        WhatsAppNo: "+91 99743 60038",
-        Mail: "rohan@vadtaldham.com",
-        Family: "Yes",
-        Gender: "Female",
-        Country: "India",
-        MemberS: "2026"
-    },
-]
 
 
 
 const Members = () => {
     const navigate = useNavigate();
+    const [memberData, setmemberData] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuUserId, setMenuUserId] = useState(null);
     const open = Boolean(anchorEl);
@@ -136,9 +42,30 @@ const Members = () => {
     };
 
 
-    const hanldememberDetail = () => {
-        navigate(`/dashboard/member-detail`)
+    const hanldememberDetail = (id) => {
+        navigate(`/dashboard/member-detail`, { state: { id } })
     }
+
+
+    const GetAllmenber = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.GetAdminAllUser}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setmemberData(response?.data?.data?.users || []);
+        } catch (error) {
+            setmemberData([]);
+            toast.error(error.response?.data?.message);
+        }
+    };
+
+
+    useEffect(() => {
+        GetAllmenber();
+    }, []);
+
 
     return (
         <>
@@ -181,22 +108,22 @@ const Members = () => {
                         </TableHead>
                         <TableBody>
                             {memberData?.map((row) => (
-                                <TableRow key={row.Id}>
-                                    <TableCell>{row.MId}</TableCell>
-                                    <TableCell>{row.Name}</TableCell>
-                                    <TableCell>{row.Phone}</TableCell>
-                                    <TableCell>{row.WhatsAppNo}</TableCell>
-                                    <TableCell>{row.Mail}</TableCell>
-                                    <TableCell>{row.Family}</TableCell>
-                                    <TableCell>{row.Gender}</TableCell>
-                                    <TableCell>{row.Country}</TableCell>
-                                    <TableCell>{row.MemberS}</TableCell>
+                                <TableRow key={row.id || row._id}>
+                                    <TableCell>{row.customId || "-"}</TableCell>
+                                    <TableCell>{`${row.firstName || ""} ${row.lastName || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell>{`${row?.phone?.countryCode || ""} ${row?.phone?.number || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell>{`${row?.whatsappNumber?.countryCode || ""} ${row?.whatsappNumber?.number || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell>{row.email || "-"}</TableCell>
+                                    <TableCell>{row.hasFamilyMember ? "Yes" : "No"}</TableCell>
+                                    <TableCell>{row.gender || "-"}</TableCell>
+                                    <TableCell>{row.country || "-"}</TableCell>
+                                    <TableCell>{row.createdAt ? new Date(row.createdAt).getFullYear() : "-"}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             aria-controls={open ? 'demo-positioned-menu' : undefined}
                                             aria-haspopup="true"
                                             aria-expanded={open ? 'true' : undefined}
-                                            onClick={(e) => handleMenuClick(e, row._id)}
+                                            onClick={(e) => handleMenuClick(e, row.id || row._id)}
                                         >
                                             <MoreVertIcon />
                                         </IconButton>
@@ -204,7 +131,7 @@ const Members = () => {
                                             id="demo-positioned-menu"
                                             aria-labelledby="demo-positioned-button"
                                             anchorEl={anchorEl}
-                                            open={open && menuUserId === row._id}
+                                            open={open && menuUserId === (row.id || row._id)}
                                             onClose={handleClose}
                                             anchorOrigin={{
                                                 vertical: 'top',
@@ -216,10 +143,11 @@ const Members = () => {
                                             }}
                                         >
 
-                                            <MenuItem onClick={() => hanldememberDetail()}>Member Details</MenuItem>
-                                            <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
-                                                {/* <RiDeleteBinLine fontSize="20px" /> */}
-                                                Delete</MenuItem>
+                                            <MenuItem onClick={() => hanldememberDetail(row.id)}>Member Details</MenuItem>
+
+                                            {/* <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
+                                                <RiDeleteBinLine fontSize="20px" />
+                                                Delete</MenuItem> */}
 
                                         </Menu>
                                     </TableCell>

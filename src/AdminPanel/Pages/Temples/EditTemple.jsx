@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     Box,
     Button,
@@ -10,12 +10,10 @@ import {
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
-
-
-
 
 const countries = ["India", "USA", "UK", "Canada", "Australia"];
 const inputSx = {
@@ -42,9 +40,9 @@ const fieldTitleSx = {
     color: "#2F2F2F",
 };
 
-
-
-const AddTemple = () => {
+const EditTemple = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [formdata, setformdata] = useState({
         title: "",
         images: [],
@@ -59,7 +57,46 @@ const AddTemple = () => {
 
     const [darshanTimings, setDarshanTimings] = useState(["", "", ""]);
     const [templeImages, setTempleImages] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
     const [submitting, setSubmitting] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const fetchTempleDetails = useCallback(async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${endpoints.AdminAddTemple}/${id}`, {
+                headers: {
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+            });
+            const data = response.data?.data?.temple;
+            if (data) {
+                setformdata({
+                    title: data.title || "",
+                    images: data.images || [],
+                    phone: data.phone || "",
+                    whatsappNumber: data.whatsappNumber || "",
+                    googleMapUrl: data.googleMapUrl || "",
+                    country: data.country || "",
+                    email: data.email || "",
+                    introduction: data.introduction || "",
+                    timeSlots: data.timeSlots || []
+                });
+                setDarshanTimings(data.timeSlots?.length > 0 ? data.timeSlots : ["", "", ""]);
+                setExistingImages(data.images || []);
+            }
+        } catch (error) {
+            toast.error("Failed to fetch temple details");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        fetchTempleDetails();
+    }, [fetchTempleDetails]);
 
     const handleInputChange = (field) => (event) => {
         setformdata((prev) => ({
@@ -84,27 +121,27 @@ const AddTemple = () => {
         setTempleImages(selectedFiles);
     };
 
-
-    const CreateTemple = async () => {
+    const UpdateTemple = async () => {
         if (submitting) return;
 
         setSubmitting(true);
         try {
-            let uploadedImageUrls = [];
+            let uploadedImageUrls = [...existingImages];
             if (templeImages.length > 0) {
                 const { urls } = await uploadMultipleMedia(templeImages, { path: "temples" });
-                uploadedImageUrls = urls;
+                uploadedImageUrls = [...uploadedImageUrls, ...urls];
             }
 
             const payload = {
                 ...formdata,
+                id,
                 images: uploadedImageUrls,
                 timeSlots: darshanTimings.filter((t) => t.trim() !== ""),
             };
 
             const token = localStorage.getItem("token");
-            const response = await axios.post(
-                endpoints.AdminAddTemple,
+            const response = await axios.patch(
+                `${endpoints.AdminAddTemple}/${id}`,
                 payload,
                 {
                     headers: {
@@ -113,21 +150,8 @@ const AddTemple = () => {
                 }
             );
 
-            toast.success(response.data?.message ?? "Temple added successfully");
-            // Reset form if needed
-            setformdata({
-                title: "",
-                images: [],
-                phone: "",
-                whatsappNumber: "",
-                googleMapUrl: "",
-                country: "",
-                email: "",
-                introduction: "",
-                timeSlots: []
-            });
-            setDarshanTimings(["", "", ""]);
-            setTempleImages([]);
+            toast.success(response.data?.message ?? "Temple updated successfully");
+            navigate("/dashboard/temples");
         } catch (error) {
             const msg = error.response?.data?.message ?? error.message ?? "Something went wrong";
             toast.error(msg);
@@ -136,15 +160,20 @@ const AddTemple = () => {
         }
     };
 
-
-
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box>
             <Typography sx={{ fontFamily: "Inter", fontSize: "36px", fontWeight: 600, lineHeight: "24px" }}>
                 Dashboard/Temples
                 <Box component="span" sx={{ color: "primary.main" }}>
-                    /Add New Temple
+                    /Edit Temple
                 </Box>
             </Typography>
 
@@ -159,7 +188,7 @@ const AddTemple = () => {
             >
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>
                     <Typography sx={{ fontFamily: "Inter", fontSize: "25px", lineHeight: "24px", fontWeight: 500, color: "#2F2F2F" }}>
-                        Add Temple Details
+                        Edit Temple Details
                     </Typography>
                 </Box>
 
@@ -253,7 +282,7 @@ const AddTemple = () => {
                             sx={{
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: "6px",
-                                    fontSize: "18px",
+                                    fontSize: "12px",
                                     alignItems: "flex-start",
                                 },
                                 "& .MuiOutlinedInput-input::placeholder": {
@@ -347,6 +376,20 @@ const AddTemple = () => {
                                     {templeImages.length} image(s) selected
                                 </Typography>
                             ) : null}
+                            {existingImages.length > 0 && templeImages.length === 0 ? (
+                                <Typography
+                                    sx={{
+                                        fontFamily: "Inter",
+                                        color: "#848286",
+                                        fontSize: "14px",
+                                        lineHeight: "20px",
+                                        textAlign: "center",
+                                        px: 2,
+                                    }}
+                                >
+                                    {existingImages.length} existing image(s)
+                                </Typography>
+                            ) : null}
                         </Box>
                     </Grid>
 
@@ -355,11 +398,11 @@ const AddTemple = () => {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            onClick={CreateTemple}
+                            onClick={UpdateTemple}
                             disabled={submitting}
                             sx={{ mt: 1, height: "40px", fontFamily: "Inter", borderRadius: "6px", fontSize: "16px", fontWeight: 400 }}
                         >
-                            {submitting ? <CircularProgress size={24} color="inherit" /> : "Add Temple"}
+                            {submitting ? <CircularProgress size={24} color="inherit" /> : "Update Temple"}
                         </Button>
                     </Grid>
                 </Grid>
@@ -368,4 +411,4 @@ const AddTemple = () => {
     );
 };
 
-export default AddTemple;
+export default EditTemple;

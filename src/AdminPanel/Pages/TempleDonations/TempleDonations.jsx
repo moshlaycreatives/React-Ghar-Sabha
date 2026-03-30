@@ -1,9 +1,6 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
-import IconButton from '@mui/material/IconButton';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+
 import {
     Table,
     TableBody,
@@ -12,119 +9,38 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
-
-
-
-const memberData = [
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-    {
-        Id: "1",
-        MId: "234213",
-        Name: "Rohan Mehta",
-        Phone: "+91 99743 60038",
-        TImage: "/image/Tpimage.png",
-        TempleName: "BAPS Shri Swami",
-        Amount: "$ 3,000",
-        Country: "India",
-        State: "Gujarat"
-    },
-
-]
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
 
 
 const TempleDonations = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [menuUserId, setMenuUserId] = useState(null);
-    const open = Boolean(anchorEl);
+    const [donationData, setDonationData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
+    const getAllTempleDonations = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.GetTempleDonations}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-
-    const handleMenuClick = (event, userId) => {
-        setAnchorEl(event.currentTarget);
-        setMenuUserId(userId);
+            setDonationData(response?.data?.data?.payments || []);
+        } catch (error) {
+            setDonationData([]);
+            toast.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-        setMenuUserId(null);
-    };
+
+    useEffect(() => {
+        getAllTempleDonations();
+    }, []);
+
 
     return (
         <>
@@ -162,67 +78,42 @@ const TempleDonations = () => {
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>State</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Action</TableCell>
+                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Date & Time</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {memberData?.map((row) => (
-                                <TableRow key={row.Id}>
-                                    <TableCell>{row.MId}</TableCell>
-                                    <TableCell>{row.Name}</TableCell>
-                                    <TableCell>{row.Phone}</TableCell>
+                            {donationData?.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.donationId}</TableCell>
+                                    <TableCell>{row.donorName}</TableCell>
+                                    <TableCell>{row.phone}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <img
-                                                src={row.TImage}
-                                                alt={row.TempleName}
+                                                src={row.templeImage}
+                                                alt={row.templeName}
                                                 style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
                                             />
                                             <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                {row.TempleName}
+                                                {row.templeName}
                                             </Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{row.Amount}</TableCell>
-                                    <TableCell>{row.Country}</TableCell>
-                                    <TableCell>{row.State}</TableCell>
-
+                                    <TableCell>{row.originalAmount} {row.originalCurrency}</TableCell>
+                                    <TableCell>{row.country}</TableCell>
+                                    <TableCell>{row.state}</TableCell>
                                     <TableCell>
-                                        <IconButton
-                                            aria-controls={open ? 'demo-positioned-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? 'true' : undefined}
-                                            onClick={(e) => handleMenuClick(e, row._id)}
-                                        >
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                        <Menu
-                                            id="demo-positioned-menu"
-                                            aria-labelledby="demo-positioned-button"
-                                            anchorEl={anchorEl}
-                                            open={open && menuUserId === row._id}
-                                            onClose={handleClose}
-                                            anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
-                                            }}
-                                        >
-
-                                            <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
-                                                {/* <MdBlockFlipped fontSize="20px" /> */}
-                                                Block</MenuItem>
-                                            <MenuItem sx={{ color: "#ED4040", gap: "5px" }}>
-                                                {/* <RiDeleteBinLine fontSize="20px" /> */}
-                                                Delete</MenuItem>
-
-                                        </Menu>
+                                        {new Date(row.dateTime).toLocaleDateString()} - {new Date(row.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </TableCell>
+
+
                                 </TableRow>
                             ))}
+                            {donationData.length === 0 && !loading && (
+                                <TableRow>
+                                    <TableCell colSpan={8} align="center">No donations found</TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
 
 
