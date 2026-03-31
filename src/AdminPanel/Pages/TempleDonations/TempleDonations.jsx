@@ -65,8 +65,6 @@ const TempleDonations = () => {
                 marginTop: "20px"
             }}>
 
-
-
                 <Box style={{ overflowX: "auto" }}>
                     <Table sx={{ border: "1px solid #EFEFEF", minWidth: "70rem" }}>
                         <TableHead>

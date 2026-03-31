@@ -5,6 +5,7 @@ const primaryDark = "#d95600";
 const textPrimary = "#2F2F2F";
 const textMuted = "#848286";
 
+
 export const appTheme = createTheme({
     palette: {
         primary: {

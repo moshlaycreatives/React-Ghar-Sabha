@@ -282,7 +282,7 @@ const EditTemple = () => {
                             sx={{
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: "6px",
-                                    fontSize: "12px",
+                                    fontSize: "18px",
                                     alignItems: "flex-start",
                                 },
                                 "& .MuiOutlinedInput-input::placeholder": {

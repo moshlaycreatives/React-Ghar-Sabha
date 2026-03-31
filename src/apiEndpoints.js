@@ -8,8 +8,11 @@ export const endpoints = {
     LoginUser: `${BASE_URL}/auth/admin-login`,
     GetAdminAllUser: `${BASE_URL}/admin/users`,
     AdminEventBanner: `${BASE_URL}/event-banners/admin`,
-    AdminAddTemple: `${BASE_URL}/temples/admin`,
+    AdminAddTemple: `${BASE_URL}/admin/temples`,
     GetTempleDonations: `${BASE_URL}/admin/donations/temple-payments`,
+    GetAllCountry: `${BASE_URL}/public/countries`,
+    GetAllStates: `${BASE_URL}/public/states`,
+    GetAllCity: `${BASE_URL}/public/states`,
 
     /** POST multipart — single file (image/video). Supports `?path=profiles` etc. */
     UploadMediaSingle: `${BASE_URL}/media/upload-single`,
