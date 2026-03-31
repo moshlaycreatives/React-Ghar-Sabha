@@ -1,0 +1,282 @@
+import { useEffect, useState } from "react";
+import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
+import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+
+const labelSx = {
+    fontFamily: "Inter",
+    fontWeight: 400,
+    fontSize: "18px",
+    color: "#2F2F2F",
+    mb: "4px",
+};
+
+const inputSx = {
+    "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+        bgcolor: "#FFFFFF",
+        height: "50px"
+    },
+};
+
+const SendMessage = ({ open, onClose, onSend }) => {
+    const [country, setCountry] = useState("");
+    const [state, setState] = useState("");
+    const [city, setCity] = useState("");
+    const [district, setDistrict] = useState("");
+    const [tehsil, setTehsil] = useState("");
+    const [poll, setPoll] = useState("");
+    const [pollContent, setPollContent] = useState("");
+
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+
+    const token = "w1XWZhLiOGDD0nbRoNrdIzK4";
+
+    // Fetch Countries
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get(endpoints.GetAllCountry, {
+                    headers: {
+                        "x-api-key": token
+                    },
+                });
+                const rawData = response.data.data || response.data;
+                const countriesList = Array.isArray(rawData) ? rawData : (rawData.countries || []);
+                setCountries(countriesList);
+            } catch (error) {
+                console.error("Error fetching countries:", error);
+            }
+        };
+        if (open) {
+            fetchCountries();
+        }
+    }, [open]);
+
+    // Fetch States
+    useEffect(() => {
+        const fetchStates = async () => {
+            if (!country) {
+                setStates([]);
+                return;
+            }
+            try {
+                const response = await axios.get(`${endpoints.GetAllStates}?country=${country}`, {
+                    headers: {
+                        "x-api-key": token
+                    },
+                });
+                const rawData = response.data.data || response.data;
+                const statesList = Array.isArray(rawData) ? rawData : (rawData.states || []);
+                setStates(statesList);
+            } catch (error) {
+                console.error("Error fetching states:", error);
+            }
+        };
+        fetchStates();
+    }, [country]);
+
+    // Fetch Cities
+    useEffect(() => {
+        const fetchCities = async () => {
+            if (!country || !state) {
+                setCities([]);
+                return;
+            }
+            try {
+                const response = await axios.get(
+                    `${endpoints.GetAllCity}?country=${country}&state=${state}`,
+                    {
+                        headers: {
+                            "x-api-key": token
+                        },
+                    }
+                );
+                const rawData = response.data.data || response.data;
+                const citiesList = Array.isArray(rawData) ? rawData : (rawData.cities || []);
+                setCities(citiesList);
+            } catch (error) {
+                console.error("Error fetching cities:", error);
+            }
+        };
+        fetchCities();
+    }, [country, state]);
+
+    const handleSend = () => {
+        onSend?.({ country, state, city, district, tehsil, poll, pollContent });
+        handleClose();
+    };
+
+    const handleClose = () => {
+        setCountry("");
+        setState("");
+        setCity("");
+        setDistrict("");
+        setTehsil("");
+        setPoll("");
+        setPollContent("");
+        onClose();
+    };
+
+    return (
+        <FormDialogFrame
+            open={open}
+            onClose={handleClose}
+            title="Complete the Information to Send Message"
+            titleFontSize="20px"
+            titleFontWeight={600}
+            dividerAfterHeader={true}
+            bodyPaddingTop={2.5}
+        >
+            <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>Country</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={country}
+                        onChange={(e) => {
+                            setCountry(e.target.value);
+                            setState("");
+                            setCity("");
+                        }}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select country</MenuItem>
+                        {countries.map((c) => (
+                            <MenuItem key={typeof c === "object" ? c.name || c.id : c} value={typeof c === "object" ? c.name : c}>
+                                {typeof c === "object" ? c.name : c}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>State</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={state}
+                        onChange={(e) => {
+                            setState(e.target.value);
+                            setCity("");
+                        }}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select State</MenuItem>
+                        {states.map((s) => (
+                            <MenuItem key={typeof s === "object" ? s.name || s.id : s} value={typeof s === "object" ? s.name : s}>
+                                {typeof s === "object" ? s.name : s}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>City</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select city</MenuItem>
+                        {cities.map((ct) => (
+                            <MenuItem key={typeof ct === "object" ? ct.name || ct.id : ct} value={typeof ct === "object" ? ct.name : ct}>
+                                {typeof ct === "object" ? ct.name : ct}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>District</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select district</MenuItem>
+                        <MenuItem value="District 1">District 1</MenuItem>
+                    </TextField>
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>Tehsil</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={tehsil}
+                        onChange={(e) => setTehsil(e.target.value)}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select tehsil</MenuItem>
+                        <MenuItem value="Tehsil 1">Tehsil 1</MenuItem>
+                    </TextField>
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography sx={labelSx}>Create Poll</Typography>
+                    <TextField
+                        select
+                        fullWidth
+                        value={poll}
+                        onChange={(e) => setPoll(e.target.value)}
+                        variant="outlined"
+                        sx={inputSx}
+                        SelectProps={{ displayEmpty: true }}
+                    >
+                        <MenuItem value="" disabled>Select</MenuItem>
+                        <MenuItem value="Yes">Yes</MenuItem>
+                        <MenuItem value="No">No</MenuItem>
+                    </TextField>
+                </Grid>
+
+                {poll === "Yes" && (
+                    <Grid size={{ xs: 12 }}>
+                        <Typography sx={labelSx}>Add Poll content</Typography>
+                        <TextField
+                            fullWidth
+                            placeholder="Enter poll content"
+                            value={pollContent}
+                            onChange={(e) => setPollContent(e.target.value)}
+                            variant="outlined"
+                            sx={inputSx}
+                        />
+                    </Grid>
+                )}
+            </Grid>
+
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
+                <FormSubmitButton
+                    onClick={handleSend}
+                    sx={{
+                        width: { xs: "100%", sm: "auto" },
+                        minWidth: 200,
+                    }}
+                >
+                    Send Message
+                </FormSubmitButton>
+            </Box>
+        </FormDialogFrame>
+    );
+};
+
+export default SendMessage;

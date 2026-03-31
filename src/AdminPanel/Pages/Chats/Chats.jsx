@@ -12,8 +12,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
-
-
+import AddIcon from "@mui/icons-material/Add";
+import {
+    DashboardPageHeader,
+    DashboardToolbarButton,
+} from "../../../components/DashboardPageHeader.jsx";
+import CreateNewGroup from "./CreateNewGroup.jsx";
+import SendMessage from "./SendMessage.jsx";
 
 const ORANGE = "#F36100";
 const GREY_MUTED = "#7A7A7A";
@@ -57,12 +62,24 @@ const carouselVisualBoxSx = {
 
 const CAROUSEL_ITEMS = [
     { id: 0, kind: "brand", caption: "Ghar Sabha Group" },
-    { id: 1, kind: "image", caption: "Lorem Ipsum is simply dummy text" },
-    { id: 2, kind: "image", caption: "Lorem Ipsum is simply dummy text" },
+    { id: 1, kind: "image", caption: "Second Event" },
+    { id: 2, kind: "image", caption: "Third Event" },
 ];
 
 const Chats = () => {
     const [selectedCarouselId, setSelectedCarouselId] = useState(0);
+    const [createNewGroupOpen, setCreateNewGroupOpen] = useState(false);
+    const [sendMessageOpen, setSendMessageOpen] = useState(false);
+
+    const handleCreateGroup = (data) => {
+        console.log("Creating new group:", data);
+        // Add your logic here
+    };
+
+    const handleSendMessage = (data) => {
+        console.log("Sending information:", data);
+        // Add your logic here
+    };
 
     return (
         <Box
@@ -72,17 +89,20 @@ const Chats = () => {
                 pb: 2,
             }}
         >
-            <Typography
-                sx={{
-                    fontFamily: "Inter",
-                    fontWeight: 600,
-                    fontSize: { xs: "26px", md: "36px" },
-                    color: "#2F2F2F",
-                    mb: 2,
-                }}
-            >
-                Dashboard<span style={{ color: ORANGE }}>/Chats</span>
-            </Typography>
+            <DashboardPageHeader
+                accentSegment="Chats"
+                action={
+                    selectedCarouselId !== 0 && (
+                        <DashboardToolbarButton
+                            startIcon={<AddIcon />}
+                            onClick={() => setCreateNewGroupOpen(true)}
+                        >
+                            Create Group
+                        </DashboardToolbarButton>
+                    )
+                }
+            />
+            <Box sx={{ mb: 2 }} />
 
             {/* Top shortcut carousel */}
             <Box
@@ -425,6 +445,14 @@ const Chats = () => {
                                 </IconButton>
                                 <IconButton
                                     aria-label="Send"
+                                    onClick={() => {
+                                        if (selectedCarouselId === 0) {
+                                            setSendMessageOpen(true);
+                                        } else {
+                                            // Handle regular message sending for other groups
+                                            console.log("Normal send clicked");
+                                        }
+                                    }}
                                     sx={{
                                         bgcolor: ORANGE,
                                         color: "#FFFFFF",
@@ -440,6 +468,18 @@ const Chats = () => {
                     </Box>
                 </Grid>
             </Grid>
+
+            <CreateNewGroup
+                open={createNewGroupOpen}
+                onClose={() => setCreateNewGroupOpen(false)}
+                onCreate={handleCreateGroup}
+            />
+
+            <SendMessage
+                open={sendMessageOpen}
+                onClose={() => setSendMessageOpen(false)}
+                onSend={handleSendMessage}
+            />
         </Box>
     );
 };
