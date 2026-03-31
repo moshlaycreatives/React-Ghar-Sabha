@@ -1,56 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import CreateEventPopup from "./CreateEventPopup.jsx";
+import EditEvent from "./EditEvent.jsx";
+import DeleteEvent from "./DeleteEvent.jsx";
 import {
     DashboardPageHeader,
     DashboardToolbarButton,
 } from "../../../components/DashboardPageHeader.jsx";
 import { ResourcePreviewCard } from "../../../components/ResourcePreviewCard.jsx";
 import { CardOptionsMenu } from "../../../components/CardOptionsMenu.jsx";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
-// Mock data — replace with Events page API when ready (e.g. GET /events)
-const eventsData = [
-    {
-        id: "1",
-        image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply dummy",
-        location: "India - Gujraat - Ahmadabad",
-        dateRange: "16 Mar 2026 - 20 Mar 2026",
-    },
-    {
-        id: "2",
-        image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply dummy",
-        location: "India - Gujraat - Ahmadabad",
-        dateRange: "16 Mar 2026 - 20 Mar 2026",
-    },
-    {
-        id: "3",
-        image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply dummy",
-        location: "India - Gujraat - Ahmadabad",
-        dateRange: "16 Mar 2026 - 20 Mar 2026",
-    },
-    {
-        id: "4",
-        image: "/image/Deventimage.png",
-        title: "Lorem Ipsum is simply dummy",
-        location: "India - Gujraat - Ahmadabad",
-        dateRange: "16 Mar 2026 - 20 Mar 2026",
-    },
-];
+
+
+
+
 
 const Event = () => {
     const navigate = useNavigate();
+    const [EventDetailData, setEventDetailData] = useState(null);
     const [menuAnchor, setMenuAnchor] = useState(null);
+    const [selectedEventId, setSelectedEventId] = useState(null);
     const menuOpen = Boolean(menuAnchor);
     const [createEventOpen, setCreateEventOpen] = useState(false);
+    const [editEventOpen, setEditEventOpen] = useState(false);
+    const [deleteEventOpen, setDeleteEventOpen] = useState(false);
 
-    const handleMenuOpen = (e) => {
+    const handleMenuOpen = (e, id) => {
         e.stopPropagation();
         setMenuAnchor(e.currentTarget);
+        setSelectedEventId(id);
     };
 
     const handleMenuClose = () => {
@@ -60,6 +43,45 @@ const Event = () => {
     const handleDetail = () => {
         navigate("/dashboard/events-detail");
     };
+
+    const handleEdit = () => {
+        setEditEventOpen(true);
+    };
+
+    const handleDelete = () => {
+        setDeleteEventOpen(true);
+    };
+
+
+
+    const GetAllEvent = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminCreateNewEvent}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setEventDetailData(response?.data?.data?.events || []);
+        } catch (error) {
+            setEventDetailData([]);
+            toast.error(error.response?.data?.message || "Failed to fetch Event");
+        }
+    };
+
+
+    useEffect(() => {
+        GetAllEvent();
+    }, []);
+
+
+    // Helper for date range
+    const formatDateRange = (start, end) => {
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        const s = new Date(start).toLocaleDateString('en-GB', options);
+        const e = new Date(end).toLocaleDateString('en-GB', options);
+        return `${s} - ${e}`;
+    };
+
 
     return (
         <>
@@ -76,15 +98,15 @@ const Event = () => {
             />
 
             <Grid container spacing={2} sx={{ mt: { xs: 1, md: 2 } }}>
-                {eventsData.map((ev) => (
+                {EventDetailData?.map((ev) => (
                     <Grid key={ev.id} size={{ xs: 12, sm: 6, md: 3 }}>
                         <ResourcePreviewCard
                             variant="event"
                             image={ev.image}
-                            title={ev.title}
-                            subtitle={ev.location}
-                            footer={ev.dateRange}
-                            onMenuOpen={handleMenuOpen}
+                            title={ev.name}
+                            subtitle={`${ev.country} - ${ev.state} - ${ev.city}`}
+                            footer={formatDateRange(ev.startDate, ev.endDate)}
+                            onMenuOpen={(e) => handleMenuOpen(e, ev.id || ev._id)}
                             onView={handleDetail}
                             menuAriaLabel="Event options"
                             viewAriaLabel="View event"
@@ -97,7 +119,31 @@ const Event = () => {
                 open={createEventOpen}
                 onClose={() => setCreateEventOpen(false)}
                 onCreateEvent={() => {
-                    // Wire Events API here (separate from other pages)
+                    GetAllEvent();
+                }}
+            />
+
+            <EditEvent
+                open={editEventOpen}
+                eventId={selectedEventId}
+                onClose={() => {
+                    setEditEventOpen(false);
+                    setSelectedEventId(null);
+                }}
+                onUpdateEvent={() => {
+                    GetAllEvent();
+                }}
+            />
+
+            <DeleteEvent
+                open={deleteEventOpen}
+                id={selectedEventId}
+                onClose={() => {
+                    setDeleteEventOpen(false);
+                    setSelectedEventId(null);
+                }}
+                onDelete={() => {
+                    GetAllEvent();
                 }}
             />
 
@@ -105,6 +151,8 @@ const Event = () => {
                 anchorEl={menuAnchor}
                 open={menuOpen}
                 onClose={handleMenuClose}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
             />
         </>
     );

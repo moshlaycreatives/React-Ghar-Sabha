@@ -10,6 +10,7 @@ export function ImageUploadZone({
     onZoneClick,
     onFileChange,
     minHeight = { xs: 120, sm: 170 },
+    height, // Added height prop
     previewImageSx,
     mb = 0,
     emptyLabel = "Upload Image",
@@ -43,7 +44,7 @@ export function ImageUploadZone({
                 sx={{
                     border: "2px dashed rgba(47, 47, 47, 0.2)",
                     borderRadius: "10px",
-                    minHeight,
+                    height: height || minHeight, // Prioritize height, fallback to minHeight
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",

@@ -1,9 +1,18 @@
-import { useMemo, useState } from "react";
-import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import { Box, Grid, MenuItem, TextField, Typography, CircularProgress } from "@mui/material";
 import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { ImageUploadZone } from "../../../components/ImageUploadZone.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
 import { useImageFilePicker } from "../../../hooks/useImageFilePicker.js";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+import { uploadSingleMedia } from "../../../api/uploadMedia.js";
+
+
+
+
+
 
 const labelSx = {
     fontWeight: 400,
@@ -28,38 +37,85 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
     const [city, setCity] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const locationData = useMemo(
-        () => [
-            {
-                country: "India",
-                states: [
-                    {
-                        state: "Gujarat",
-                        cities: ["Ahmedabad"],
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+
+
+    const token = "w1XWZhLiOGDD0nbRoNrdIzK4";
+
+    // Fetch Countries
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get(endpoints.GetAllCountry, {
+                    headers: {
+                        "x-api-key": token
                     },
-                ],
-            },
-        ],
-        []
-    );
+                });
+                // Fix: Access response.data.data.countries as per provided response structure
+                const rawData = response.data.data || response.data;
+                const countriesList = Array.isArray(rawData) ? rawData : (rawData.countries || []);
+                setCountries(countriesList);
+            } catch (error) {
+                console.error("Error fetching countries:", error);
+            }
+        };
+        if (open) {
+            fetchCountries();
+        }
+    }, [open]);
 
-    const selectedCountry = useMemo(() => {
-        return locationData.find((x) => x.country === country) || null;
-    }, [country, locationData]);
+    // Fetch States
+    useEffect(() => {
+        const fetchStates = async () => {
+            if (!country) {
+                setStates([]);
+                return;
+            }
+            try {
+                const response = await axios.get(`${endpoints.GetAllStates}?country=${country}`, {
+                    headers: {
+                        "x-api-key": token
+                    },
+                });
+                const rawData = response.data.data || response.data;
+                const statesList = Array.isArray(rawData) ? rawData : (rawData.states || []);
+                setStates(statesList);
+            } catch (error) {
+                console.error("Error fetching states:", error);
+            }
+        };
+        fetchStates();
+    }, [country]);
 
-    const availableStates = useMemo(() => {
-        return selectedCountry?.states?.map((s) => s.state) || [];
-    }, [selectedCountry]);
-
-    const selectedState = useMemo(() => {
-        if (!selectedCountry) return null;
-        return selectedCountry.states.find((s) => s.state === state) || null;
-    }, [selectedCountry, state]);
-
-    const availableCities = useMemo(() => {
-        return selectedState?.cities || [];
-    }, [selectedState]);
+    // Fetch Cities
+    useEffect(() => {
+        const fetchCities = async () => {
+            if (!country || !state) {
+                setCities([]);
+                return;
+            }
+            try {
+                const response = await axios.get(
+                    `${endpoints.GetAllCity}?country=${country}&state=${state}`,
+                    {
+                        headers: {
+                            "x-api-key": token
+                        },
+                    }
+                );
+                const rawData = response.data.data || response.data;
+                const citiesList = Array.isArray(rawData) ? rawData : (rawData.cities || []);
+                setCities(citiesList);
+            } catch (error) {
+                console.error("Error fetching cities:", error);
+            }
+        };
+        fetchCities();
+    }, [country, state]);
 
     const resetForm = () => {
         resetImage();
@@ -85,21 +141,53 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
         startDate &&
         endDate;
 
-    const handleCreate = () => {
-        if (!canCreate) return;
+    const handleCreate = async () => {
+        if (!canCreate || loading) return;
 
-        onCreateEvent?.({
-            file,
-            eventName: eventName.trim(),
-            country,
-            state,
-            city,
-            startDate,
-            endDate,
-        });
+        setLoading(true);
+        try {
+            // Step 1: Upload image first
+            const uploadRes = await uploadSingleMedia(file, { path: "events" });
+            const imageUrl = uploadRes.url;
 
-        handleClose();
+            // Step 2: Prepare payload
+            const payload = {
+                name: eventName.trim(),
+                country,
+                state,
+                city,
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString(),
+                image: imageUrl
+            };
+
+            const token = localStorage.getItem("token");
+            const response = await axios.post(
+                endpoints.AdminCreateNewEvent,
+                payload,
+                {
+                    headers: {
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                }
+            );
+
+            toast.success(response.data?.message ?? "Event added successfully");
+            onCreateEvent?.();
+            handleClose();
+        } catch (error) {
+            console.error("Error creating event:", error);
+            const msg = error.response?.data?.message || error.message || "Failed to create event";
+            toast.error(msg);
+        } finally {
+            setLoading(false);
+        }
     };
+
+
+
+
+
 
     return (
         <FormDialogFrame
@@ -167,9 +255,9 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             <MenuItem value="" disabled>
                                 Select country
                             </MenuItem>
-                            {locationData.map((c) => (
-                                <MenuItem key={c.country} value={c.country}>
-                                    {c.country}
+                            {countries.map((c) => (
+                                <MenuItem key={typeof c === "object" ? c.name || c.id : c} value={typeof c === "object" ? c.name : c}>
+                                    {typeof c === "object" ? c.name : c}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -194,9 +282,9 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             <MenuItem value="" disabled>
                                 Select state
                             </MenuItem>
-                            {availableStates.map((s) => (
-                                <MenuItem key={s} value={s}>
-                                    {s}
+                            {states.map((s) => (
+                                <MenuItem key={typeof s === "object" ? s.name || s.id : s} value={typeof s === "object" ? s.name : s}>
+                                    {typeof s === "object" ? s.name : s}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -217,9 +305,9 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             <MenuItem value="" disabled>
                                 Select city
                             </MenuItem>
-                            {availableCities.map((ct) => (
-                                <MenuItem key={ct} value={ct}>
-                                    {ct}
+                            {cities.map((ct) => (
+                                <MenuItem key={typeof ct === "object" ? ct.name || ct.id : ct} value={typeof ct === "object" ? ct.name : ct}>
+                                    {typeof ct === "object" ? ct.name : ct}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -266,10 +354,10 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                 }}
             >
                 <FormSubmitButton
-                    disabled={!canCreate}
+                    disabled={!canCreate || loading}
                     onClick={handleCreate}
                 >
-                    Create Event
+                    {loading ? <CircularProgress size={24} color="inherit" /> : "Create Event"}
                 </FormSubmitButton>
             </Box>
         </FormDialogFrame>

@@ -10,9 +10,10 @@ export const endpoints = {
     AdminEventBanner: `${BASE_URL}/event-banners/admin`,
     AdminAddTemple: `${BASE_URL}/admin/temples`,
     GetTempleDonations: `${BASE_URL}/admin/donations/temple-payments`,
+    AdminCreateNewEvent: `${BASE_URL}/events/admin`,
     GetAllCountry: `${BASE_URL}/public/countries`,
     GetAllStates: `${BASE_URL}/public/states`,
-    GetAllCity: `${BASE_URL}/public/states`,
+    GetAllCity: `${BASE_URL}/public/cities`,
 
     /** POST multipart — single file (image/video). Supports `?path=profiles` etc. */
     UploadMediaSingle: `${BASE_URL}/media/upload-single`,

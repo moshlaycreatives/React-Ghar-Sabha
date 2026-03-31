@@ -30,7 +30,7 @@ const Root = styled(Box)(({ theme }) => ({
     minHeight: "100vh",
     height: "auto",
     boxSizing: "border-box",
-    padding: "70px 24px 0px 330px",
+    padding: "55px 24px 0px 330px",
     [theme.breakpoints.down("lg")]: {
         padding: "40px 24px 24px 24px",
     },
