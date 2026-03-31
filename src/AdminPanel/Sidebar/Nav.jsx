@@ -29,7 +29,7 @@ const ProfileData = [
   },
 ];
 
-const drawerWidth = 240;
+const drawerWidth = 310;
 
 const Nav = ({ menuData }) => {
   const theme = useTheme();
@@ -83,7 +83,7 @@ const Nav = ({ menuData }) => {
   };
 
   const drawer = (
-    <div style={{ backgroundColor: "#FFFFFF", height: "100vh", width: "310px" }}>
+    <div style={{ backgroundColor: "#FFFFFF", height: "100vh", width: drawerWidth }}>
       {ProfileData.map((item, index) => (
         <Box
           key={index}
@@ -155,7 +155,7 @@ const Nav = ({ menuData }) => {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <React.Fragment>
       <CssBaseline />
       <AppBar
         style={{
@@ -180,11 +180,11 @@ const Nav = ({ menuData }) => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={toggleDrawer}
-                sx={{ mr: 2, }}
+                sx={{ mr: 2, display: { lg: "none" } }}
               >
                 <MenuIcon style={{ color: "rgb(101,106,110)" }} />
               </IconButton>
-              <Box sx={{ margin: { xs: "0px", md: "0px 0px 0px 260px" }, }}>
+              <Box sx={{ marginLeft: { xs: "0px", lg: `335px` } }}>
                 <Typography sx={{
                   fontFamily: "Inter",
                   fontWeight: 600,
@@ -242,30 +242,38 @@ const Nav = ({ menuData }) => {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { lg: drawerWidth }, flexShrink: { lg: 0 } }}
         aria-label="mailbox folders"
       >
         <Drawer
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
             },
           }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant={isLargeScreen ? "permanent" : "temporary"}
+          variant="temporary"
           open={isOpen}
           onClose={toggleDrawer}
         >
           {drawer}
         </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", lg: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
       </Box>
-      <Toolbar />
-    </Box>
+    </React.Fragment>
   );
 };
 

@@ -26,24 +26,29 @@ import EditTemple from "../Pages/Temples/EditTemple";
 
 const Root = styled(Box)(({ theme }) => ({
     backgroundColor: "#FCF6F2",
-    width: "100%",
-    minHeight: "100vh",
-    height: "auto",
+    flexGrow: 1,
+    height: "100vh",
+    overflowY: "auto",
     boxSizing: "border-box",
-    padding: "55px 24px 0px 330px",
+    // Desktop: Sidebar Box takes 310px, we add 25px gap via padding
+    padding: "130px 30px 30px 25px",
     [theme.breakpoints.down("lg")]: {
-        padding: "40px 24px 24px 24px",
+        // Below LG: Sidebar is temporary, so we use full standard padding
+        padding: "120px 24px 24px 24px",
+    },
+    [theme.breakpoints.down("md")]: {
+        padding: "115px 20px 20px 20px",
     },
     [theme.breakpoints.down("sm")]: {
-        margin: "20px 0px 0px 0px",
+        padding: "110px 15px 15px 15px",
     },
 }));
 
 const AdminPortal = () => {
     return (
-        <Fragment>
+        <Box sx={{ display: "flex" }}>
             <Nav menuData={menuData} />
-            <Root>
+            <Root component="main">
                 <Routes>
                     <Route path="" element={<Dashboard />} />
                     <Route path="members" element={<Members />} />
@@ -63,7 +68,7 @@ const AdminPortal = () => {
 
                 </Routes>
             </Root>
-        </Fragment>
+        </Box>
     );
 };
 

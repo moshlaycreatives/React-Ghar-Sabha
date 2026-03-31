@@ -141,7 +141,7 @@ const AddTemple = () => {
 
     return (
         <Box>
-            <Typography sx={{ fontFamily: "Inter", fontSize: "36px", fontWeight: 600, lineHeight: "24px" }}>
+            <Typography sx={{ fontFamily: "Inter", fontSize: { xs: "20px", md: "36px" }, fontWeight: 600, lineHeight: "40px" }}>
                 Dashboard/Temples
                 <Box component="span" sx={{ color: "primary.main" }}>
                     /Add New Temple
