@@ -62,6 +62,7 @@ const AdminPortal = () => {
                     <Route path="member-detail" element={<MemberDetail />} />
                     <Route path="events-detail" element={<EventsDetail />} />
                     <Route path="donation-detail" element={<DonationsDetail />} />
+                    <Route path="donation-detail/:id" element={<DonationsDetail />} />
                     <Route path="add-temple" element={<AddTemple />} />
                     <Route path="edit-temple/:id" element={<EditTemple />} />
 

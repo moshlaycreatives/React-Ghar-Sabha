@@ -5,6 +5,9 @@ import { DashboardPageHeader } from "../../../components/DashboardPageHeader.jsx
 import { ResourcePreviewCard } from "../../../components/ResourcePreviewCard.jsx";
 import { CardOptionsMenu } from "../../../components/CardOptionsMenu.jsx";
 
+
+
+
 // Mock data — replace with Donation History page API when ready
 const historyCards = [
     {
@@ -37,6 +40,8 @@ const historyCards = [
     },
 ];
 
+
+
 const DonationHistory = () => {
     const navigate = useNavigate();
     const [menuAnchor, setMenuAnchor] = useState(null);
@@ -51,8 +56,8 @@ const DonationHistory = () => {
         setMenuAnchor(null);
     };
 
-    const handleDetail = () => {
-        navigate("/dashboard/donation-detail");
+    const handleDetail = (id) => {
+        navigate(`/dashboard/donation-detail/${id}`);
     };
 
     return (
@@ -69,7 +74,7 @@ const DonationHistory = () => {
                             subtitle={ev.location}
                             footer={ev.dateRange}
                             onMenuOpen={handleMenuOpen}
-                            onView={handleDetail}
+                            onView={() => handleDetail(ev?._id || ev?.id)}
                             menuAriaLabel="Donation options"
                             viewAriaLabel="View donation"
                         />

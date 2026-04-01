@@ -158,9 +158,10 @@ const Nav = ({ menuData }) => {
     <React.Fragment>
       <CssBaseline />
       <AppBar
+        elevation={0}
         style={{
           backgroundColor: "white",
-
+          boxShadow: "none",
         }}
         position="fixed"
       >
@@ -188,7 +189,7 @@ const Nav = ({ menuData }) => {
                 <Typography sx={{
                   fontFamily: "Inter",
                   fontWeight: 600,
-                  fontSize: { xs: "18px", md: "36px" },
+                  fontSize: { xs: "16px", md: "36px" },
                   color: "#222222"
                 }}>
                   Hi Welcome Back!

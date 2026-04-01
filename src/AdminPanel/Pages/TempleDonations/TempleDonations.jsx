@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
 
 import {
@@ -59,14 +59,13 @@ const TempleDonations = () => {
 
 
             <Box sx={{
-                boxShadow: "0px 4px 30px 0px #0000001A",
-                borderRadius: "15px",
+                borderRadius: "20px",
                 backgroundColor: "white",
                 marginTop: "20px"
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "70rem" }}>
+                    <Table sx={{  minWidth: "70rem" }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation ID</TableCell>

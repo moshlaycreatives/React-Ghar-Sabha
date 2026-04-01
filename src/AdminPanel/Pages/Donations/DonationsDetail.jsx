@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
 import {
     Table,
@@ -7,6 +8,12 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+import { useState, useEffect } from "react";
+
+
 
 
 
@@ -104,6 +111,33 @@ const memberData = [
 
 
 const DonationsDetail = () => {
+    const { id } = useParams();
+    const [DonationDetailData, setDonationDetailData] = useState(null);
+
+
+    const GetAllDonation = async () => {
+        if (!id) return;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminDonations}/${id}/payments`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setDonationDetailData(response?.data?.data || []);
+        } catch (error) {
+            setDonationDetailData([]);
+            toast.error(error.response?.data?.message);
+        }
+    };
+
+
+    useEffect(() => {
+        if (id) {
+            GetAllDonation();
+        }
+    }, [id]);
+
+
     return (
         <>
             <Box>
@@ -122,8 +156,7 @@ const DonationsDetail = () => {
             <Grid container spacing={2} mt={2}>
                 <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{
-                        boxShadow: "0px 4px 30px 0px #0000001A",
-                        borderRadius: "15px",
+                        borderRadius: "20px",
                         backgroundColor: "white",
                         padding: "10px 15px 10px 15px",
                         height: "140px"
@@ -162,8 +195,7 @@ const DonationsDetail = () => {
 
                 <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{
-                        boxShadow: "0px 4px 30px 0px #0000001A",
-                        borderRadius: "15px",
+                        borderRadius: "20px",
                         backgroundColor: "white",
                         padding: "10px 15px 10px 15px",
                         height: "140px"
@@ -201,8 +233,7 @@ const DonationsDetail = () => {
                 </Grid>
                 <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{
-                        boxShadow: "0px 4px 30px 0px #0000001A",
-                        borderRadius: "15px",
+                        borderRadius: "20px",
                         backgroundColor: "white",
                         padding: "10px 15px 10px 15px",
                         height: "140px"
@@ -243,14 +274,13 @@ const DonationsDetail = () => {
 
 
             <Box sx={{
-                boxShadow: "0px 4px 30px 0px #0000001A",
-                borderRadius: "15px",
+                borderRadius: "20px",
                 backgroundColor: "white",
                 marginTop: "20px"
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "70rem" }}>
+                    <Table sx={{  minWidth: "70rem" }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member ID</TableCell>
@@ -264,16 +294,16 @@ const DonationsDetail = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {memberData?.map((row) => (
-                                <TableRow key={row.Id}>
-                                    <TableCell>{row.MId}</TableCell>
-                                    <TableCell>{row.Name}</TableCell>
-                                    <TableCell>{row.Phone}</TableCell>
-                                    <TableCell>{row.Qty}</TableCell>
-                                    <TableCell>{row.Amount}</TableCell>
-                                    <TableCell>{row.Country}</TableCell>
-                                    <TableCell>{row.State}</TableCell>
-                                    <TableCell>{row.Dates}</TableCell>
+                            {DonationDetailData?.payments?.map((row, idx) => (
+                                <TableRow key={row._id || row.id || row.Id || idx}>
+                                    <TableCell>{row.memberId}</TableCell>
+                                    <TableCell>{row.memberName}</TableCell>
+                                    <TableCell>{row.memberPhone}</TableCell>
+                                    <TableCell>{row.quantity}</TableCell>
+                                    <TableCell>{row.amount}</TableCell>
+                                    <TableCell>{row.country}</TableCell>
+                                    <TableCell>{row.state}</TableCell>
+                                    <TableCell>{row.createdAt}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

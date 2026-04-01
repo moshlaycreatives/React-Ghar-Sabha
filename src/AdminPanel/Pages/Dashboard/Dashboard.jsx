@@ -28,8 +28,7 @@ const Dashboard = () => {
                 <Grid container spacing={2}>
                     <Grid size={{ xs: 12, md: 3 }}>
                         <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "15px",
+                            borderRadius: "20px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             height: "140px"
@@ -65,8 +64,7 @@ const Dashboard = () => {
                             </Box >
                         </Box>
                         <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "15px",
+                            borderRadius: "20px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             mt: "15px",
@@ -105,8 +103,7 @@ const Dashboard = () => {
                     </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>
                         <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "15px",
+                            borderRadius: "20px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             height: "140px"
@@ -144,8 +141,7 @@ const Dashboard = () => {
                         </Box>
 
                         <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
-                            borderRadius: "15px",
+                            borderRadius: "20px",
                             backgroundColor: "white",
                             padding: "10px 15px 10px 15px",
                             mt: "15px",

@@ -111,10 +111,10 @@ const EventBanners = () => {
                         <Card
                             elevation={0}
                             sx={{
-                                borderRadius: "14px",
+                                borderRadius: "20px",
                                 bgcolor: "#FFFFFF",
-                                boxShadow: "0px 2px 12px rgba(47, 47, 47, 0.08)",
-                                border: "1px solid rgba(47, 47, 47, 0.06)",
+                              
+                                border: "1px solid #FFFFFF",
                                 overflow: "visible",
                             }}
                         >

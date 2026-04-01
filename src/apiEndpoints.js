@@ -11,6 +11,7 @@ export const endpoints = {
     AdminAddTemple: `${BASE_URL}/admin/temples`,
     GetTempleDonations: `${BASE_URL}/admin/donations/temple-payments`,
     AdminCreateNewEvent: `${BASE_URL}/events/admin`,
+    AdminDonations: `${BASE_URL}/admin/donations`,
     GetAllCountry: `${BASE_URL}/public/countries`,
     GetAllStates: `${BASE_URL}/public/states`,
     GetAllCity: `${BASE_URL}/public/cities`,

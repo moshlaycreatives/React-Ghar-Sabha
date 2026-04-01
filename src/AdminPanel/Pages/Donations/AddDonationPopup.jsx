@@ -4,10 +4,19 @@ import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { ImageUploadZone } from "../../../components/ImageUploadZone.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
 import { useImageFilePicker } from "../../../hooks/useImageFilePicker.js";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+import { uploadSingleMedia } from "../../../api/uploadMedia.js";
 
 const DONATION_TYPES = {
     ITEM: "ITEM",
     AMOUNT: "AMOUNT",
+};
+
+const DONATION_TYPE_VALUES = {
+    [DONATION_TYPES.ITEM]: "Item-Based Donation",
+    [DONATION_TYPES.AMOUNT]: "Amount-Based Donation",
 };
 
 const fieldLabelSx = {
@@ -18,6 +27,7 @@ const fieldLabelSx = {
 };
 
 const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
+
     const {
         fileInputRef,
         file,
@@ -35,6 +45,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
     const [quantity, setQuantity] = useState("");
 
     const [donationAmount, setDonationAmount] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const resetForm = () => {
         resetImage();
@@ -47,6 +58,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
         setQuantity("");
 
         setDonationAmount("");
+        setLoading(false);
     };
 
     const handleClose = () => {
@@ -67,31 +79,68 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
     };
 
     const canAddDonation =
+        !loading &&
         Boolean(file) &&
         donationTitle.trim().length > 0 &&
         Boolean(donationType) &&
         (donationType === DONATION_TYPES.ITEM
             ? productName.trim().length > 0 &&
-              eachProductPrice.trim().length > 0 &&
-              quantity.trim().length > 0
+            eachProductPrice.trim().length > 0 &&
+            quantity.trim().length > 0
             : donationType === DONATION_TYPES.AMOUNT
-              ? donationAmount.trim().length > 0
-              : false);
+                ? donationAmount.trim().length > 0
+                : false);
 
-    const handleAddDonation = () => {
+    const handleCreateDonations = async () => {
         if (!canAddDonation) return;
 
-        onAddDonation?.({
-            file,
-            donationTitle: donationTitle.trim(),
-            donationType,
-            productName: productName.trim(),
-            eachProductPrice: eachProductPrice.trim(),
-            quantity: quantity.trim(),
-            donationAmount: donationAmount.trim(),
-        });
+        setLoading(true);
+        const toastId = toast.loading("Adding donation...");
 
-        handleClose();
+        try {
+            const token = localStorage.getItem("token");
+
+            // 1. Upload Image
+            const { url: imageUrl } = await uploadSingleMedia(file, { path: "donations" });
+
+            if (!imageUrl) {
+                throw new Error("Failed to upload image.");
+            }
+
+            // 2. Prepare Payload
+            const payload = {
+                title: donationTitle.trim(),
+                image: imageUrl,
+                donationType: DONATION_TYPE_VALUES[donationType],
+                price: donationType === DONATION_TYPES.ITEM ? eachProductPrice.trim() : donationAmount.trim(),
+            };
+
+            if (donationType === DONATION_TYPES.ITEM) {
+                payload.itemName = productName.trim();
+                payload.totalItems = quantity.trim();
+            }
+
+            // 3. Create Donation
+            const response = await axios.post(
+                endpoints.AdminDonations,
+                payload,
+                {
+                    headers: {
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                }
+            );
+
+            toast.success(response.data?.message || "Donation added successfully", { id: toastId });
+            onAddDonation?.();
+            handleClose();
+        } catch (error) {
+            console.error(error);
+            const errorMsg = error.response?.data?.message || error.message || "Something went wrong";
+            toast.error(errorMsg, { id: toastId });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -278,7 +327,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
             >
                 <FormSubmitButton
                     disabled={!canAddDonation}
-                    onClick={handleAddDonation}
+                    onClick={handleCreateDonations}
                 >
                     Add Donation
                 </FormSubmitButton>

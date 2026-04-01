@@ -63,10 +63,10 @@ function CustomTooltip({ active, payload, label }) {
             sx={{
                 bgcolor: "white",
                 border: "1px solid #E8E8E8",
-                borderRadius: "10px",
+                borderRadius: "20px",
                 px: 1.5,
                 py: 1,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+               
             }}
         >
             <Typography sx={{ fontFamily: "Inter", fontSize: 12, color: "#666", mb: 0.5 }}>
@@ -126,7 +126,7 @@ const DonationAnalyticsChart = () => {
     return (
         <Box
             sx={{
-                boxShadow: "0px 4px 30px 0px #0000001A",
+               
                 borderRadius: "24px",
                 backgroundColor: "white",
                 boxSizing: "border-box",
@@ -154,8 +154,8 @@ const DonationAnalyticsChart = () => {
                 <Typography
                     sx={{
                         fontFamily: "Inter",
-                        fontWeight: 700,
-                        fontSize: "15px",
+                        fontWeight: 600,
+                        fontSize: "22px",
                         lineHeight: 1.2,
                         color: "#2F2F2F",
                     }}

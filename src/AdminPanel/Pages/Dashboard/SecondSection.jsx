@@ -130,7 +130,6 @@ const Donation = [
 
 
 const cardShellSx = {
-    boxShadow: "0px 4px 30px 0px #0000001A",
     borderRadius: "20px",
     backgroundColor: "white",
     height: "100%",
@@ -139,7 +138,7 @@ const cardShellSx = {
     width: "100%",
 };
 
-const tableSx = { border: "1px solid #EFEFEF", width: "100%" };
+const tableSx = {  width: "100%" };
 
 
 const SecondSection = () => {
@@ -180,40 +179,40 @@ const SecondSection = () => {
                             </Box >
                             <Box sx={{ pb: "15px", width: "100%" }}>
                                 <Table sx={tableSx}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>User</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>User</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Country.map((row) => (
+                                            <TableRow key={row.Id}>
+                                                <TableCell>
+                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                        <img
+                                                            src={row.Image}
+                                                            alt={row.Country}
+                                                            style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                        />
+                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            {row.Country}
+                                                        </Typography>
+                                                    </Box>
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    {row.User}
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    {row.Amount}
+                                                </TableCell>
 
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {Country.map((row) => (
-                                                <TableRow key={row.Id}>
-                                                    <TableCell>
-                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                            <img
-                                                                src={row.Image}
-                                                                alt={row.Country}
-                                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
-                                                            />
-                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                                {row.Country}
-                                                            </Typography>
-                                                        </Box>
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
-                                                        {row.User}
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
-                                                        {row.Amount}
-                                                    </TableCell>
-
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </Box>
                         </Box>
 
@@ -253,39 +252,39 @@ const SecondSection = () => {
 
                             <Box sx={{ pb: "15px", width: "100%" }}>
                                 <Table sx={tableSx}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
 
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Supporters.map((row) => (
+                                            <TableRow key={row.Id}>
+                                                <TableCell>
+                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                        <img
+                                                            src={row.Image}
+                                                            alt={row.Name}
+                                                            style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                        />
+                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            {row.Name}
+                                                        </Typography>
+                                                    </Box>
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    {row.Country}
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    {row.Amount}
+                                                </TableCell>
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {Supporters.map((row) => (
-                                                <TableRow key={row.Id}>
-                                                    <TableCell>
-                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                            <img
-                                                                src={row.Image}
-                                                                alt={row.Name}
-                                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
-                                                            />
-                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                                {row.Name}
-                                                            </Typography>
-                                                        </Box>
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
-                                                        {row.Country}
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
-                                                        {row.Amount}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </Box>
                         </Box>
 
@@ -325,38 +324,38 @@ const SecondSection = () => {
 
                             <Box sx={{ pb: "15px", width: "100%" }}>
                                 <Table sx={tableSx}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Needed</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Still Needed</TableCell>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Needed</TableCell>
+                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Still Needed</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Donation.map((row) => (
+                                            <TableRow key={row.Id}>
+                                                <TableCell>
+                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                        <img
+                                                            src={row.Image}
+                                                            alt={row.Name}
+                                                            style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                        />
+                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                            {row.Name}
+                                                        </Typography>
+                                                    </Box>
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    {row.Total}
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    {row.Still}
+                                                </TableCell>
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {Donation.map((row) => (
-                                                <TableRow key={row.Id}>
-                                                    <TableCell>
-                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                            <img
-                                                                src={row.Image}
-                                                                alt={row.Name}
-                                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
-                                                            />
-                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                                {row.Name}
-                                                            </Typography>
-                                                        </Box>
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
-                                                        {row.Total}
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
-                                                        {row.Still}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </Box>
                         </Box>
 

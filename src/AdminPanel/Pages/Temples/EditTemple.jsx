@@ -181,9 +181,9 @@ const EditTemple = () => {
                 sx={{
                     mt: 4,
                     p: { xs: 2, md: 0 },
-                    borderRadius: "15px",
+                    borderRadius: "20px",
                     backgroundColor: "#fff",
-                    boxShadow: "0px 4px 30px 0px #0000001A",
+                  
                 }}
             >
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>

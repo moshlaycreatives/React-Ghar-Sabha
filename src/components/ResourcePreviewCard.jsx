@@ -22,17 +22,18 @@ export function ResourcePreviewCard({
 
     return (
         <Card
+            elevation={0}
             sx={{
-                borderRadius: "14px",
+                borderRadius: "20px",
                 overflow: "hidden",
-                boxShadow: "0px 4px 30px 0px #0000001A",
                 bgcolor: "#FFFFFF",
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
                 maxWidth: "100%",
-                border: "1px solid rgba(0, 0, 0, 0.06)",
+                border: "1px solid #FFFFFF",
+                boxShadow: "none",
             }}
         >
             <Box sx={{ bgcolor: "#FFFFFF", p: "8px" }}>
@@ -74,8 +75,8 @@ export function ResourcePreviewCard({
                             width: 36,
                             height: 36,
                             bgcolor: "#FFFFFF",
-                            boxShadow: "0px 2px 8px rgba(0,0,0,0.12)",
-                            "&:hover": { bgcolor: "#F5F5F5" },
+                            boxShadow: "none",
+                            "&:hover": { bgcolor: "#F5F5F5", boxShadow: "none" },
                         }}
                     >
                         <MoreVertIcon sx={{ color: "text.primary", fontSize: 22 }} />
@@ -101,6 +102,9 @@ export function ResourcePreviewCard({
                         lineHeight: 1.35,
                         color: "text.primary",
                         mb: "4px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                     }}
                 >
                     {title}
@@ -108,9 +112,10 @@ export function ResourcePreviewCard({
                 <Typography
                     sx={{
                         fontWeight: 400,
-                        fontSize: isDonation ? "18px" : "14px",
+                        fontSize: isDonation ? "15px" : "14px",
                         lineHeight: 1.4,
                         color: "text.secondary",
+                        mb: isDonation ? "12px" : "0px",
                     }}
                 >
                     {subtitle}
@@ -121,6 +126,7 @@ export function ResourcePreviewCard({
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        mt: "auto",
                     }}
                 >
                     <Typography
@@ -137,16 +143,23 @@ export function ResourcePreviewCard({
                         aria-label={viewAriaLabel}
                         onClick={onView}
                         sx={{
-                            width: 40,
-                            height: 40,
-                            minWidth: 40,
+                            width: 32,
+                            height: 32,
+                            minWidth: 32,
                             flexShrink: 0,
-                            bgcolor: "primary.main",
-                            color: "#FFFFFF",
-                            "&:hover": { bgcolor: "primary.dark" },
+                            border: "1.5px solid",
+                            borderColor: "primary.main",
+                            color: "primary.main",
+                            bgcolor: "transparent",
+                            boxShadow: "none",
+                            "&:hover": {
+                                bgcolor: "primary.main",
+                                color: "#FFFFFF",
+                                boxShadow: "none",
+                            },
                         }}
                     >
-                        <VisibilityIcon sx={{ fontSize: 20 }} />
+                        <VisibilityIcon sx={{ fontSize: 18 }} />
                     </IconButton>
                 </Box>
             </Box>

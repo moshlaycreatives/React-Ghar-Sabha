@@ -73,13 +73,10 @@ const ThirdSection = () => {
                     <Grid size={{ xs: 12, md: 7 }} sx={{ display: "flex" }}>
 
                         <Box sx={{
-                            boxShadow: "0px 4px 30px 0px #0000001A",
                             borderRadius: "20px",
                             backgroundColor: "white",
                             height: "100%",
                             width: "100%",
-                        
-
                         }}>
 
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', padding: "15px" }}>
@@ -112,7 +109,7 @@ const ThirdSection = () => {
 
                             <Box>
                                 <Box style={{ overflowX: "auto" }}>
-                                    <Table sx={{ border: "1px solid #EFEFEF", minWidth: "30rem" }}>
+                                    <Table sx={{ minWidth: "30rem" }}>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
@@ -159,7 +156,7 @@ const ThirdSection = () => {
                     <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex" }}>
                         <Box
                             sx={{
-                                boxShadow: "0px 4px 30px 0px #0000001A",
+                               
                                 borderRadius: "20px",
                                 backgroundColor: "white",
                                 p: "20px",

@@ -62,7 +62,7 @@ const MemberDetail = () => {
     const [memberDetail, setmemberDetail] = useState(null);
 
     const topCardSx = {
-        boxShadow: "0px 4px 30px 0px #0000001A",
+        
         borderRadius: "15px",
         backgroundColor: "white",
         minHeight: { xs: "auto", sm: "165px" },
@@ -71,7 +71,7 @@ const MemberDetail = () => {
     };
 
     const detailsCardSx = {
-        boxShadow: "0px 4px 30px 0px #0000001A",
+      
         borderRadius: "15px",
         backgroundColor: "white",
         marginTop: "20px",
@@ -366,7 +366,7 @@ const MemberDetail = () => {
                         </Box >
 
                         <Box style={{ overflowX: "auto" }}>
-                            <Table sx={{ border: "1px solid #EFEFEF", }}>
+                            <Table sx={{ }}>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
