@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import {
     Box,
     Grid,
@@ -19,6 +19,13 @@ import {
 } from "../../../components/DashboardPageHeader.jsx";
 import CreateNewGroup from "./CreateNewGroup.jsx";
 import SendMessage from "./SendMessage.jsx";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+
+
+
+
 
 const ORANGE = "#F36100";
 const GREY_MUTED = "#7A7A7A";
@@ -60,16 +67,24 @@ const carouselVisualBoxSx = {
     fontSize: 0,
 };
 
-const CAROUSEL_ITEMS = [
-    { id: 0, kind: "brand", caption: "Ghar Sabha Group" },
-    { id: 1, kind: "image", caption: "Second Event" },
-    { id: 2, kind: "image", caption: "Third Event" },
-];
+const FIXED_CAROUSEL_ITEM = { id: 0, kind: "brand", caption: "Ghar Sabha Group" };
 
 const Chats = () => {
+    const [EventDetailData, setEventDetailData] = useState([]);
     const [selectedCarouselId, setSelectedCarouselId] = useState(0);
     const [createNewGroupOpen, setCreateNewGroupOpen] = useState(false);
     const [sendMessageOpen, setSendMessageOpen] = useState(false);
+
+    // Combine fixed item with fetched event data
+    const carouselItemsToDisplay = [
+        FIXED_CAROUSEL_ITEM,
+        ...(EventDetailData || []).map((event) => ({
+            id: event.id,
+            kind: "image",
+            caption: event.name,
+            image: event.image,
+        })),
+    ];
 
     const handleCreateGroup = (data) => {
         console.log("Creating new group:", data);
@@ -80,6 +95,28 @@ const Chats = () => {
         console.log("Sending information:", data);
         // Add your logic here
     };
+
+
+
+       const GetAllEvent = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${endpoints.AdminCreateNewEvent}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+    
+                setEventDetailData(response?.data?.data?.events || []);
+            } catch (error) {
+                setEventDetailData([]);
+                toast.error(error.response?.data?.message || "Failed to fetch Event");
+            }
+        };
+    
+    
+        useEffect(() => {
+            GetAllEvent();
+        }, []);
+    
 
     return (
         <Box
@@ -118,7 +155,7 @@ const Chats = () => {
                     },
                 }}
             >
-                {CAROUSEL_ITEMS.map((item) => {
+                {carouselItemsToDisplay.map((item) => {
                     const isSelected = selectedCarouselId === item.id;
                     return (
                         <Box
@@ -166,8 +203,8 @@ const Chats = () => {
                                     <Box sx={carouselVisualBoxSx}>
                                         <Box
                                             component="img"
-                                            src={carouselThumb}
-                                            alt=""
+                                            src={item.image || carouselThumb}
+                                            alt={item.caption}
                                             sx={{
                                                 width: "100%",
                                                 height: { xs: 100, sm: 120 },
@@ -183,8 +220,8 @@ const Chats = () => {
                                 <Typography
                                     sx={{
                                         fontFamily: "Inter",
-                                        fontWeight: item.kind === "brand" ? 600 : 600,
-                                        fontSize: item.kind === "brand" ? "14px" : "14px",
+                                        fontWeight: 600,
+                                        fontSize: "14px",
                                         lineHeight: 1.35,
                                         color: "#2F2F2F",
                                         margin: "10px 0px 10px 10px"
@@ -473,6 +510,7 @@ const Chats = () => {
                 open={createNewGroupOpen}
                 onClose={() => setCreateNewGroupOpen(false)}
                 onCreate={handleCreateGroup}
+                eventId={selectedCarouselId}
             />
 
             <SendMessage

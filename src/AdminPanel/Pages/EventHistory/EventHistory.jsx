@@ -1,11 +1,11 @@
 
 
 
+
 const EventHistory = () => {
     return (
         <>
-            This Component is Event History
-
+            Event History Component
         </>
     )
 }

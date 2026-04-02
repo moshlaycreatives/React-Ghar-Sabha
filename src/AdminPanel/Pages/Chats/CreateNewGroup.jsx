@@ -2,6 +2,12 @@ import { useState } from "react";
 import { Box, Grid, TextField, Typography, IconButton, Divider } from "@mui/material";
 import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+
+
+
 
 const labelSx = {
     fontFamily: "Inter",
@@ -11,29 +17,59 @@ const labelSx = {
     mb: "8px",
 };
 
+
+
 const COLORS = [
-    "#FF5D5D", // Coral
-    "#006D44", // Dark Green
-    "#00B140", // Green
-    "#98D22C", // Lime
-    "#A64B00", // Brown
-    "#FF0000", // Red
-    "#002395", // Dark Blue
-    "#0081FF", // Blue
-    "#E60099", // Magenta
-    "#8E00B1", // Purple
-    "#F36100", // Orange
+    "#ED6161",
+    "#296B4E",
+    "#28B446",
+    "#A3C702",
+    "#AC4C0C",
+    "#F40000",
+    "#002FA7",
+    "#4177FF",
+    "#CF02BB",
+    "#8200BE",
+    "#E48D01",
 ];
 
-const CreateNewGroup = ({ open, onClose, onCreate }) => {
+const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
+
     const [groupName, setGroupName] = useState("");
     const [profileName, setProfileName] = useState("");
     const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+    const [isCreating, setIsCreating] = useState(false);
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         if (!groupName || !profileName) return;
-        onCreate?.({ groupName, profileName, color: selectedColor });
-        handleClose();
+        setIsCreating(true);
+        try {
+            const token = localStorage.getItem("token");
+            const payload = {
+                name: groupName,
+                profile: profileName,
+                colorCode: selectedColor,
+                eventId: eventId
+            };
+
+            const response = await axios.post(
+                endpoints.CreateChatGroup,
+                payload,
+                {
+                    headers: {
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                }
+            );
+
+            toast.success(response.data?.message || "Group created successfully");
+            onCreate?.(payload);
+            handleClose();
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to create group");
+        } finally {
+            setIsCreating(false);
+        }
     };
 
     const handleClose = () => {
@@ -42,6 +78,7 @@ const CreateNewGroup = ({ open, onClose, onCreate }) => {
         setSelectedColor(COLORS[0]);
         onClose();
     };
+
 
     return (
         <FormDialogFrame
@@ -115,13 +152,13 @@ const CreateNewGroup = ({ open, onClose, onCreate }) => {
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
                 <FormSubmitButton
                     onClick={handleCreate}
-                    disabled={!groupName || !profileName}
+                    disabled={!groupName || !profileName || isCreating}
                     sx={{
                         width: { xs: "100%", sm: "auto" },
                         minWidth: 200,
                     }}
                 >
-                    Create Group
+                    {isCreating ? "Creating..." : "Create Group"}
                 </FormSubmitButton>
             </Box>
         </FormDialogFrame>

@@ -52,5 +52,17 @@
         "label": "Event Banners",
         "path": "/dashboard/event-banners",
         "icon": "PeopleAltOutlined"
+    },
+    {
+        "id": 10,
+        "label": "Live Stream",
+        "path": "/dashboard/live-stream",
+        "icon": "PeopleAltOutlined"
+    },
+    {
+        "id": 11,
+        "label": "Event History",
+        "path": "/dashboard/event-history",
+        "icon": "PeopleAltOutlined"
     }
 ]

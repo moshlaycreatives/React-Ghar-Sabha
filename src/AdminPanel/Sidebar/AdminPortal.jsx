@@ -18,7 +18,8 @@ import EventsDetail from "../Pages/Events/EventsDetail";
 import DonationsDetail from "../Pages/Donations/DonationsDetail";
 import AddTemple from "../Pages/Temples/AddTemple";
 import EditTemple from "../Pages/Temples/EditTemple";
-
+import LiveStream from "../Pages/LiveStream/LiveStream";
+import EventHistory from "../Pages/EventHistory/EventHistory";
 
 
 
@@ -65,6 +66,8 @@ const AdminPortal = () => {
                     <Route path="donation-detail/:id" element={<DonationsDetail />} />
                     <Route path="add-temple" element={<AddTemple />} />
                     <Route path="edit-temple/:id" element={<EditTemple />} />
+                    <Route path="live-stream" element={<LiveStream />} />
+                    <Route path="event-history" element={<EventHistory />} />
 
 
                 </Routes>

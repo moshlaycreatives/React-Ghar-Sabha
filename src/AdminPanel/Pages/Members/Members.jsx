@@ -94,14 +94,14 @@ const Members = () => {
 
 
             <Box sx={{
-               
+
                 borderRadius: "20px",
                 backgroundColor: "white",
                 marginTop: "20px"
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{  minWidth: "70rem" }}>
+                    <Table sx={{ minWidth: "70rem" }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member ID</TableCell>
@@ -119,7 +119,7 @@ const Members = () => {
                         <TableBody>
                             {memberData?.map((row) => (
                                 <TableRow key={row.id || row._id}>
-                                    <TableCell style={{color:"#848286"}}>{row.customId || "-"}</TableCell>
+                                    <TableCell>{row.customId || "-"}</TableCell>
                                     <TableCell>{`${row.firstName || ""} ${row.lastName || ""}`.trim() || "-"}</TableCell>
                                     <TableCell>{`${row?.phone?.countryCode || ""} ${row?.phone?.number || ""}`.trim() || "-"}</TableCell>
                                     <TableCell>{`${row?.whatsappNumber?.countryCode || ""} ${row?.whatsappNumber?.number || ""}`.trim() || "-"}</TableCell>

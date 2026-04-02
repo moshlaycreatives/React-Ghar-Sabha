@@ -140,7 +140,7 @@ const EventBanners = () => {
                                             color: "text.primary",
                                         }}
                                     >
-                                        Banner {index + 1}
+                                        Upcoming Event {index + 1}
                                     </Typography>
                                     <IconButton
                                         size="small"
