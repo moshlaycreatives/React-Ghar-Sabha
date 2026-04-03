@@ -8,7 +8,11 @@ import {
     TableHead,
     TableRow,
     Tooltip,
-} from "@mui/material";
+} from "@mui/material"; import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 
 
 
@@ -174,32 +178,36 @@ const EventsDetail = () => {
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{  minWidth: "70rem" }}>
+                    <Table sx={{
+                        minWidth: "70rem", "& .MuiTableBody-root .MuiTableCell-root": {
+                            padding: "10px 16px",
+                        }
+                    }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Sr No.</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member ID</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Phone</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Mail</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Gender</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member Since</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Date & Time</TableCell>
+                                <TableCell sx={tableHeaderSx}>Sr No.</TableCell>
+                                <TableCell sx={tableHeaderSx}>Member ID</TableCell>
+                                <TableCell sx={tableHeaderSx}>Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Phone</TableCell>
+                                <TableCell sx={tableHeaderSx}>Mail</TableCell>
+                                <TableCell sx={tableHeaderSx}>Gender</TableCell>
+                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                <TableCell sx={tableHeaderSx}>Member Since</TableCell>
+                                <TableCell sx={tableHeaderSx}>Date & Time</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {memberData?.map((row) => (
                                 <TableRow key={row.Id}>
-                                    <TableCell>{row.Id}</TableCell>
-                                    <TableCell>{row.MId}</TableCell>
-                                    <TableCell>{row.Name}</TableCell>
-                                    <TableCell>{row.Phone}</TableCell>
-                                    <TableCell>{row.Mail}</TableCell>
-                                    <TableCell>{row.Gender}</TableCell>
-                                    <TableCell>{row.Country}</TableCell>
-                                    <TableCell>{row.MemberS}</TableCell>
-                                    <TableCell>{row.Dates}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Id}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.MId}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Name}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Phone}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Mail}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Gender}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Country}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.MemberS}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.Dates}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

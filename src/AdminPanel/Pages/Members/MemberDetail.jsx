@@ -8,10 +8,12 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { commonDetailTitleSx, commonMutedTextSx, tableHeaderSx } from "../../CommonStyles";
 
 
 
@@ -62,7 +64,7 @@ const MemberDetail = () => {
     const [memberDetail, setmemberDetail] = useState(null);
 
     const topCardSx = {
-        
+
         borderRadius: "15px",
         backgroundColor: "white",
         minHeight: { xs: "auto", sm: "165px" },
@@ -71,7 +73,7 @@ const MemberDetail = () => {
     };
 
     const detailsCardSx = {
-      
+
         borderRadius: "15px",
         backgroundColor: "white",
         marginTop: "20px",
@@ -288,52 +290,52 @@ const MemberDetail = () => {
 
                         <Box sx={{ padding: "20px", display: "flex", flexDirection: "column", gap: 1 }}>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Phone:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286", wordBreak: "break-word" }}>+91 99743 60038</Typography>
+                                <Typography sx={commonDetailTitleSx}>Phone:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px", wordBreak: "break-word" }}>+91 99743 60038</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>WhatsApp No.:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286", wordBreak: "break-word" }}>+91 99743 60038</Typography>
+                                <Typography sx={commonDetailTitleSx}>WhatsApp No.:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px", wordBreak: "break-word" }}>+91 99743 60038</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Email:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286", wordBreak: "break-word" }}>rohan@vadtaldham.com</Typography>
+                                <Typography sx={commonDetailTitleSx}>Email:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px", wordBreak: "break-word" }}>rohan@vadtaldham.com</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Gender:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286" }}>Male</Typography>
+                                <Typography sx={commonDetailTitleSx}>Gender:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px" }}>Male</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Birthday:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286" }}>21/10/1992</Typography>
+                                <Typography sx={commonDetailTitleSx}>Birthday:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px" }}>21/10/1992</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Country:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", lineHeight: "31px", color: "#848286" }}>India</Typography>
+                                <Typography sx={commonDetailTitleSx}>Country:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px" }}>India</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>State:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286" }}>Gujarat</Typography>
+                                <Typography sx={commonDetailTitleSx}>State:</Typography>
+                                <Typography sx={commonMutedTextSx}>Gujarat</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>City:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286" }}>Ahmedabad</Typography>
+                                <Typography sx={commonDetailTitleSx}>City:</Typography>
+                                <Typography sx={commonMutedTextSx}>Ahmedabad</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>District:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286" }}>Ahmedabad</Typography>
+                                <Typography sx={commonDetailTitleSx}>District:</Typography>
+                                <Typography sx={commonMutedTextSx}>Ahmedabad</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Tehsil:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286" }}>Daskroi</Typography>
+                                <Typography sx={commonDetailTitleSx}>Tehsil:</Typography>
+                                <Typography sx={commonMutedTextSx}>Daskroi</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>ZIP Code:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286" }}>380015</Typography>
+                                <Typography sx={commonDetailTitleSx}>ZIP Code:</Typography>
+                                <Typography sx={commonMutedTextSx}>380015</Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 500, fontSize: "18px", lineHeight: "31px", color: "#2F2F2F" }}>Address:</Typography>
-                                <Typography style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "18px", color: "#848286", wordBreak: "break-word" }}>
+                                <Typography sx={commonDetailTitleSx}>Address:</Typography>
+                                <Typography sx={{ ...commonMutedTextSx, wordBreak: "break-word" }}>
                                     House No. 24, Sector 15, Near City Hospital
                                 </Typography>
                             </Box>
@@ -366,12 +368,12 @@ const MemberDetail = () => {
                         </Box >
 
                         <Box style={{ overflowX: "auto" }}>
-                            <Table sx={{ }}>
+                            <Table sx={{}}>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
-                                        <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Qty</TableCell>
-                                        <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                        <TableCell sx={tableHeaderSx}>Donation Type</TableCell>
+                                        <TableCell sx={tableHeaderSx}>Qty</TableCell>
+                                        <TableCell sx={tableHeaderSx}>Amount</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -389,10 +391,10 @@ const MemberDetail = () => {
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
-                                            <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                            <TableCell sx={commonMutedTextSx}>
                                                 {row.Total}
                                             </TableCell>
-                                            <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                            <TableCell sx={commonMutedTextSx}>
                                                 {row.Still}
                                             </TableCell>
                                         </TableRow>

@@ -9,6 +9,11 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
@@ -65,41 +70,45 @@ const TempleDonations = () => {
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{  minWidth: "70rem" }}>
+                    <Table sx={{
+                        minWidth: "70rem", "& .MuiTableBody-root .MuiTableCell-root": {
+                            padding: "8px 16px",
+                        }
+                    }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation ID</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donor Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Phone</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>State</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Date & Time</TableCell>
+                                <TableCell sx={tableHeaderSx}>Donation ID</TableCell>
+                                <TableCell sx={tableHeaderSx}>Donor Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Phone</TableCell>
+                                <TableCell sx={tableHeaderSx}>Temple Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Amount</TableCell>
+                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                <TableCell sx={tableHeaderSx}>State</TableCell>
+                                <TableCell sx={tableHeaderSx}>Date & Time</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {donationData?.map((row) => (
                                 <TableRow key={row.id}>
-                                    <TableCell>{row.donationId}</TableCell>
-                                    <TableCell>{row.donorName}</TableCell>
-                                    <TableCell>{row.phone}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.donationId}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.donorName}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.phone}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <img
                                                 src={row.templeImage}
                                                 alt={row.templeName}
-                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                             />
-                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                            <Typography sx={commonMutedTextSx}>
                                                 {row.templeName}
                                             </Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{row.originalAmount} {row.originalCurrency}</TableCell>
-                                    <TableCell>{row.country}</TableCell>
-                                    <TableCell>{row.state}</TableCell>
-                                    <TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.originalAmount} {row.originalCurrency}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.state}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>
                                         {new Date(row.dateTime).toLocaleDateString()} - {new Date(row.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </TableCell>
 

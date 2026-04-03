@@ -8,6 +8,11 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
@@ -280,30 +285,34 @@ const DonationsDetail = () => {
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{  minWidth: "70rem" }}>
+                    <Table sx={{
+                        minWidth: "70rem", "& .MuiTableBody-root .MuiTableCell-root": {
+                            padding: "8px 16px",
+                        }
+                    }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member ID</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Phone</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Qty</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>State</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Date & Time</TableCell>
+                                <TableCell sx={tableHeaderSx}>Member ID</TableCell>
+                                <TableCell sx={tableHeaderSx}>Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Phone</TableCell>
+                                <TableCell sx={tableHeaderSx}>Qty</TableCell>
+                                <TableCell sx={tableHeaderSx}>Amount</TableCell>
+                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                <TableCell sx={tableHeaderSx}>State</TableCell>
+                                <TableCell sx={tableHeaderSx}>Date & Time</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {DonationDetailData?.payments?.map((row, idx) => (
                                 <TableRow key={row._id || row.id || row.Id || idx}>
-                                    <TableCell>{row.memberId}</TableCell>
-                                    <TableCell>{row.memberName}</TableCell>
-                                    <TableCell>{row.memberPhone}</TableCell>
-                                    <TableCell>{row.quantity}</TableCell>
-                                    <TableCell>{row.amount}</TableCell>
-                                    <TableCell>{row.country}</TableCell>
-                                    <TableCell>{row.state}</TableCell>
-                                    <TableCell>{row.createdAt}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.memberId}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.memberName}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.memberPhone}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.quantity}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.amount}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.state}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.createdAt}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

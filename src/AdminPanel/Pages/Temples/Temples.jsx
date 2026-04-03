@@ -15,6 +15,11 @@ import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
 import DeleteTemple from "./DeleteTemple.jsx";
 import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
+import {
     Table,
     TableBody,
     TableCell,
@@ -83,11 +88,8 @@ const Temples = () => {
 
     return (
         <>
-
-
             <DashboardPageHeader
                 accentSegment="Temples"
-
                 action={
                     <DashboardToolbarButton onClick={handleAddtemple} startIcon={<AddIcon />}>
                         Add Temple
@@ -95,49 +97,50 @@ const Temples = () => {
                 }
             />
 
-
             <Box sx={{
-                
                 borderRadius: "20px",
                 backgroundColor: "white",
                 marginTop: "20px"
             }}>
 
-
-
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{  minWidth: "70rem" }}>
+                    <Table sx={{
+                        minWidth: "70rem",
+                        "& .MuiTableBody-root .MuiTableCell-root": {
+                            padding: "8px 16px",
+                        }
+                    }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple ID</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Phone</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Mail</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>WhatsApp No.</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Action</TableCell>
+                                <TableCell sx={tableHeaderSx}>Temple ID</TableCell>
+                                <TableCell sx={tableHeaderSx}>Temple Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Phone</TableCell>
+                                <TableCell sx={tableHeaderSx}>Mail</TableCell>
+                                <TableCell sx={tableHeaderSx}>WhatsApp No.</TableCell>
+                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                <TableCell sx={tableHeaderSx}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {templeData?.map((row) => (
                                 <TableRow key={row.id}>
-                                    <TableCell>{row.customId}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.customId}</TableCell>
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <img
                                                 src={row.images?.[0] || "/image/Tpimage.png"}
                                                 alt={row.title}
-                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                             />
-                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                            <Typography sx={commonMutedTextSx}>
                                                 {row.title}
                                             </Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{row.phone}</TableCell>
-                                    <TableCell>{row.email}</TableCell>
-                                    <TableCell>{row.whatsappNumber}</TableCell>
-                                    <TableCell>{row.country}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.phone}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.email}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.whatsappNumber}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
 
                                     <TableCell>
                                         <IconButton
@@ -164,13 +167,13 @@ const Temples = () => {
                                             }}
                                         >
 
-                                            <MenuItem 
+                                            <MenuItem
                                                 onClick={() => navigate(`/dashboard/edit-temple/${menuUserId}`)}
                                                 sx={{ color: "#ED4040", gap: "5px" }}
                                             >
                                                 {/* <MdBlockFlipped fontSize="20px" /> */}
                                                 Edit</MenuItem>
-                                            <MenuItem 
+                                            <MenuItem
                                                 onClick={() => {
                                                     setIsDeleteModalOpen(true);
                                                     setAnchorEl(null);

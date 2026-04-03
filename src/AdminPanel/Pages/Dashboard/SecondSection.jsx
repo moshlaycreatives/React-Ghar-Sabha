@@ -8,6 +8,11 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 
 
 
@@ -138,7 +143,11 @@ const cardShellSx = {
     width: "100%",
 };
 
-const tableSx = {  width: "100%" };
+const tableSx = {
+    width: "100%", "& .MuiTableBody-root .MuiTableCell-root": {
+        padding: "8px 16px",
+    }
+};
 
 
 const SecondSection = () => {
@@ -181,9 +190,9 @@ const SecondSection = () => {
                                 <Table sx={tableSx}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>User</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                            <TableCell sx={tableHeaderSx}>User</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Amount</TableCell>
 
                                         </TableRow>
                                     </TableHead>
@@ -202,10 +211,10 @@ const SecondSection = () => {
                                                         </Typography>
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.User}
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.Amount}
                                                 </TableCell>
 
@@ -254,9 +263,9 @@ const SecondSection = () => {
                                 <Table sx={tableSx}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Amount</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Name</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Amount</TableCell>
 
                                         </TableRow>
                                     </TableHead>
@@ -275,10 +284,10 @@ const SecondSection = () => {
                                                         </Typography>
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.Country}
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.Amount}
                                                 </TableCell>
                                             </TableRow>
@@ -326,9 +335,9 @@ const SecondSection = () => {
                                 <Table sx={tableSx}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Donation Type</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Needed</TableCell>
-                                            <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Still Needed</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Donation Type</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Total Needed</TableCell>
+                                            <TableCell sx={tableHeaderSx}>Still Needed</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -346,10 +355,10 @@ const SecondSection = () => {
                                                         </Typography>
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.Total}
                                                 </TableCell>
-                                                <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                <TableCell sx={commonMutedTextSx}>
                                                     {row.Still}
                                                 </TableCell>
                                             </TableRow>

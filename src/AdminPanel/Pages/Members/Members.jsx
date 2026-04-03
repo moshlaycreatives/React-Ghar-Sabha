@@ -15,6 +15,11 @@ import {
     Select,
     Button,
 } from "@mui/material";
+import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
@@ -101,33 +106,37 @@ const Members = () => {
             }}>
 
                 <Box style={{ overflowX: "auto" }}>
-                    <Table sx={{ minWidth: "70rem" }}>
+                    <Table sx={{
+                        minWidth: "70rem", "& .MuiTableBody-root .MuiTableCell-root": {
+                            padding: "8px 16px",
+                        }
+                    }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member ID</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Name</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Phone</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>WhatsApp No.</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Mail</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Family</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Gender</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Member Since</TableCell>
-                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Action</TableCell>
+                                <TableCell sx={tableHeaderSx}>Member ID</TableCell>
+                                <TableCell sx={tableHeaderSx}>Name</TableCell>
+                                <TableCell sx={tableHeaderSx}>Phone</TableCell>
+                                <TableCell sx={tableHeaderSx}>WhatsApp No.</TableCell>
+                                <TableCell sx={tableHeaderSx}>Mail</TableCell>
+                                <TableCell sx={tableHeaderSx}>Family</TableCell>
+                                <TableCell sx={tableHeaderSx}>Gender</TableCell>
+                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                <TableCell sx={tableHeaderSx}>Member Since</TableCell>
+                                <TableCell sx={tableHeaderSx}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {memberData?.map((row) => (
                                 <TableRow key={row.id || row._id}>
-                                    <TableCell>{row.customId || "-"}</TableCell>
-                                    <TableCell>{`${row.firstName || ""} ${row.lastName || ""}`.trim() || "-"}</TableCell>
-                                    <TableCell>{`${row?.phone?.countryCode || ""} ${row?.phone?.number || ""}`.trim() || "-"}</TableCell>
-                                    <TableCell>{`${row?.whatsappNumber?.countryCode || ""} ${row?.whatsappNumber?.number || ""}`.trim() || "-"}</TableCell>
-                                    <TableCell>{row.email || "-"}</TableCell>
-                                    <TableCell>{row.hasFamilyMember ? "Yes" : "No"}</TableCell>
-                                    <TableCell>{row.gender || "-"}</TableCell>
-                                    <TableCell>{row.country || "-"}</TableCell>
-                                    <TableCell>{row.createdAt ? new Date(row.createdAt).getFullYear() : "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.customId || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{`${row.firstName || ""} ${row.lastName || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{`${row?.phone?.countryCode || ""} ${row?.phone?.number || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{`${row?.whatsappNumber?.countryCode || ""} ${row?.whatsappNumber?.number || ""}`.trim() || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.email || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.hasFamilyMember ? "Yes" : "No"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.gender || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.country || "-"}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.createdAt ? new Date(row.createdAt).getFullYear() : "-"}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             aria-controls={open ? 'demo-positioned-menu' : undefined}

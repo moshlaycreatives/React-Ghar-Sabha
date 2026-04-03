@@ -8,6 +8,11 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
+import {
+    commonMutedTextSx,
+    tableHeaderSx,
+    templeNameSx,
+} from "../../CommonStyles.js";
 
 
 
@@ -109,13 +114,17 @@ const ThirdSection = () => {
 
                             <Box>
                                 <Box style={{ overflowX: "auto" }}>
-                                    <Table sx={{ minWidth: "30rem" }}>
+                                    <Table sx={{
+                                        minWidth: "30rem", "& .MuiTableBody-root .MuiTableCell-root": {
+                                            padding: "8px 16px",
+                                        }
+                                    }}>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Temple Name</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Country</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donation</TableCell>
-                                                <TableCell style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "14px", lineHeight: "21px" }}>Total Donors</TableCell>
+                                                <TableCell sx={tableHeaderSx}>Temple Name</TableCell>
+                                                <TableCell sx={tableHeaderSx}>Country</TableCell>
+                                                <TableCell sx={tableHeaderSx}>Total Donation</TableCell>
+                                                <TableCell sx={tableHeaderSx}>Total Donors</TableCell>
 
                                             </TableRow>
                                         </TableHead>
@@ -127,20 +136,20 @@ const ThirdSection = () => {
                                                             <img
                                                                 src={row.Image}
                                                                 alt={row.Name}
-                                                                style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover" }}
+                                                                style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                                             />
                                                             <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
                                                                 {row.Name}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", textTransform: "capitalize" }}>
+                                                    <TableCell sx={commonMutedTextSx}>
                                                         {row.Country}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F", fontWeight: 500 }}>
+                                                    <TableCell sx={commonMutedTextSx}>
                                                         {row.Donaye}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontFamily: "Inter", fontSize: "14px", color: "#2F2F2F" }}>
+                                                    <TableCell sx={commonMutedTextSx}>
                                                         {row.Donsr}
                                                     </TableCell>
                                                 </TableRow>
@@ -156,7 +165,7 @@ const ThirdSection = () => {
                     <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex" }}>
                         <Box
                             sx={{
-                               
+
                                 borderRadius: "20px",
                                 backgroundColor: "white",
                                 p: "20px",
@@ -179,7 +188,7 @@ const ThirdSection = () => {
 
                             <Box
                                 sx={{
-                                   
+
                                     borderRadius: "12px",
                                     overflow: "hidden",
                                     lineHeight: 0,
@@ -210,7 +219,7 @@ const ThirdSection = () => {
                             >
                                 <Typography
                                     sx={{
-                                    fontFamily: "Inter",
+                                        fontFamily: "Inter",
                                         fontWeight: 500,
                                         fontSize: "16px",
                                         color: "#2F2F2F",
@@ -220,7 +229,7 @@ const ThirdSection = () => {
                                 </Typography>
                                 <Typography
                                     sx={{
-                                    fontFamily: "Inter",
+                                        fontFamily: "Inter",
                                         fontWeight: 700,
                                         fontSize: "16px",
                                         color: "#2F2F2F",

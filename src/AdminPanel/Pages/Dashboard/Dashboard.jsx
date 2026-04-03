@@ -46,7 +46,15 @@ const Dashboard = () => {
                                     Total Donation
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
-                                    <img src="/image/Dicon.png" />
+                                    <Box
+                                        component="img"
+                                        src="/image/Dicon.png"
+                                        sx={{
+                                            width: 'auto',
+                                            maxHeight: { xs: '35px', md: '50px' },
+                                            objectFit: 'contain'
+                                        }}
+                                    />
                                 </Box>
                             </Box >
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
@@ -83,7 +91,15 @@ const Dashboard = () => {
                                     Temple Donations
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
-                                    <img src="/image/TDIcon.png" />
+                                    <Box
+                                        component="img"
+                                        src="/image/TDIcon.png"
+                                        sx={{
+                                            width: 'auto',
+                                            maxHeight: { xs: '35px', md: '50px' },
+                                            objectFit: 'contain'
+                                        }}
+                                    />
                                 </Box>
                             </Box >
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
@@ -121,7 +137,15 @@ const Dashboard = () => {
                                     Total Members
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
-                                    <img src="/image/Micon.png" />
+                                    <Box
+                                        component="img"
+                                        src="/image/Micon.png"
+                                        sx={{
+                                            width: 'auto',
+                                            maxHeight: { xs: '35px', md: '50px' },
+                                            objectFit: 'contain'
+                                        }}
+                                    />
                                 </Box>
                             </Box >
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
@@ -160,7 +184,15 @@ const Dashboard = () => {
                                     Other Donations
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: "10px" }}>
-                                    <img src="/image/Dicon.png" />
+                                    <Box
+                                        component="img"
+                                        src="/image/Dicon.png"
+                                        sx={{
+                                            width: 'auto',
+                                            maxHeight: { xs: '35px', md: '50px' },
+                                            objectFit: 'contain'
+                                        }}
+                                    />
                                 </Box>
                             </Box >
                             <Box sx={{ display: 'flex', flexFlow: "row", justifyContent: 'space-between', width: '100%', }} mt={3}>
