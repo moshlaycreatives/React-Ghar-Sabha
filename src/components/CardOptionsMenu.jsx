@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from "@mui/material";
 
 /** Shared edit/delete menu for resource cards; each page wires onClose + future API. */
-export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete }) {
+export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete, onComplete }) {
     return (
         <Menu
             anchorEl={anchorEl}
@@ -18,6 +18,11 @@ export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete }) {
             <MenuItem onClick={() => { onEdit?.(); onClose(); }} sx={{ fontSize: 14 }}>
                 Edit
             </MenuItem>
+            {onComplete && (
+                <MenuItem onClick={() => { onComplete?.(); onClose(); }} sx={{ fontSize: 14 }}>
+                    Complete
+                </MenuItem>
+            )}
             <MenuItem onClick={() => { onDelete?.(); onClose(); }} sx={{ fontSize: 14, color: "error.main" }}>
                 Delete
             </MenuItem>

@@ -155,7 +155,6 @@ const EventsDetail = () => {
     const navigate = useNavigate();
 
 
-
     return (
         <>
             <Box>

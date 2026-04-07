@@ -101,7 +101,7 @@ const Chats = () => {
        const GetAllEvent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${endpoints.AdminCreateNewEvent}`, {
+                const response = await axios.get(`${endpoints.AdminCreateNewEvent}?status=false`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
     

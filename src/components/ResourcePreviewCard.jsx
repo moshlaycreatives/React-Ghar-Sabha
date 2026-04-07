@@ -63,24 +63,26 @@ export function ResourcePreviewCard({
                             display: "block",
                         }}
                     />
-                    <IconButton
-                        size="small"
-                        onClick={onMenuOpen}
-                        aria-label={menuAriaLabel}
-                        sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            zIndex: 1,
-                            width: 36,
-                            height: 36,
-                            bgcolor: "#FFFFFF",
-                            boxShadow: "none",
-                            "&:hover": { bgcolor: "#F5F5F5", boxShadow: "none" },
-                        }}
-                    >
-                        <MoreVertIcon sx={{ color: "text.primary", fontSize: 22 }} />
-                    </IconButton>
+                    {onMenuOpen && (
+                        <IconButton
+                            size="small"
+                            onClick={onMenuOpen}
+                            aria-label={menuAriaLabel}
+                            sx={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                zIndex: 1,
+                                width: 36,
+                                height: 36,
+                                bgcolor: "#FFFFFF",
+                                boxShadow: "none",
+                                "&:hover": { bgcolor: "#F5F5F5", boxShadow: "none" },
+                            }}
+                        >
+                            <MoreVertIcon sx={{ color: "text.primary", fontSize: 22 }} />
+                        </IconButton>
+                    )}
                 </Box>
             </Box>
 

@@ -192,7 +192,7 @@ const DonationsDetail = () => {
                                     color: "#222222"
                                 }}>
 
-                                $247,453
+                                {DonationDetailData?.stats?.type === "amount" ? DonationDetailData?.stats?.currency : ""}{DonationDetailData?.stats?.totalNeeded || 0}
                             </Typography>
                         </Box >
                     </Box>
@@ -231,7 +231,7 @@ const DonationsDetail = () => {
                                     color: "#222222"
                                 }}>
 
-                                $107,453
+                                {DonationDetailData?.stats?.type === "amount" ? DonationDetailData?.stats?.currency : ""}{DonationDetailData?.stats?.received || 0}
                             </Typography>
                         </Box >
                     </Box>
@@ -269,7 +269,7 @@ const DonationsDetail = () => {
                                     color: "#222222"
                                 }}>
 
-                                $200,000
+                                {DonationDetailData?.stats?.type === "amount" ? DonationDetailData?.stats?.currency : ""}{DonationDetailData?.stats?.stillNeeded || 0}
                             </Typography>
                         </Box >
                     </Box>
@@ -295,7 +295,9 @@ const DonationsDetail = () => {
                                 <TableCell sx={tableHeaderSx}>Member ID</TableCell>
                                 <TableCell sx={tableHeaderSx}>Name</TableCell>
                                 <TableCell sx={tableHeaderSx}>Phone</TableCell>
-                                <TableCell sx={tableHeaderSx}>Qty</TableCell>
+                                {DonationDetailData?.stats?.type === "item" && (
+                                    <TableCell sx={tableHeaderSx}>Qty</TableCell>
+                                )}
                                 <TableCell sx={tableHeaderSx}>Amount</TableCell>
                                 <TableCell sx={tableHeaderSx}>Country</TableCell>
                                 <TableCell sx={tableHeaderSx}>State</TableCell>
@@ -306,13 +308,15 @@ const DonationsDetail = () => {
                             {DonationDetailData?.payments?.map((row, idx) => (
                                 <TableRow key={row._id || row.id || row.Id || idx}>
                                     <TableCell sx={commonMutedTextSx}>{row.memberId}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.memberName}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.memberPhone}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.quantity}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.amount}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.name}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.phone}</TableCell>
+                                    {DonationDetailData?.stats?.type === "item" && (
+                                        <TableCell sx={commonMutedTextSx}>{row.quantity}</TableCell>
+                                    )}
+                                    <TableCell sx={commonMutedTextSx}>{row.currency}{row.amount}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.state}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.createdAt}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{new Date(row.dateTime).toLocaleString()}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

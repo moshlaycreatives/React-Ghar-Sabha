@@ -170,7 +170,7 @@ const EditTemple = () => {
 
     return (
         <Box>
-            <Typography sx={{ fontFamily: "Inter", fontSize: "36px", fontWeight: 600, lineHeight: "24px" }}>
+            <Typography sx={{ fontFamily: "Inter", fontSize: { xs: "25px", md: "36px" }, fontWeight: 600, }}>
                 Dashboard/Temples
                 <Box component="span" sx={{ color: "primary.main" }}>
                     /Edit Temple
@@ -183,7 +183,7 @@ const EditTemple = () => {
                     p: { xs: 2, md: 0 },
                     borderRadius: "20px",
                     backgroundColor: "#fff",
-                  
+
                 }}
             >
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>

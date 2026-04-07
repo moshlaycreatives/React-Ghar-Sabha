@@ -15,7 +15,7 @@ export const commonDetailTitleSx = {
 
 export const tableHeaderSx = {
     fontFamily: "Inter",
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: "16px",
     lineHeight: "21px",
 };

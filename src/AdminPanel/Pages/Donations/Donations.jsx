@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +44,21 @@ const Donations = () => {
         handleMenuClose();
     };
 
+
+    const handleCompleteClick = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.patch(`${endpoints.AdminDonations}/${selectedDonationId}/status`, { status: true }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            toast.success("Donation completed successfully");
+            GetAllDonation();
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
+        handleMenuClose();
+    };
+
     const handleDeleteClick = () => {
         setDeleteDonationOpen(true);
         handleMenuClose();
@@ -57,7 +72,7 @@ const Donations = () => {
     const GetAllDonation = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${endpoints.AdminDonations}`, {
+            const response = await axios.get(`${endpoints.AdminDonations}?status=false`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -127,6 +142,7 @@ const Donations = () => {
                 open={menuOpen}
                 onClose={handleMenuClose}
                 onEdit={handleEditClick}
+                onComplete={handleCompleteClick}
                 onDelete={handleDeleteClick}
             />
 
