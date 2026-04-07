@@ -19,6 +19,8 @@ export const endpoints = {
     GetAllCity: `${BASE_URL}/public/cities`,
     CreateChatGroup: `${BASE_URL}/chat-groups/admin`,
     LiveStreamlink: `${BASE_URL}/admin/live-stream`,
+    AdminSendMessage: `${BASE_URL}/messages/admin`,
+  
 
     /** POST multipart — single file (image/video). Supports `?path=profiles` etc. */
     UploadMediaSingle: `${BASE_URL}/media/upload-single`,

@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     Box,
     Grid,
@@ -7,6 +7,7 @@ import {
     Avatar,
     InputBase,
     LinearProgress,
+    CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
@@ -74,6 +75,146 @@ const Chats = () => {
     const [selectedCarouselId, setSelectedCarouselId] = useState(0);
     const [createNewGroupOpen, setCreateNewGroupOpen] = useState(false);
     const [sendMessageOpen, setSendMessageOpen] = useState(false);
+    const [chatGroups, setChatGroups] = useState([]);
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [SendText, setSendText] = useState({
+        chatGroupId: "",
+        text: "",
+        imageUrl: "",
+        fileUrl: "",
+        country: "",
+        state: "",
+        city: "",
+        district: "",
+        tehsil: "",
+        isPollEnabled: false
+    })
+    const [messages, setMessages] = useState([]);
+    const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const imageInputRef = useRef(null);
+    const fileInputRef = useRef(null);
+
+    // Fetch messages for selected group
+    const fetchMessages = async (groupId) => {
+        if (!groupId) return;
+        setIsMessagesLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminSendMessage}/${groupId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            // Updated to match your response structure: response.data.data.messages
+            setMessages(response?.data?.data?.messages || []);
+        } catch (error) {
+            console.error("Failed to fetch messages", error);
+            setMessages([]);
+        } finally {
+            setIsMessagesLoading(false);
+        }
+    };
+
+    const handleUploadMedia = async (file, type) => {
+        if (!file) return;
+        setIsUploading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Using UploadMediaSingle endpoint which is used in ImageUploadZone logic
+            const response = await axios.post(
+                `${endpoints.UploadMediaSingle}?path=chats`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    },
+                }
+            );
+
+            const uploadedUrl = response?.data?.data?.file?.url;
+            if (uploadedUrl) {
+                if (type === 'image') {
+                    setSendText(prev => ({ ...prev, imageUrl: uploadedUrl }));
+                    toast.success("Image uploaded successfully");
+                } else {
+                    setSendText(prev => ({ ...prev, fileUrl: uploadedUrl }));
+                    toast.success("File uploaded successfully");
+                }
+            }
+        } catch (error) {
+            console.error("Upload failed", error);
+            toast.error(error.response?.data?.message || "Failed to upload media");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    // Get groups for selected event
+    const fetchGroups = async (eventId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.CreateChatGroup}?eventId=${eventId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const groups = response?.data?.data?.groups || [];
+            setChatGroups(groups);
+            if (groups.length > 0) {
+                setSelectedGroupId(groups[0].id);
+            } else {
+                setSelectedGroupId(null);
+            }
+        } catch (error) {
+            setChatGroups([]);
+            setSelectedGroupId(null);
+            console.error("Failed to fetch groups", error);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedCarouselId !== 0) {
+            fetchGroups(selectedCarouselId);
+        } else {
+            setChatGroups([]);
+            setSelectedGroupId(null);
+        }
+    }, [selectedCarouselId]);
+
+    const activeGroup = chatGroups.find(g => g.id === selectedGroupId);
+
+    // Update chatGroupId and fetch messages when activeGroup changes
+    useEffect(() => {
+        if (activeGroup) {
+            setSendText(prev => ({ ...prev, chatGroupId: activeGroup.id }));
+            fetchMessages(activeGroup.id);
+        } else {
+            setSendText(prev => ({ ...prev, chatGroupId: "" }));
+            setMessages([]);
+        }
+    }, [activeGroup]);
+
+    const handleDownloadQRCode = () => {
+        if (!activeGroup?.qrCode) {
+            toast.error("QR Code not available for this group");
+            return;
+        }
+
+        try {
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = activeGroup.qrCode;
+            link.download = `${activeGroup.name.replace(/\s+/g, '_')}_QRCode.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success("QR Code download started");
+        } catch (error) {
+            console.error("Download failed", error);
+            toast.error("Failed to download QR Code");
+        }
+    };
 
     // Combine fixed item with fetched event data
     const carouselItemsToDisplay = [
@@ -88,7 +229,9 @@ const Chats = () => {
 
     const handleCreateGroup = (data) => {
         console.log("Creating new group:", data);
-        // Add your logic here
+        if (selectedCarouselId !== 0) {
+            fetchGroups(selectedCarouselId);
+        }
     };
 
     const handleSendMessage = (data) => {
@@ -98,25 +241,75 @@ const Chats = () => {
 
 
 
-       const GetAllEvent = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get(`${endpoints.AdminCreateNewEvent}?status=false`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-    
-                setEventDetailData(response?.data?.data?.events || []);
-            } catch (error) {
-                setEventDetailData([]);
-                toast.error(error.response?.data?.message || "Failed to fetch Event");
-            }
-        };
-    
-    
-        useEffect(() => {
-            GetAllEvent();
-        }, []);
-    
+    const GetAllEvent = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminCreateNewEvent}?status=false`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setEventDetailData(response?.data?.data?.events || []);
+        } catch (error) {
+            setEventDetailData([]);
+            toast.error(error.response?.data?.message || "Failed to fetch Event");
+        }
+    };
+
+
+    useEffect(() => {
+        GetAllEvent();
+    }, []);
+
+
+
+    const CreateGroupMsg = async () => {
+        if (!SendText.chatGroupId) {
+            toast.error("Please select a group first");
+            return;
+        }
+        
+        // Debugging: check the state before sending
+        console.log("Current SendText state:", SendText);
+
+        if (!SendText.text && !SendText.imageUrl && !SendText.fileUrl) {
+            toast.error("Please enter a message or upload a file");
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            // Ensure we are sending the latest state
+            const payload = {
+                ...SendText,
+                // Double check these are exactly what the API expects
+                imageUrl: SendText.imageUrl || "",
+                fileUrl: SendText.fileUrl || "",
+                text: SendText.text || ""
+            };
+            
+            console.log("Sending payload:", payload);
+
+            const response = await axios.post(`${endpoints.AdminSendMessage}`, payload, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            toast.success("Message sent successfully");
+            
+            // Refresh messages after sending
+            fetchMessages(SendText.chatGroupId);
+            
+            // Clear input after sending
+            setSendText(prev => ({
+                ...prev,
+                text: "",
+                imageUrl: "",
+                fileUrl: "",
+                isPollEnabled: false
+            }));
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to send message");
+        }
+    };
+
 
     return (
         <Box
@@ -287,76 +480,173 @@ const Chats = () => {
 
                         <Box
                             sx={{
-                                px: 2,
-                                py: 1.5,
+                                flex: 1,
+                                overflowY: "auto",
                                 display: "flex",
-                                gap: 1.5,
-                                alignItems: "flex-start",
-                                cursor: "pointer",
-                                bgcolor: "rgba(243, 97, 0, 0.06)",
-                                borderLeft: `3px solid ${ORANGE}`,
+                                flexDirection: "column",
                             }}
                         >
-                            <Avatar
-                                sx={{
-                                    width: 48,
-                                    height: 48,
-                                    bgcolor: ORANGE,
-                                    fontFamily: "Inter",
-                                    fontWeight: 700,
-                                    fontSize: "14px",
-                                }}
-                            >
-                                GS
-                            </Avatar>
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                            {selectedCarouselId === 0 ? (
+                                // Show only Ghar Sabha group when selectedCarouselId is 0
                                 <Box
                                     sx={{
+                                        px: 2,
+                                        py: 1.5,
                                         display: "flex",
-                                        justifyContent: "space-between",
+                                        gap: 1.5,
                                         alignItems: "flex-start",
-                                        gap: 1,
+                                        cursor: "pointer",
+                                        bgcolor: "rgba(243, 97, 0, 0.06)",
+                                        borderLeft: `3px solid ${ORANGE}`,
                                     }}
                                 >
-                                    <Typography
+                                    <Avatar
                                         sx={{
+                                            width: 48,
+                                            height: 48,
+                                            bgcolor: ORANGE,
                                             fontFamily: "Inter",
                                             fontWeight: 700,
-                                            fontSize: "15px",
-                                            color: "#2F2F2F",
+                                            fontSize: "14px",
                                         }}
                                     >
-                                        Ghar Sabha
-                                    </Typography>
-                                    <Typography
-                                        sx={{
-                                            fontFamily: "Inter",
-                                            fontWeight: 400,
-                                            fontSize: "12px",
-                                            color: GREY_MUTED,
-                                            flexShrink: 0,
-                                        }}
-                                    >
-                                        10:32 AM
-                                    </Typography>
+                                        GS
+                                    </Avatar>
+                                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "flex-start",
+                                                gap: 1,
+                                            }}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    fontFamily: "Inter",
+                                                    fontWeight: 700,
+                                                    fontSize: "15px",
+                                                    color: "#2F2F2F",
+                                                }}
+                                            >
+                                                Ghar Sabha
+                                            </Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontFamily: "Inter",
+                                                    fontWeight: 400,
+                                                    fontSize: "12px",
+                                                    color: GREY_MUTED,
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                10:32 AM
+                                            </Typography>
+                                        </Box>
+                                        <Typography
+                                            sx={{
+                                                fontFamily: "Inter",
+                                                fontWeight: 400,
+                                                fontSize: "13px",
+                                                color: GREY_MUTED,
+                                                mt: 0.5,
+                                                lineHeight: 1.4,
+                                                display: "-webkit-box",
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: "vertical",
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            Lorem ipsum dolor sit amet, consectetur.
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Inter",
-                                        fontWeight: 400,
-                                        fontSize: "13px",
-                                        color: GREY_MUTED,
-                                        mt: 0.5,
-                                        lineHeight: 1.4,
-                                        display: "-webkit-box",
-                                        WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
-                                        overflow: "hidden",
-                                    }}
-                                >
-                                    Lorem ipsum dolor sit amet, consectetur.
-                                </Typography>
-                            </Box>
+                            ) : (
+                                // Show all groups for the selected event
+                                chatGroups.map((group) => {
+                                    const isGroupSelected = selectedGroupId === group.id;
+                                    return (
+                                        <Box
+                                            key={group.id}
+                                            onClick={() => setSelectedGroupId(group.id)}
+                                            sx={{
+                                                px: 2,
+                                                py: 1.5,
+                                                display: "flex",
+                                                gap: 1.5,
+                                                alignItems: "flex-start",
+                                                cursor: "pointer",
+                                                bgcolor: isGroupSelected ? "rgba(243, 97, 0, 0.06)" : "transparent",
+                                                borderLeft: isGroupSelected ? `3px solid ${ORANGE}` : "3px solid transparent",
+                                                "&:hover": {
+                                                    bgcolor: isGroupSelected ? "rgba(243, 97, 0, 0.06)" : "rgba(0,0,0,0.02)",
+                                                },
+                                            }}
+                                        >
+                                            <Avatar
+                                                sx={{
+                                                    width: 48,
+                                                    height: 48,
+                                                    bgcolor: group.colorCode || ORANGE,
+                                                    fontFamily: "Inter",
+                                                    fontWeight: 700,
+                                                    fontSize: "14px",
+                                                }}
+                                            >
+                                                {group.profile || group.name?.substring(0, 2).toUpperCase()}
+                                            </Avatar>
+                                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        alignItems: "flex-start",
+                                                        gap: 1,
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            fontFamily: "Inter",
+                                                            fontWeight: 700,
+                                                            fontSize: "15px",
+                                                            color: "#2F2F2F",
+                                                        }}
+                                                    >
+                                                        {group.name}
+                                                    </Typography>
+                                                    <Typography
+                                                        sx={{
+                                                            fontFamily: "Inter",
+                                                            fontWeight: 400,
+                                                            fontSize: "12px",
+                                                            color: GREY_MUTED,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    >
+                                                        10:32 AM
+                                                    </Typography>
+                                                </Box>
+                                                <Typography
+                                                    sx={{
+                                                        fontFamily: "Inter",
+                                                        fontWeight: 400,
+                                                        fontSize: "13px",
+                                                        color: GREY_MUTED,
+                                                        mt: 0.5,
+                                                        lineHeight: 1.4,
+                                                        display: "-webkit-box",
+                                                        WebkitLineClamp: 2,
+                                                        WebkitBoxOrient: "vertical",
+                                                        overflow: "hidden",
+                                                    }}
+                                                >
+                                                    Lorem ipsum dolor sit amet, consectetur.
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    );
+                                })
+                            )}
                         </Box>
                     </Box>
                 </Grid>
@@ -389,15 +679,15 @@ const Chats = () => {
                                 sx={{
                                     width: 48,
                                     height: 48,
-                                    bgcolor: ORANGE,
+                                    bgcolor: selectedCarouselId === 0 ? ORANGE : (activeGroup?.colorCode || ORANGE),
                                     fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "14px",
                                 }}
                             >
-                                GS
+                                {selectedCarouselId === 0 ? "GS" : (activeGroup?.profile || activeGroup?.name?.substring(0, 2).toUpperCase())}
                             </Avatar>
-                            <Box>
+                            <Box sx={{ flex: 1 }}>
                                 <Typography
                                     sx={{
                                         fontFamily: "Inter",
@@ -406,7 +696,7 @@ const Chats = () => {
                                         color: "#2F2F2F",
                                     }}
                                 >
-                                    Ghar Sabha
+                                    {selectedCarouselId === 0 ? "Ghar Sabha" : (activeGroup?.name || "Select a group")}
                                 </Typography>
                                 <Typography
                                     sx={{
@@ -416,9 +706,25 @@ const Chats = () => {
                                         color: GREY_MUTED,
                                     }}
                                 >
-                                    Members: 235,234
+                                    {selectedCarouselId === 0 ? "Members: 235,234" : (activeGroup ? "Members: 1,200" : "")}
                                 </Typography>
                             </Box>
+                            {selectedCarouselId !== 0 && activeGroup && (
+                                <DashboardToolbarButton
+                                    variant="outlined"
+                                    startIcon={<Box component="img" src="/image/download_icon.png" sx={{ width: 16 }} />}
+                                    onClick={handleDownloadQRCode}
+                                    sx={{
+                                        bgcolor: "#2F2F2F",
+                                        color: "#FFFFFF",
+                                        borderRadius: "8px",
+                                        fontSize: "13px",
+                                        "&:hover": { bgcolor: "#1a1a1a" }
+                                    }}
+                                >
+                                    Download QR Code
+                                </DashboardToolbarButton>
+                            )}
                         </Box>
 
                         <Box
@@ -428,17 +734,49 @@ const Chats = () => {
                                 px: 2,
                                 py: 2,
                                 bgcolor: "#FAFAFA",
+                                display: "flex",
+                                flexDirection: "column",
                             }}
                         >
-                            <DateDivider label="Yesterday" />
-                            <OutgoingText
-                                text="Lorem ipsum dolor sit amet consectetur."
-                                time="10:56 AM"
-                            />
-
-                            <DateDivider label="Today" />
-                            <OutgoingImage time="7:10 PM" src={carouselThumb} />
-                            <OutgoingEventPoll time="7:10 PM" imageSrc={carouselThumb} />
+                            {isMessagesLoading ? (
+                                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                                    <CircularProgress size={30} sx={{ color: ORANGE }} />
+                                </Box>
+                            ) : messages.length > 0 ? (
+                                messages.map((msg, index) => {
+                                    const isLast = index === messages.length - 1;
+                                    const time = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                    
+                                    return (
+                                        <Box key={msg.id} sx={{ mb: isLast ? 0 : 2 }}>
+                                            {msg.imageUrl ? (
+                                                <OutgoingImage 
+                                                    time={time} 
+                                                    src={msg.imageUrl} 
+                                                    text={msg.text}
+                                                />
+                                            ) : msg.fileUrl ? (
+                                                <OutgoingFile 
+                                                    time={time} 
+                                                    fileUrl={msg.fileUrl} 
+                                                    text={msg.text}
+                                                />
+                                            ) : (
+                                                <OutgoingText 
+                                                    text={msg.text} 
+                                                    time={time} 
+                                                />
+                                            )}
+                                        </Box>
+                                    );
+                                })
+                            ) : (
+                                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+                                    <Typography sx={{ color: GREY_MUTED, fontSize: "14px" }}>
+                                        No messages yet
+                                    </Typography>
+                                </Box>
+                            )}
                         </Box>
 
                         <Box
@@ -461,8 +799,11 @@ const Chats = () => {
                                 }}
                             >
                                 <InputBase
-                                    placeholder="Type your message..."
+                                    placeholder={isUploading ? "Uploading media..." : "Type your message..."}
                                     fullWidth
+                                    value={SendText.text}
+                                    disabled={isUploading}
+                                    onChange={(e) => setSendText(prev => ({ ...prev, text: e.target.value }))}
                                     sx={{
                                         fontFamily: "Inter",
                                         fontSize: "15px",
@@ -474,10 +815,45 @@ const Chats = () => {
                                         },
                                     }}
                                 />
-                                <IconButton size="small" sx={{ color: "#5C5C5C" }} aria-label="Gallery">
-                                    <ImageOutlinedIcon fontSize="small" />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    ref={imageInputRef}
+                                    onChange={(e) => handleUploadMedia(e.target.files[0], 'image')}
+                                />
+                                <input
+                                    type="file"
+                                    hidden
+                                    ref={fileInputRef}
+                                    onChange={(e) => handleUploadMedia(e.target.files[0], 'file')}
+                                />
+                                <IconButton
+                                    size="small"
+                                    sx={{ 
+                                        color: SendText.imageUrl ? ORANGE : "#5C5C5C",
+                                        bgcolor: SendText.imageUrl ? `${ORANGE}11` : "transparent",
+                                        borderRadius: "8px",
+                                        p: 0.5
+                                    }}
+                                    aria-label="Gallery"
+                                    disabled={isUploading}
+                                    onClick={() => imageInputRef.current?.click()}
+                                >
+                                    {isUploading ? <CircularProgress size={20} color="inherit" /> : <ImageOutlinedIcon fontSize="small" />}
                                 </IconButton>
-                                <IconButton size="small" sx={{ color: "#5C5C5C" }} aria-label="Attach">
+                                <IconButton
+                                    size="small"
+                                    sx={{ 
+                                        color: SendText.fileUrl ? ORANGE : "#5C5C5C",
+                                        bgcolor: SendText.fileUrl ? `${ORANGE}11` : "transparent",
+                                        borderRadius: "8px",
+                                        p: 0.5
+                                    }}
+                                    aria-label="Attach"
+                                    disabled={isUploading}
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
                                     <AttachFileIcon fontSize="small" sx={{ transform: "rotate(45deg)" }} />
                                 </IconButton>
                                 <IconButton
@@ -486,8 +862,8 @@ const Chats = () => {
                                         if (selectedCarouselId === 0) {
                                             setSendMessageOpen(true);
                                         } else {
-                                            // Handle regular message sending for other groups
-                                            console.log("Normal send clicked");
+                                            // Call CreateGroupMsg for regular event groups
+                                            CreateGroupMsg();
                                         }
                                     }}
                                     sx={{
@@ -540,6 +916,7 @@ function DateDivider({ label }) {
 }
 
 function OutgoingText({ text, time }) {
+    if (!text) return null;
     return (
         <Box
             sx={{
@@ -598,7 +975,7 @@ function OutgoingText({ text, time }) {
     );
 }
 
-function OutgoingImage({ time, src }) {
+function OutgoingImage({ time, src, text }) {
     return (
         <Box
             sx={{
@@ -623,6 +1000,115 @@ function OutgoingImage({ time, src }) {
                     alt=""
                     sx={{ width: "100%", maxHeight: 220, objectFit: "cover", display: "block" }}
                 />
+                {text && (
+                    <Typography
+                        sx={{
+                            fontFamily: "Inter",
+                            fontWeight: 400,
+                            fontSize: "14px",
+                            lineHeight: 1.45,
+                            color: "#2F2F2F",
+                            px: 1.5,
+                            pt: 1,
+                        }}
+                    >
+                        {text}
+                    </Typography>
+                )}
+                <Typography
+                    sx={{
+                        fontFamily: "Inter",
+                        fontSize: "11px",
+                        color: GREY_MUTED,
+                        textAlign: "right",
+                        px: 1.5,
+                        py: 1,
+                    }}
+                >
+                    {time}
+                </Typography>
+            </Box>
+            <Avatar
+                sx={{
+                    width: 36,
+                    height: 36,
+                    bgcolor: ORANGE,
+                    fontFamily: "Inter",
+                    fontWeight: 700,
+                    fontSize: "11px",
+                }}
+            >
+                GS
+            </Avatar>
+        </Box>
+    );
+}
+
+function OutgoingFile({ time, fileUrl, text }) {
+    const fileName = fileUrl.split('/').pop();
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                gap: 1,
+                mb: 2,
+            }}
+        >
+            <Box
+                sx={{
+                    maxWidth: "72%",
+                    borderRadius: "16px",
+                    overflow: "hidden",
+                    bgcolor: BUBBLE_BG,
+                }}
+            >
+                <Box
+                    component="a"
+                    href={fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        p: 1.5,
+                        textDecoration: "none",
+                        color: "#2F2F2F",
+                        bgcolor: "rgba(0,0,0,0.05)",
+                        "&:hover": { bgcolor: "rgba(0,0,0,0.08)" }
+                    }}
+                >
+                    <AttachFileIcon sx={{ color: ORANGE, transform: "rotate(45deg)" }} />
+                    <Typography
+                        sx={{
+                            fontFamily: "Inter",
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                        }}
+                    >
+                        {fileName}
+                    </Typography>
+                </Box>
+                {text && (
+                    <Typography
+                        sx={{
+                            fontFamily: "Inter",
+                            fontWeight: 400,
+                            fontSize: "14px",
+                            lineHeight: 1.45,
+                            color: "#2F2F2F",
+                            px: 1.5,
+                            pt: 1,
+                        }}
+                    >
+                        {text}
+                    </Typography>
+                )}
                 <Typography
                     sx={{
                         fontFamily: "Inter",
