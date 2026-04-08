@@ -40,8 +40,8 @@ const Event = () => {
         setMenuAnchor(null);
     };
 
-    const handleDetail = () => {
-        navigate("/dashboard/events-detail");
+    const handleDetail = (id) => {
+        navigate("/dashboard/events-detail", { state: { id } });
     };
 
     const handleEdit = () => {
@@ -107,7 +107,7 @@ const Event = () => {
                             subtitle={`${ev.country} - ${ev.state} - ${ev.city}`}
                             footer={formatDateRange(ev.startDate, ev.endDate)}
                             onMenuOpen={(e) => handleMenuOpen(e, ev.id || ev._id)}
-                            onView={handleDetail}
+                            onView={() => handleDetail(ev.id)}
                             menuAriaLabel="Event options"
                             viewAriaLabel="View event"
                         />

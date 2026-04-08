@@ -18,11 +18,11 @@ const Event = () => {
     const navigate = useNavigate();
     const [EventDetailData, setEventDetailData] = useState(null);
 
-    const handleDetail = () => {
-        navigate("/dashboard/events-detail");
+    const handleDetail = (id) => {
+        navigate("/dashboard/events-detail", { state: { id } });
     };
 
-  
+
 
 
 
@@ -59,7 +59,7 @@ const Event = () => {
         <>
             <DashboardPageHeader
                 accentSegment="Events History"
-              
+
             />
 
             <Grid container spacing={2} sx={{ mt: { xs: 1, md: 2 } }}>
@@ -71,14 +71,14 @@ const Event = () => {
                             title={ev.name}
                             subtitle={`${ev.country} - ${ev.state} - ${ev.city}`}
                             footer={formatDateRange(ev.startDate, ev.endDate)}
-                            onView={handleDetail}
-                           
+                            onView={() => handleDetail(ev.id)}
+
                         />
                     </Grid>
                 ))}
             </Grid>
 
-           
+
 
         </>
     );

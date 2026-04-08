@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Box, Typography, Button, useTheme } from "@mui/material";
+import { useState, useMemo, useEffect } from "react";
+import { Box, Typography, Button, useTheme, CircularProgress } from "@mui/material";
 import {
     BarChart,
     Bar,
@@ -9,39 +9,9 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
-
-const MONTHLY_DATA = [
-    { label: "Jan", primary: 400000, secondary: 260000 },
-    { label: "Feb", primary: 210000, secondary: 450000 },
-    { label: "Mar", primary: 350000, secondary: 320000 },
-    { label: "Apr", primary: 240000, secondary: 270000 },
-    { label: "May", primary: 30000, secondary: 120000 },
-    { label: "Jun", primary: 310000, secondary: 140000 },
-    { label: "Jul", primary: 450000, secondary: 470000 },
-    { label: "Aug", primary: 410000, secondary: 270000 },
-    { label: "Sep", primary: 140000, secondary: 270000 },
-    { label: "Oct", primary: 120000, secondary: 30000 },
-    { label: "Nov", primary: 80000, secondary: 320000 },
-    { label: "Dec", primary: 320000, secondary: 210000 },
-];
-
-const WEEKLY_DATA = [
-    { label: "Mon", primary: 120000, secondary: 95000 },
-    { label: "Tue", primary: 180000, secondary: 140000 },
-    { label: "Wed", primary: 95000, secondary: 210000 },
-    { label: "Thu", primary: 220000, secondary: 165000 },
-    { label: "Fri", primary: 275000, secondary: 190000 },
-    { label: "Sat", primary: 310000, secondary: 240000 },
-    { label: "Sun", primary: 145000, secondary: 88000 },
-];
-
-const YEARLY_DATA = [
-    { label: "2021", primary: 3200000, secondary: 2800000 },
-    { label: "2022", primary: 4100000, secondary: 3650000 },
-    { label: "2023", primary: 3800000, secondary: 4200000 },
-    { label: "2024", primary: 4500000, secondary: 3900000 },
-    { label: "2025", primary: 2950000, secondary: 3100000 },
-];
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
 const FILTERS = [
     { key: "week", label: "This Week" },
@@ -66,7 +36,7 @@ function CustomTooltip({ active, payload, label }) {
                 borderRadius: "20px",
                 px: 1.5,
                 py: 1,
-               
+
             }}
         >
             <Typography sx={{ fontFamily: "Inter", fontSize: 12, color: "#666", mb: 0.5 }}>
@@ -95,33 +65,59 @@ const DonationAnalyticsChart = () => {
     const secondaryBar = theme.palette.text.primary;
 
     const [range, setRange] = useState("month");
+    const [analyticsData, setAnalyticsData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const data = useMemo(() => {
-        if (range === "week") return WEEKLY_DATA;
-        if (range === "year") return YEARLY_DATA;
-        return MONTHLY_DATA;
+    const fetchAnalytics = async (filter) => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminDashboardAnalytics}?filter=${filter}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (response.data.success) {
+                const formattedData = response.data.data.analytics.map(item => ({
+                    label: item.date, // You might want to format this date based on the filter
+                    primary: item.templeDonations,
+                    secondary: item.otherDonations
+                }));
+                setAnalyticsData(formattedData);
+            }
+        } catch (error) {
+            console.error("Error fetching donation analytics:", error);
+            toast.error(error.response?.data?.message || "Failed to fetch analytics");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAnalytics(range);
     }, [range]);
 
+    const data = analyticsData;
+
     const { chartMaxY, chartTicks } = useMemo(() => {
-        if (range === "month") {
-            return {
-                chartMaxY: 500000,
-                chartTicks: [0, 100000, 200000, 300000, 400000, 500000],
-            };
-        }
+        if (data.length === 0) return { chartMaxY: 1000, chartTicks: [0, 500, 1000] };
+
         const m = Math.max(...data.flatMap((d) => [d.primary, d.secondary]), 1);
-        if (range === "year") {
-            const step = 1_000_000;
-            const maxY = Math.max(5_000_000, Math.ceil(m / step) * step);
-            return {
-                chartMaxY: maxY,
-                chartTicks: [0, maxY / 2, maxY],
-            };
-        }
-        const step = 100_000;
-        const maxY = Math.ceil(m / step) * step;
-        return { chartMaxY: maxY, chartTicks: undefined };
-    }, [data, range]);
+        
+        // Dynamic scaling based on max value
+        let step;
+        if (m > 1_000_000) step = 1_000_000;
+        else if (m > 100_000) step = 100_000;
+        else if (m > 10_000) step = 10_000;
+        else if (m > 1_000) step = 1_000;
+        else step = 100;
+
+        const maxY = Math.ceil(m / step) * step || step;
+        
+        return {
+            chartMaxY: maxY,
+            chartTicks: [0, maxY / 2, maxY],
+        };
+    }, [data]);
 
     return (
         <Box
@@ -211,65 +207,72 @@ const DonationAnalyticsChart = () => {
                     flex: 1,
                     minHeight: 0,
                     position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}
             >
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                        data={data}
-                        margin={{ top: 2, right: 2, left: 0, bottom: 0 }}
-                        barCategoryGap="22%"
-                        barGap={4}
-                    >
-                        <CartesianGrid
-                            strokeDasharray="0"
-                            stroke="#ECECEC"
-                            vertical={false}
-                        />
-                        <XAxis
-                            dataKey="label"
-                            axisLine={false}
-                            tickLine={false}
-                            interval={0}
-                            tick={{
-                                fill: "#8A8A8A",
-                                fontSize: 9,
-                                fontFamily: "Inter",
-                            }}
-                            height={28}
-                        />
-                        <YAxis
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{
-                                fill: "#8A8A8A",
-                                fontSize: 9,
-                                fontFamily: "Inter",
-                            }}
-                            tickFormatter={formatYAxis}
-                            domain={[0, chartMaxY]}
-                            ticks={chartTicks}
-                            width={56}
-                        />
-                        <Tooltip
-                            content={<CustomTooltip />}
-                            cursor={{ fill: "rgba(0,0,0,0.02)" }}
-                        />
-                        <Bar
-                            dataKey="primary"
-                            name="Online"
-                            fill={primaryBar}
-                            radius={[4, 4, 0, 0]}
-                            maxBarSize={28}
-                        />
-                        <Bar
-                            dataKey="secondary"
-                            name="In-person"
-                            fill={secondaryBar}
-                            radius={[4, 4, 0, 0]}
-                            maxBarSize={28}
-                        />
-                    </BarChart>
-                </ResponsiveContainer>
+                {loading ? (
+                    <CircularProgress size={40} />
+                ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={data}
+                            margin={{ top: 2, right: 2, left: 0, bottom: 0 }}
+                            barCategoryGap="22%"
+                            barGap={4}
+                        >
+                            <CartesianGrid
+                                strokeDasharray="0"
+                                stroke="#ECECEC"
+                                vertical={false}
+                            />
+                            <XAxis
+                                dataKey="label"
+                                axisLine={false}
+                                tickLine={false}
+                                interval={0}
+                                tick={{
+                                    fill: "#8A8A8A",
+                                    fontSize: 9,
+                                    fontFamily: "Inter",
+                                }}
+                                height={28}
+                            />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{
+                                    fill: "#8A8A8A",
+                                    fontSize: 9,
+                                    fontFamily: "Inter",
+                                }}
+                                tickFormatter={formatYAxis}
+                                domain={[0, chartMaxY]}
+                                ticks={chartTicks}
+                                width={56}
+                            />
+                            <Tooltip
+                                content={<CustomTooltip />}
+                                cursor={{ fill: "rgba(0,0,0,0.02)" }}
+                            />
+                            <Bar
+                                dataKey="primary"
+                                name="Temple"
+                                fill={primaryBar}
+                                radius={[4, 4, 0, 0]}
+                                maxBarSize={28}
+                            />
+                            <Bar
+                                dataKey="secondary"
+                                name="Other"
+                                fill={secondaryBar}
+                                radius={[4, 4, 0, 0]}
+                                maxBarSize={28}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
+                )}
             </Box>
         </Box>
     );

@@ -13,6 +13,10 @@ import {
     tableHeaderSx,
     templeNameSx,
 } from "../../CommonStyles.js";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
 
 
@@ -70,6 +74,34 @@ const Data = [
 
 
 const ThirdSection = () => {
+    const navigate = useNavigate();
+    const [DashboardStats, setDashboardStats] = useState(null);
+
+    const GetAllDashboardStats = async () => {
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AllDashboardStats}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setDashboardStats(response?.data?.data || []);
+        } catch (error) {
+            toast.error(error.response?.data?.message);
+        }
+
+    }
+
+    useEffect(() => {
+        GetAllDashboardStats();
+    }, []);
+
+
+    const handlenavigate = () => {
+        navigate(`/dashboard/temple-donations`)
+    }
+
+
     return (
         <>
 
@@ -104,7 +136,9 @@ const ThirdSection = () => {
                                             fontSize: '16px',
                                             lineHeight: '31px',
                                             color: '#F36100',
+                                            cursor: "pointer"
                                         }}
+                                        onClick={() => handlenavigate()}
                                     >
                                         View All
                                     </Typography>
@@ -129,28 +163,28 @@ const ThirdSection = () => {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {Data.map((row) => (
+                                            {DashboardStats?.topTemples?.slice(0, 6)?.map((row) => (
                                                 <TableRow key={row.Id}>
                                                     <TableCell>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                             <img
-                                                                src={row.Image}
-                                                                alt={row.Name}
+                                                                src={row.image}
+                                                                alt={row.name}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                                             />
                                                             <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                                {row.Name}
+                                                                {row.name}
                                                             </Typography>
                                                         </Box>
                                                     </TableCell>
                                                     <TableCell sx={commonMutedTextSx}>
-                                                        {row.Country}
+                                                        {row.country}
                                                     </TableCell>
                                                     <TableCell sx={commonMutedTextSx}>
-                                                        {row.Donaye}
+                                                        ${row.totalDonation}
                                                     </TableCell>
                                                     <TableCell sx={commonMutedTextSx}>
-                                                        {row.Donsr}
+                                                        {row.totalDonors}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -196,7 +230,7 @@ const ThirdSection = () => {
                             >
                                 <Box
                                     component="img"
-                                    src="/image/Deventimage.png"
+                                    src={DashboardStats?.eventBanner?.imageUrl}
                                     alt="Upcoming event"
                                     sx={{
                                         width: "100%",
@@ -208,54 +242,58 @@ const ThirdSection = () => {
                                 />
                             </Box>
 
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    mt: "16px",
-                                    mb: "14px",
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Inter",
-                                        fontWeight: 500,
-                                        fontSize: "16px",
-                                        color: "#2F2F2F",
-                                    }}
-                                >
-                                    Total Attendees:
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontFamily: "Inter",
-                                        fontWeight: 700,
-                                        fontSize: "16px",
-                                        color: "#2F2F2F",
-                                    }}
-                                >
-                                    {TOTAL_ATTENDEES}
-                                </Typography>
-                            </Box>
+                            {DashboardStats?.eventBanner?.isPollEnabled && (
+                                <>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            mt: "16px",
+                                            mb: "14px",
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontFamily: "Inter",
+                                                fontWeight: 500,
+                                                fontSize: "16px",
+                                                color: "#2F2F2F",
+                                            }}
+                                        >
+                                            Total Attendees:
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                fontFamily: "Inter",
+                                                fontWeight: 700,
+                                                fontSize: "16px",
+                                                color: "#2F2F2F",
+                                            }}
+                                        >
+                                            {DashboardStats?.eventBanner?.totalPollCount || 0}
+                                        </Typography>
+                                    </Box>
 
-                            <Box
-                                sx={{
-                                    height: "12px",
-                                    borderRadius: "999px",
-                                    backgroundColor: "#FFE5D9",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        width: `${ATTENDANCE_PROGRESS}%`,
-                                        height: "100%",
-                                        borderRadius: "999px",
-                                        backgroundColor: "#FF6600",
-                                    }}
-                                />
-                            </Box>
+                                    <Box
+                                        sx={{
+                                            height: "12px",
+                                            borderRadius: "999px",
+                                            backgroundColor: "#FFE5D9",
+                                            overflow: "hidden",
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                width: `${DashboardStats?.eventBanner?.percentage}%`,
+                                                height: "100%",
+                                                borderRadius: "999px",
+                                                backgroundColor: "#FF6600",
+                                            }}
+                                        />
+                                    </Box>
+                                </>
+                            )}
                         </Box>
                     </Grid>
 

@@ -33,6 +33,8 @@ const SendMessage = ({ open, onClose, onSend }) => {
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [tehsils, setTehsils] = useState([]);
 
     const token = "w1XWZhLiOGDD0nbRoNrdIzK4";
 
@@ -106,6 +108,58 @@ const SendMessage = ({ open, onClose, onSend }) => {
         fetchCities();
     }, [country, state]);
 
+    // Fetch Districts
+    useEffect(() => {
+        const fetchDistricts = async () => {
+            if (!country || !state) {
+                setDistricts([]);
+                return;
+            }
+            try {
+                const response = await axios.get(
+                    `${endpoints.GetAllDistricts}?country=${country}&state=${state}`,
+                    {
+                        headers: {
+                            "x-api-key": token
+                        },
+                    }
+                );
+                const rawData = response.data.data || response.data;
+                const districtsList = Array.isArray(rawData) ? rawData : (rawData.districts || []);
+                setDistricts(districtsList);
+            } catch (error) {
+                console.error("Error fetching districts:", error);
+            }
+        };
+        fetchDistricts();
+    }, [country, state]);
+
+    // Fetch Tehsils
+    useEffect(() => {
+        const fetchTehsils = async () => {
+            if (!country || !state || !district) {
+                setTehsils([]);
+                return;
+            }
+            try {
+                const response = await axios.get(
+                    `${endpoints.GetAllTehsils}?country=${country}&state=${state}&district=${district}`,
+                    {
+                        headers: {
+                            "x-api-key": token
+                        },
+                    }
+                );
+                const rawData = response.data.data || response.data;
+                const tehsilsList = Array.isArray(rawData) ? rawData : (rawData.tehsils || []);
+                setTehsils(tehsilsList);
+            } catch (error) {
+                console.error("Error fetching tehsils:", error);
+            }
+        };
+        fetchTehsils();
+    }, [country, state, district]);
+
     const handleSend = () => {
         onSend?.({ country, state, city, district, tehsil, poll, pollContent });
         handleClose();
@@ -143,6 +197,8 @@ const SendMessage = ({ open, onClose, onSend }) => {
                             setCountry(e.target.value);
                             setState("");
                             setCity("");
+                            setDistrict("");
+                            setTehsil("");
                         }}
                         variant="outlined"
                         sx={inputSx}
@@ -166,6 +222,8 @@ const SendMessage = ({ open, onClose, onSend }) => {
                         onChange={(e) => {
                             setState(e.target.value);
                             setCity("");
+                            setDistrict("");
+                            setTehsil("");
                         }}
                         variant="outlined"
                         sx={inputSx}
@@ -206,13 +264,20 @@ const SendMessage = ({ open, onClose, onSend }) => {
                         select
                         fullWidth
                         value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
+                        onChange={(e) => {
+                            setDistrict(e.target.value);
+                            setTehsil("");
+                        }}
                         variant="outlined"
                         sx={inputSx}
                         SelectProps={{ displayEmpty: true }}
                     >
                         <MenuItem value="" disabled>Select district</MenuItem>
-                        <MenuItem value="District 1">District 1</MenuItem>
+                        {districts.map((d) => (
+                            <MenuItem key={typeof d === "object" ? d.name || d.id : d} value={typeof d === "object" ? d.name : d}>
+                                {typeof d === "object" ? d.name : d}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Grid>
 
@@ -228,7 +293,11 @@ const SendMessage = ({ open, onClose, onSend }) => {
                         SelectProps={{ displayEmpty: true }}
                     >
                         <MenuItem value="" disabled>Select tehsil</MenuItem>
-                        <MenuItem value="Tehsil 1">Tehsil 1</MenuItem>
+                        {tehsils.map((t) => (
+                            <MenuItem key={typeof t === "object" ? t.name || t.id : t} value={typeof t === "object" ? t.name : t}>
+                                {typeof t === "object" ? t.name : t}
+                            </MenuItem>
+                        ))}
                     </TextField>
                 </Grid>
 

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     Table,
     TableBody,
@@ -13,6 +13,9 @@ import {
     tableHeaderSx,
     templeNameSx,
 } from "../../CommonStyles.js";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
 
 
 
@@ -152,7 +155,31 @@ const memberData = [
 
 
 const EventsDetail = () => {
-    const navigate = useNavigate();
+    const location = useLocation();
+    const { id } = location.state || {};
+    const [EventDetail, setEventDetail] = useState(null);
+
+
+
+    const GetEventDetail = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AdminCreateNewEvent}/${id}/members`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setEventDetail(response?.data?.data?.members || []);
+        } catch (error) {
+            setEventDetail([]);
+            toast.error(error.response?.data?.message || "Failed to fetch Event");
+        }
+    };
+
+
+    useEffect(() => {
+        GetEventDetail();
+    }, []);
+
 
 
     return (
@@ -196,17 +223,17 @@ const EventsDetail = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {memberData?.map((row) => (
-                                <TableRow key={row.Id}>
-                                    <TableCell sx={commonMutedTextSx}>{row.Id}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.MId}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Name}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Phone}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Mail}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Gender}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Country}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.MemberS}</TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.Dates}</TableCell>
+                            {EventDetail?.map((row, index) => (
+                                <TableRow key={row.memberId || index}>
+                                    <TableCell sx={commonMutedTextSx}>{row.srNo}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.memberId}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.name}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.phone}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.mail}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.gender}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.memberSince}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{new Date(row.dateTime).toLocaleString()}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

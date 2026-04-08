@@ -1,12 +1,43 @@
+import { useState, useEffect } from "react";
 import { Box, Grid, Typography, Card, CardContent, } from "@mui/material";
 import ThirdSection from "./ThirdSection";
 import SecondSection from "./SecondSection";
 import DonationAnalyticsChart from "./DonationAnalyticsChart";
+import axios from "axios";
+import { endpoints } from "../../../apiEndpoints";
+import toast from "react-hot-toast";
+
+
 
 
 
 
 const Dashboard = () => {
+    const [DashboardStats, setDashboardStats] = useState([]);
+
+
+    const GetAllDashboardStats = async () => {
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${endpoints.AllDashboardStats}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            setDashboardStats(response?.data?.data || []);
+        } catch (error) {
+            toast.error(error.response?.data?.message);
+        }
+
+    }
+
+    useEffect(() => {
+        GetAllDashboardStats();
+    }, []);
+
+
+
+
     return (
         <>
             <Box>
@@ -67,7 +98,7 @@ const Dashboard = () => {
                                         color: "#222222"
                                     }}>
 
-                                    $247,453
+                                    {DashboardStats?.stats?.totalDonation !== undefined ? `${DashboardStats?.stats?.currency}${DashboardStats?.stats?.totalDonation}` : 0}
                                 </Typography>
                             </Box >
                         </Box>
@@ -112,7 +143,7 @@ const Dashboard = () => {
                                         color: "#222222"
                                     }}>
 
-                                    $107,453
+                                    {DashboardStats?.stats?.templeDonations !== undefined ? `${DashboardStats?.stats?.currency}${DashboardStats?.stats?.templeDonations}` : 0}
                                 </Typography>
                             </Box >
                         </Box>
@@ -158,7 +189,7 @@ const Dashboard = () => {
                                         color: "#222222"
                                     }}>
 
-                                    875,486
+                                    {DashboardStats?.stats?.totalMembers || 0}
                                 </Typography>
                             </Box >
 
@@ -205,7 +236,7 @@ const Dashboard = () => {
                                         color: "#222222"
                                     }}>
 
-                                    $140,000
+                                    {DashboardStats?.stats?.otherDonations !== undefined ? `${DashboardStats?.stats?.currency}${DashboardStats?.stats?.otherDonations}` : 0}
                                 </Typography>
                             </Box >
                         </Box>

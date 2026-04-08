@@ -1,7 +1,7 @@
 
 const BASE_URL = "http://192.168.18.158:3000/api"
 
-// const BASE_URL = "https://heterodox-stringy-pamella.ngrok-free.dev/api"
+
 
 
 
@@ -17,10 +17,17 @@ export const endpoints = {
     GetAllCountry: `${BASE_URL}/public/countries`,
     GetAllStates: `${BASE_URL}/public/states`,
     GetAllCity: `${BASE_URL}/public/cities`,
+    GetAllDistricts: `${BASE_URL}/public/districts`,
+    GetAllTehsils: `${BASE_URL}/public/tehsils`,
     CreateChatGroup: `${BASE_URL}/chat-groups/admin`,
     LiveStreamlink: `${BASE_URL}/admin/live-stream`,
     AdminSendMessage: `${BASE_URL}/messages/admin`,
-  
+    AdminDashboardAnalytics: `${BASE_URL}/admin/stats/donation-analytics`,
+    CountryStatsDashboard: `${BASE_URL}/admin/stats/country-stats`,
+    TopSupportStatsDashboard: `${BASE_URL}/admin/stats/top-supporters`,
+    AllDashboardStats: `${BASE_URL}/admin/stats/dashboard`,
+   
+
 
     /** POST multipart — single file (image/video). Supports `?path=profiles` etc. */
     UploadMediaSingle: `${BASE_URL}/media/upload-single`,
