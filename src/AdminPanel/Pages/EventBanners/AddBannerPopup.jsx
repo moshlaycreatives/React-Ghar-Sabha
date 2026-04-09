@@ -15,6 +15,7 @@ import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadSingleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 
 
@@ -72,11 +73,7 @@ const AddBannerPopup = ({ open = false, onClose, onAddBanner }) => {
             setGoogleMapUrl("");
             onClose?.();
         } catch (error) {
-            const msg =
-                error.response?.data?.message ??
-                error.message ??
-                "Failed to add banner";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Failed to add banner"));
         } finally {
             setSubmitting(false);
         }

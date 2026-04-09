@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 import { QRCodeSVG } from "qrcode.react";
 import { commonDetailTitleSx, commonMutedTextSx, tableHeaderSx } from "../../CommonStyles";
 
@@ -366,7 +367,7 @@ const MemberDetail = () => {
         } catch (error) {
             if (!soft) {
                 setMemberData(null);
-                toast.error(error.response?.data?.message ?? "Failed to load member");
+                toast.error(getApiErrorMessage(error, "Failed to load member"));
             }
         }
     };
@@ -679,7 +680,7 @@ const MemberDetail = () => {
                                             await patchMemberCardColor(next);
                                         } catch (error) {
                                             setCardThemeId(previous);
-                                            toast.error(error.response?.data?.message ?? "Could not save card color");
+                                            toast.error(getApiErrorMessage(error, "Could not save card color"));
                                         }
                                     }}
                                 >
@@ -741,7 +742,7 @@ const MemberDetail = () => {
                                     {donationHistory.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={3} sx={{ ...commonMutedTextSx, textAlign: "center", py: 3 }}>
-                                                No donation history
+                                                Donation history not available
                                             </TableCell>
                                         </TableRow>
                                     ) : (

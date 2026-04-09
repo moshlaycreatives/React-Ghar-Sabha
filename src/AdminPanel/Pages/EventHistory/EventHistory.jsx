@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Grid } from "@mui/material";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 import { useNavigate } from "react-router-dom";
 import {
     DashboardPageHeader,
@@ -8,6 +9,7 @@ import { ResourcePreviewCard } from "../../../components/ResourcePreviewCard.jsx
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 
 
@@ -17,6 +19,9 @@ import toast from "react-hot-toast";
 const Event = () => {
     const navigate = useNavigate();
     const [EventDetailData, setEventDetailData] = useState(null);
+    const [listLoaded, setListLoaded] = useState(false);
+
+    const events = Array.isArray(EventDetailData) ? EventDetailData : [];
 
     const handleDetail = (id) => {
         navigate("/dashboard/events-detail", { state: { id } });
@@ -36,7 +41,9 @@ const Event = () => {
             setEventDetailData(response?.data?.data?.events || []);
         } catch (error) {
             setEventDetailData([]);
-            toast.error(error.response?.data?.message || "Failed to fetch Event");
+            toast.error(getApiErrorMessage(error, "Failed to load events"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -63,7 +70,23 @@ const Event = () => {
             />
 
             <Grid container spacing={2} sx={{ mt: { xs: 1, md: 2 } }}>
-                {EventDetailData?.map((ev) => (
+                {!listLoaded ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white", py: 6 }}>
+                            <ListEmptyPlaceholder title="Loading…" minHeight={120} />
+                        </Box>
+                    </Grid>
+                ) : events.length === 0 ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white" }}>
+                            <ListEmptyPlaceholder
+                                title="No past events available"
+                                description="Completed events will appear in this history once they are marked finished."
+                            />
+                        </Box>
+                    </Grid>
+                ) : (
+                events.map((ev) => (
                     <Grid key={ev.id} size={{ xs: 12, sm: 6, md: 3 }}>
                         <ResourcePreviewCard
                             variant="event"
@@ -75,7 +98,8 @@ const Event = () => {
 
                         />
                     </Grid>
-                ))}
+                ))
+                )}
             </Grid>
 
 

@@ -21,6 +21,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -35,6 +37,7 @@ const EventBanners = () => {
     const [deleteBannerOpen, setDeleteBannerOpen] = useState(false);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [menuForId, setMenuForId] = useState(null);
+    const [listLoaded, setListLoaded] = useState(false);
 
     const handleMenuOpen = (event, id) => {
         setMenuAnchor(event.currentTarget);
@@ -79,7 +82,9 @@ const EventBanners = () => {
             setBannerData(response?.data?.data?.banners || []);
         } catch (error) {
             setBannerData([]);
-            toast.error(error.response?.data?.message || "Failed to fetch banners");
+            toast.error(getApiErrorMessage(error, "Failed to fetch banners"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -106,7 +111,23 @@ const EventBanners = () => {
             />
 
             <Grid container spacing={3} sx={{ mt: { xs: 1, md: 2 } }}>
-                {BannerData.map((item, index) => (
+                {!listLoaded ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white", py: 6 }}>
+                            <ListEmptyPlaceholder title="Loading…" minHeight={120} />
+                        </Box>
+                    </Grid>
+                ) : BannerData.length === 0 ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white" }}>
+                            <ListEmptyPlaceholder
+                                title="No event banners available"
+                                description="Add a banner to promote upcoming events on the app."
+                            />
+                        </Box>
+                    </Grid>
+                ) : (
+                BannerData.map((item, index) => (
                     <Grid key={item.id} size={{ xs: 12, sm: 6, lg: 6 }}>
                         <Card
                             elevation={0}
@@ -255,7 +276,8 @@ const EventBanners = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                ))}
+                ))
+                )}
             </Grid>
 
             <AddBannerPopup

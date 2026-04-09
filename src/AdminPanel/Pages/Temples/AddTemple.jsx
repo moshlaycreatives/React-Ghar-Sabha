@@ -14,6 +14,7 @@ import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 
 
@@ -131,8 +132,7 @@ const AddTemple = () => {
             setDarshanTimings(["", "", ""]);
             setTempleImages([]);
         } catch (error) {
-            const msg = error.response?.data?.message ?? error.message ?? "Something went wrong";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Could not add temple"));
         } finally {
             setSubmitting(false);
         }

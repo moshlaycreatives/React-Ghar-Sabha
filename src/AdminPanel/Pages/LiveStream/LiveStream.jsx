@@ -18,18 +18,20 @@ import EditStream from "./EditStream.jsx";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 const LiveStream = () => {
     // Mock data for initial state
     const [liveStreamData, setLiveStreamData] = useState([]);
+    const [listLoaded, setListLoaded] = useState(false);
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedStream, setSelectedStream] = useState(null);
 
     const handleCopyLink = (link) => {
         navigator.clipboard.writeText(link || "");
-        toast.success("Link copied to clipboard!");
     };
 
     const handleEdit = (stream) => {
@@ -49,10 +51,14 @@ const LiveStream = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            const data = response?.data?.data?.liveStream || response?.data?.data || [];
-            setLiveStreamData(Array.isArray(data) ? data : [data]);
+            const data = response?.data?.data?.liveStream ?? response?.data?.data ?? [];
+            const arr = Array.isArray(data) ? data : data ? [data] : [];
+            setLiveStreamData(arr.filter(Boolean));
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            setLiveStreamData([]);
+            toast.error(getApiErrorMessage(error, "Could not load live streams"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -69,7 +75,23 @@ const LiveStream = () => {
 
             <Box sx={{ mt: 1 }}>
                 <Grid container spacing={3}>
-                    {liveStreamData?.map((stream, index) => (
+                    {!listLoaded ? (
+                        <Grid size={{ xs: 12 }}>
+                            <Box sx={{ borderRadius: "24px", bgcolor: "white", py: 6 }}>
+                                <ListEmptyPlaceholder title="Loading…" minHeight={120} />
+                            </Box>
+                        </Grid>
+                    ) : liveStreamData.length === 0 ? (
+                        <Grid size={{ xs: 12 }}>
+                            <Box sx={{ borderRadius: "24px", bgcolor: "white" }}>
+                                <ListEmptyPlaceholder
+                                    title="No live streams available"
+                                    description="No live stream links were returned from the server. Add or configure a stream to see it here."
+                                />
+                            </Box>
+                        </Grid>
+                    ) : (
+                    liveStreamData.map((stream, index) => (
                         <Grid item key={index}  size={{ xs: 12, sm: 12, md: 6, lg: 5 }}>
                             <Card
                                 sx={{
@@ -207,7 +229,8 @@ const LiveStream = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                    ))}
+                    ))
+                    )}
                 </Grid>
             </Box>
 

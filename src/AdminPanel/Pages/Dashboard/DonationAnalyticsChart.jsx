@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 const FILTERS = [
     { key: "week", label: "This Week" },
@@ -77,16 +79,19 @@ const DonationAnalyticsChart = () => {
             });
 
             if (response.data.success) {
-                const formattedData = response.data.data.analytics.map(item => ({
-                    label: item.date, // You might want to format this date based on the filter
+                const raw = response.data.data?.analytics ?? [];
+                const formattedData = raw.map((item) => ({
+                    label: item.date,
                     primary: Number(item.templeDonations) || 0,
-                    secondary: Number(item.otherDonations) || 0
+                    secondary: Number(item.otherDonations) || 0,
                 }));
                 setAnalyticsData(formattedData);
+            } else {
+                setAnalyticsData([]);
             }
         } catch (error) {
-            console.error("Error fetching donation analytics:", error);
-            toast.error(error.response?.data?.message || "Failed to fetch analytics");
+            setAnalyticsData([]);
+            // toast.error(getApiErrorMessage(error, "Failed to fetch analytics"));
         } finally {
             setLoading(false);
         }
@@ -119,9 +124,6 @@ const DonationAnalyticsChart = () => {
             chartTicks: [0, maxY / 2, maxY],
         };
     }, [data]);
-
-    console.log("Analytics Data for Chart:", data);
-    console.log("Chart Max Y:", chartMaxY);
 
     return (
         <Box
@@ -218,6 +220,12 @@ const DonationAnalyticsChart = () => {
             >
                 {loading ? (
                     <CircularProgress size={40} />
+                ) : data.length === 0 ? (
+                    <ListEmptyPlaceholder
+                        title="No donation analytics available"
+                        description="No chart data was returned for the selected period."
+                        minHeight={160}
+                    />
                 ) : (
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart

@@ -22,6 +22,7 @@ import {
 import axios from "axios";
 import { endpoints } from "../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../utils/apiErrorMessage.js";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -54,7 +55,7 @@ const Login = () => {
                 toast.error(response.data.message || "Login failed");
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || error.message || "Something went wrong");
+            toast.error(getApiErrorMessage(error, "Login failed"));
         } finally {
             setLoading(false);
         }

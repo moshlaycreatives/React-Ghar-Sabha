@@ -14,6 +14,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 const countries = ["India", "USA", "UK", "Canada", "Australia"];
 const inputSx = {
@@ -87,7 +88,7 @@ const EditTemple = () => {
                 setExistingImages(data.images || []);
             }
         } catch (error) {
-            toast.error("Failed to fetch temple details");
+            toast.error(getApiErrorMessage(error, "Failed to load temple details"));
             console.error(error);
         } finally {
             setLoading(false);
@@ -153,8 +154,7 @@ const EditTemple = () => {
             toast.success(response.data?.message ?? "Temple updated successfully");
             navigate("/dashboard/temples");
         } catch (error) {
-            const msg = error.response?.data?.message ?? error.message ?? "Something went wrong";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Could not update temple"));
         } finally {
             setSubmitting(false);
         }

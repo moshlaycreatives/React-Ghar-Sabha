@@ -17,6 +17,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -43,7 +45,7 @@ const TempleDonations = () => {
         } catch (error) {
             setDonationData([]);
             setTotalCount(0);
-            toast.error(error.response?.data?.message || "Something went wrong");
+            toast.error(getApiErrorMessage(error, "Could not load temple donations"));
         } finally {
             setLoading(false);
         }
@@ -96,7 +98,16 @@ const TempleDonations = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {donationData?.map((row) => (
+                            {loading ? (
+                                <TableLoadingRow colSpan={8} />
+                            ) : donationData.length === 0 ? (
+                                <TableEmptyRow
+                                    colSpan={8}
+                                    title="No temple donations available"
+                                    description="No temple donation payments were found for this list."
+                                />
+                            ) : (
+                            donationData?.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell sx={commonMutedTextSx}>{row.donationId}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.donorName}</TableCell>
@@ -122,11 +133,7 @@ const TempleDonations = () => {
 
 
                                 </TableRow>
-                            ))}
-                            {donationData.length === 0 && !loading && (
-                                <TableRow>
-                                    <TableCell colSpan={8} align="center">No donations found</TableCell>
-                                </TableRow>
+                            ))
                             )}
                         </TableBody>
 

@@ -16,6 +16,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -29,8 +31,14 @@ const EventsDetail = () => {
     const [limit, setLimit] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+    const [listLoaded, setListLoaded] = useState(false);
 
     const GetEventDetail = async (currentPage = page, currentLimit = limit) => {
+        if (!id) {
+            setListLoaded(true);
+            return;
+        }
+        setListLoaded(false);
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`${endpoints.AdminCreateNewEvent}/${id}/members?page=${currentPage}&limit=${currentLimit}`, {
@@ -42,7 +50,9 @@ const EventsDetail = () => {
         } catch (error) {
             setEventDetail([]);
             setTotalCount(0);
-            toast.error(error.response?.data?.message || "Failed to fetch Event");
+            toast.error(getApiErrorMessage(error, "Failed to load event members"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -96,7 +106,22 @@ const EventsDetail = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {EventDetail?.map((row, index) => (
+                            {!listLoaded ? (
+                                <TableLoadingRow colSpan={9} />
+                            ) : !id ? (
+                                <TableEmptyRow
+                                    colSpan={9}
+                                    title="Event not selected"
+                                    description="Open this page from an event card to see registered members."
+                                />
+                            ) : EventDetail.length === 0 ? (
+                                <TableEmptyRow
+                                    colSpan={9}
+                                    title="No members available"
+                                    description="No members have registered for this event yet."
+                                />
+                            ) : (
+                            EventDetail?.map((row, index) => (
                                 <TableRow key={row.memberId || index}>
                                     <TableCell sx={commonMutedTextSx}>{row.srNo}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.memberId}</TableCell>
@@ -108,7 +133,8 @@ const EventsDetail = () => {
                                     <TableCell sx={commonMutedTextSx}>{row.memberSince}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{new Date(row.dateTime).toLocaleString()}</TableCell>
                                 </TableRow>
-                            ))}
+                            ))
+                            )}
                         </TableBody>
 
 

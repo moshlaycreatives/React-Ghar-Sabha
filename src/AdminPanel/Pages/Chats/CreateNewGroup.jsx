@@ -5,6 +5,7 @@ import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 
 
@@ -66,7 +67,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
             onCreate?.(payload);
             handleClose();
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to create group");
+            toast.error(getApiErrorMessage(error, "Failed to create group"));
         } finally {
             setIsCreating(false);
         }

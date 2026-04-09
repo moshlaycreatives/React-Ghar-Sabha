@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow, ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -87,7 +89,8 @@ const ThirdSection = () => {
 
             setDashboardStats(response?.data?.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            setDashboardStats({ topTemples: [], eventBanner: null });
+            // toast.error(getApiErrorMessage(error, "Could not load dashboard section"));
         }
 
     }
@@ -163,7 +166,16 @@ const ThirdSection = () => {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {DashboardStats?.topTemples?.slice(0, 6)?.map((row) => (
+                                            {DashboardStats === null ? (
+                                                <TableLoadingRow colSpan={4} />
+                                            ) : !(DashboardStats?.topTemples?.length) ? (
+                                                <TableEmptyRow
+                                                    colSpan={4}
+                                                    title="No temple donation data available"
+                                                    description="Top temples by donation will show here once data exists."
+                                                />
+                                            ) : (
+                                            DashboardStats.topTemples.slice(0, 6).map((row) => (
                                                 <TableRow key={row.Id}>
                                                     <TableCell>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -187,7 +199,8 @@ const ThirdSection = () => {
                                                         {row.totalDonors}
                                                     </TableCell>
                                                 </TableRow>
-                                            ))}
+                                            ))
+                                            )}
                                         </TableBody>
                                     </Table>
                                 </Box>
@@ -228,9 +241,14 @@ const ThirdSection = () => {
                                     lineHeight: 0,
                                 }}
                             >
+                                {DashboardStats === null ? (
+                                    <Box sx={{ aspectRatio: "16 / 9", bgcolor: "#F5F5F5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                        <Typography sx={{ fontFamily: "Inter", fontSize: 14, color: "#666" }}>Loading…</Typography>
+                                    </Box>
+                                ) : DashboardStats?.eventBanner?.imageUrl ? (
                                 <Box
                                     component="img"
-                                    src={DashboardStats?.eventBanner?.imageUrl}
+                                    src={DashboardStats.eventBanner.imageUrl}
                                     alt="Upcoming event"
                                     sx={{
                                         width: "100%",
@@ -240,6 +258,16 @@ const ThirdSection = () => {
                                         verticalAlign: "top",
                                     }}
                                 />
+                                ) : (
+                                    <Box sx={{ aspectRatio: "16 / 9", bgcolor: "#FAFAFA" }}>
+                                        <ListEmptyPlaceholder
+                                            title="No upcoming event banner"
+                                            description="No banner image is available from the API right now."
+                                            minHeight={140}
+                                            compact
+                                        />
+                                    </Box>
+                                )}
                             </Box>
 
                             {DashboardStats?.eventBanner?.isPollEnabled && (

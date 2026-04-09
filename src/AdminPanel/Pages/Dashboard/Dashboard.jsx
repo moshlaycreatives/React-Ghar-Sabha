@@ -6,6 +6,7 @@ import DonationAnalyticsChart from "./DonationAnalyticsChart";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 
 
@@ -26,7 +27,7 @@ const Dashboard = () => {
 
             setDashboardStats(response?.data?.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message || "Faild to fetch data");
+            toast.error(getApiErrorMessage(error, "Failed to load dashboard"));
         }
 
     }

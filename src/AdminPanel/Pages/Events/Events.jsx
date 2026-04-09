@@ -14,6 +14,8 @@ import { CardOptionsMenu } from "../../../components/CardOptionsMenu.jsx";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -29,6 +31,9 @@ const Event = () => {
     const [createEventOpen, setCreateEventOpen] = useState(false);
     const [editEventOpen, setEditEventOpen] = useState(false);
     const [deleteEventOpen, setDeleteEventOpen] = useState(false);
+    const [listLoaded, setListLoaded] = useState(false);
+
+    const events = Array.isArray(EventDetailData) ? EventDetailData : [];
 
     const handleMenuOpen = (e, id) => {
         e.stopPropagation();
@@ -64,7 +69,9 @@ const Event = () => {
             setEventDetailData(response?.data?.data?.events || []);
         } catch (error) {
             setEventDetailData([]);
-            toast.error(error.response?.data?.message || "Failed to fetch Event");
+            toast.error(getApiErrorMessage(error, "Failed to load events"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -98,7 +105,23 @@ const Event = () => {
             />
 
             <Grid container spacing={2} sx={{ mt: { xs: 1, md: 2 } }}>
-                {EventDetailData?.map((ev) => (
+                {!listLoaded ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white", py: 6 }}>
+                            <ListEmptyPlaceholder title="Loading…" minHeight={120} />
+                        </Box>
+                    </Grid>
+                ) : events.length === 0 ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white" }}>
+                            <ListEmptyPlaceholder
+                                title="No events available"
+                                description="There are no upcoming events. Create an event to see it here."
+                            />
+                        </Box>
+                    </Grid>
+                ) : (
+                events.map((ev) => (
                     <Grid key={ev.id} size={{ xs: 12, sm: 6, md: 3 }}>
                         <ResourcePreviewCard
                             variant="event"
@@ -112,7 +135,8 @@ const Event = () => {
                             viewAriaLabel="View event"
                         />
                     </Grid>
-                ))}
+                ))
+                )}
             </Grid>
 
             <CreateEventPopup

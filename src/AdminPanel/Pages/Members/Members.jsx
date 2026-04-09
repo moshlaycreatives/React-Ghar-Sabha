@@ -23,6 +23,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -41,6 +43,7 @@ const Members = () => {
     const [limit, setLimit] = useState(5);
     const [totalCount, setTotalCount] = useState(0);
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+    const [listLoaded, setListLoaded] = useState(false);
 
 
 
@@ -72,7 +75,9 @@ const Members = () => {
         } catch (error) {
             setmemberData([]);
             setTotalCount(0);
-            toast.error(error.response?.data?.message);
+            toast.error(getApiErrorMessage(error, "Could not load members"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -126,7 +131,16 @@ const Members = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {memberData?.map((row) => (
+                            {!listLoaded ? (
+                                <TableLoadingRow colSpan={10} />
+                            ) : memberData.length === 0 ? (
+                                <TableEmptyRow
+                                    colSpan={10}
+                                    title="No members available"
+                                    description="No member records were returned. New members will appear here once they register."
+                                />
+                            ) : (
+                            memberData?.map((row) => (
                                 <TableRow key={row.id || row._id}>
                                     <TableCell sx={commonMutedTextSx}>{row.customId || "-"}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{`${row.firstName || ""} ${row.lastName || ""}`.trim() || "-"}</TableCell>
@@ -171,7 +185,8 @@ const Members = () => {
                                         </Menu>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ))
+                            )}
                         </TableBody>
 
 

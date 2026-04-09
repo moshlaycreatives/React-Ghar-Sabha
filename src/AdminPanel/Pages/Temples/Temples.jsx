@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 import DeleteTemple from "./DeleteTemple.jsx";
 import {
     commonMutedTextSx,
@@ -45,6 +47,7 @@ const Temples = () => {
     const [limit, setLimit] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+    const [listLoaded, setListLoaded] = useState(false);
 
 
 
@@ -75,7 +78,9 @@ const Temples = () => {
         } catch (error) {
             settempleData([]);
             setTotalCount(0);
-            toast.error(error.response?.data?.message || "Failed to fetch temple");
+            toast.error(getApiErrorMessage(error, "Failed to load temples"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -122,7 +127,16 @@ const Temples = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {templeData?.map((row) => (
+                            {!listLoaded ? (
+                                <TableLoadingRow colSpan={7} />
+                            ) : templeData.length === 0 ? (
+                                <TableEmptyRow
+                                    colSpan={7}
+                                    title="No temples available"
+                                    description="No temple listings were returned. Add a temple to see it here."
+                                />
+                            ) : (
+                            templeData?.map((row) => (
                                 <TableRow key={row.id}>
                                     <TableCell sx={commonMutedTextSx}>{row.customId}</TableCell>
                                     <TableCell>
@@ -186,7 +200,8 @@ const Temples = () => {
                                         </Menu>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ))
+                            )}
                         </TableBody>
 
 

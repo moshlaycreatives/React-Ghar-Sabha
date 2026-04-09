@@ -16,6 +16,8 @@ import {
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 import { useState, useEffect } from "react";
 
 
@@ -31,30 +33,47 @@ const DonationsDetail = () => {
     const [limit, setLimit] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+    const [listLoaded, setListLoaded] = useState(false);
+
+    const payments = DonationDetailData?.payments ?? [];
+    const paymentTableColSpan = DonationDetailData?.stats?.type === "item" ? 8 : 7;
 
 
     const GetAllDonation = async (currentPage = page, currentLimit = limit) => {
-        if (!id) return;
+        if (!id) {
+            setListLoaded(true);
+            return;
+        }
+        setListLoaded(false);
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`${endpoints.AdminDonations}/${id}/payments?page=${currentPage}&limit=${currentLimit}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            setDonationDetailData(response?.data?.data || []);
-            setTotalCount(response?.data?.data?.pagination?.total || 0);
+            const payload = response?.data?.data;
+            const normalized =
+                payload && typeof payload === "object" && !Array.isArray(payload)
+                    ? payload
+                    : { payments: [], stats: null };
+            setDonationDetailData(normalized);
+            setTotalCount(normalized?.pagination?.total || 0);
         } catch (error) {
-            setDonationDetailData([]);
+            setDonationDetailData({ payments: [], stats: null });
             setTotalCount(0);
-            toast.error(error.response?.data?.message);
+            toast.error(getApiErrorMessage(error, "Could not load donation details"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
 
     useEffect(() => {
-        if (id) {
-            GetAllDonation(page, limit);
+        if (!id) {
+            setListLoaded(true);
+            return;
         }
+        GetAllDonation(page, limit);
     }, [id, page, limit]);
 
 
@@ -220,7 +239,16 @@ const DonationsDetail = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {DonationDetailData?.payments?.map((row, idx) => (
+                            {!listLoaded ? (
+                                <TableLoadingRow colSpan={8} />
+                            ) : payments.length === 0 ? (
+                                <TableEmptyRow
+                                    colSpan={paymentTableColSpan}
+                                    title="No donation payments available"
+                                    description="No contributions have been recorded for this donation yet."
+                                />
+                            ) : (
+                            DonationDetailData?.payments?.map((row, idx) => (
                                 <TableRow key={row._id || row.id || row.Id || idx}>
                                     <TableCell sx={commonMutedTextSx}>{row.memberId}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.name}</TableCell>
@@ -233,7 +261,8 @@ const DonationsDetail = () => {
                                     <TableCell sx={commonMutedTextSx}>{row.state}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{new Date(row.dateTime).toLocaleString()}</TableCell>
                                 </TableRow>
-                            ))}
+                            ))
+                            )}
                         </TableBody>
                     </Table>
                 </Box>
@@ -257,7 +286,7 @@ const DonationsDetail = () => {
                             color: "#666666",
                         }}
                     >
-                        Showing {DonationDetailData?.payments?.length || 0} of <span style={{ fontWeight: 700, color: "#000" }}>{totalCount}</span>
+                        Showing {payments.length} of <span style={{ fontWeight: 700, color: "#000" }}>{totalCount}</span>
                     </Typography>
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>

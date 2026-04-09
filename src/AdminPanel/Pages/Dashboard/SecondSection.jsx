@@ -18,85 +18,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { TableEmptyRow, TableLoadingRow } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
-
-const Country = [
-    {
-        Id: "1",
-        Image: "/image/C1.png",
-        Country: "India",
-        User: "204,532",
-        Amount: "$232,545"
-    },
-    {
-        Id: "2",
-        Image: "/image/C2.png",
-        Country: "India",
-        User: "204,532",
-        Amount: "$232,545"
-    },
-    {
-        Id: "3",
-        Image: "/image/C3.png",
-        Country: "India",
-        User: "204,532",
-        Amount: "$232,545"
-    },
-    {
-        Id: "4",
-        Image: "/image/C4.png",
-        Country: "India",
-        User: "204,532",
-        Amount: "$232,545"
-    },
-    {
-        Id: "5",
-        Image: "/image/C5.png",
-        Country: "India",
-        User: "204,532",
-        Amount: "$232,545"
-    },
-]
-
-
-const Supporters = [
-    {
-        Id: "1",
-        Image: "/image/s1.png",
-        Name: "Vikram Mehta",
-        Country: "India",
-        Amount: "$232,545"
-    },
-    {
-        Id: "2",
-        Image: "/image/S2.png",
-        Name: "Vikram Mehta",
-        Country: "India",
-        Amount: "$232,545"
-    },
-    {
-        Id: "3",
-        Image: "/image/S3.png",
-        Name: "Vikram Mehta",
-        Country: "India",
-        Amount: "$232,545"
-    },
-    {
-        Id: "4",
-        Image: "/image/S4.png",
-        Name: "Vikram Mehta",
-        Country: "India",
-        Amount: "$232,545"
-    },
-    {
-        Id: "5",
-        Image: "/image/S5.png",
-        Name: "Vikram Mehta",
-        Country: "India",
-        Amount: "$232,545"
-    },
-]
 
 
 
@@ -145,8 +70,8 @@ const SecondSection = () => {
     };
 
     const [DashboardStats, setDashboardStats] = useState(null);
-    const [countryStats, setCountryStats] = useState([]);
-    const [topSupporters, setTopSupporters] = useState([]);
+    const [countryStats, setCountryStats] = useState(null);
+    const [topSupporters, setTopSupporters] = useState(null);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedFilter, setSelectedFilter] = useState("Month");
@@ -191,7 +116,8 @@ const SecondSection = () => {
 
             setTopSupporters(response?.data?.data?.topSupporters || []);
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            setTopSupporters([]);
+            // toast.error(getApiErrorMessage(error, "Could not load top supporters"));
         }
     }
 
@@ -205,7 +131,8 @@ const SecondSection = () => {
 
             setDashboardStats(response?.data?.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            setDashboardStats({ activeDonationNeeds: [] });
+            // toast.error(getApiErrorMessage(error, "Could not load active donation needs"));
         }
 
     }
@@ -226,7 +153,8 @@ const SecondSection = () => {
 
             setCountryStats(response?.data?.data?.countryStats || []);
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            setCountryStats([]);
+            // toast.error(getApiErrorMessage(error, "Could not load country stats"));
         }
 
     }
@@ -335,7 +263,16 @@ const SecondSection = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {countryStats.map((row, index) => (
+                                        {countryStats === null ? (
+                                            <TableLoadingRow colSpan={3} />
+                                        ) : countryStats.length === 0 ? (
+                                            <TableEmptyRow
+                                                colSpan={3}
+                                                title="No country stats available"
+                                                description="No donation breakdown by country for this time range."
+                                            />
+                                        ) : (
+                                        countryStats.map((row, index) => (
                                             <TableRow key={index}>
                                                 <TableCell>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -366,7 +303,8 @@ const SecondSection = () => {
                                                 </TableCell>
 
                                             </TableRow>
-                                        ))}
+                                        ))
+                                        )}
                                     </TableBody>
                                 </Table>
                             </Box>
@@ -462,7 +400,16 @@ const SecondSection = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {topSupporters.map((row, index) => (
+                                        {topSupporters === null ? (
+                                            <TableLoadingRow colSpan={3} />
+                                        ) : topSupporters.length === 0 ? (
+                                            <TableEmptyRow
+                                                colSpan={3}
+                                                title="No supporters data available"
+                                                description="No top supporters were returned for this period."
+                                            />
+                                        ) : (
+                                        topSupporters.map((row, index) => (
                                             <TableRow key={index}>
                                                 <TableCell>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -483,7 +430,8 @@ const SecondSection = () => {
                                                     ${row.amount?.toLocaleString()}
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
+                                        ))
+                                        )}
                                     </TableBody>
                                 </Table>
                             </Box>
@@ -541,7 +489,16 @@ const SecondSection = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {DashboardStats?.activeDonationNeeds?.map((row) => (
+                                        {DashboardStats === null ? (
+                                            <TableLoadingRow colSpan={3} />
+                                        ) : !(DashboardStats?.activeDonationNeeds?.length) ? (
+                                            <TableEmptyRow
+                                                colSpan={3}
+                                                title="No active donation needs"
+                                                description="No open donation campaigns to display right now."
+                                            />
+                                        ) : (
+                                        DashboardStats.activeDonationNeeds.map((row) => (
                                             <TableRow key={row.Id}>
                                                 <TableCell>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -562,7 +519,8 @@ const SecondSection = () => {
                                                     {row.unit === "$" ? `${row.unit}${row.stillNeeded}` : row.stillNeeded}
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
+                                        ))
+                                        )}
                                     </TableBody>
                                 </Table>
                             </Box>

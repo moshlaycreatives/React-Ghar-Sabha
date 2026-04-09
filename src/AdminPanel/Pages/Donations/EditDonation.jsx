@@ -7,6 +7,7 @@ import { useImageFilePicker } from "../../../hooks/useImageFilePicker.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 import { uploadSingleMedia } from "../../../api/uploadMedia.js";
 
 const DONATION_TYPES = {
@@ -87,7 +88,7 @@ const EditDonation = ({ open = false, onClose, onUpdate, donationId }) => {
             }
         } catch (error) {
             console.error(error);
-            toast.error("Failed to fetch donation details");
+            toast.error(getApiErrorMessage(error, "Failed to load donation details"));
             onClose?.();
         } finally {
             setFetching(false);
@@ -189,8 +190,7 @@ const EditDonation = ({ open = false, onClose, onUpdate, donationId }) => {
             handleClose();
         } catch (error) {
             console.error(error);
-            const errorMsg = error.response?.data?.message || error.message || "Something went wrong";
-            toast.error(errorMsg, { id: toastId });
+            toast.error(getApiErrorMessage(error, "Could not update donation"), { id: toastId });
         } finally {
             setLoading(false);
         }

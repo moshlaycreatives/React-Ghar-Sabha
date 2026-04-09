@@ -7,6 +7,7 @@ import { useImageFilePicker } from "../../../hooks/useImageFilePicker.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 import { uploadSingleMedia } from "../../../api/uploadMedia.js";
 
 
@@ -177,8 +178,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
             handleClose();
         } catch (error) {
             console.error("Error creating event:", error);
-            const msg = error.response?.data?.message || error.message || "Failed to create event";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Failed to create event"));
         } finally {
             setLoading(false);
         }

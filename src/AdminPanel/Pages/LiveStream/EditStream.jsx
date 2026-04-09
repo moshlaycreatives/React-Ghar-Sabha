@@ -18,6 +18,7 @@ import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
 const EditStream = ({ open, onClose, data, onSave }) => {
     const [formData, setFormData] = useState({
@@ -118,8 +119,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
             }
             onClose();
         } catch (error) {
-            const msg = error.response?.data?.message ?? error.message ?? "Something went wrong";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Could not save live stream"));
         } finally {
             setSubmitting(false);
         }

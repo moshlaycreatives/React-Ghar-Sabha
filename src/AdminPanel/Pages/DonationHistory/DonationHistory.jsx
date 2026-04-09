@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,6 +11,8 @@ import { CardOptionsMenu } from "../../../components/CardOptionsMenu.jsx";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { ListEmptyPlaceholder } from "../../../components/ListEmptyPlaceholder.jsx";
 
 
 
@@ -25,6 +27,9 @@ const DonationHistory = () => {
     const [editDonationOpen, setEditDonationOpen] = useState(false);
     const [deleteDonationOpen, setDeleteDonationOpen] = useState(false);
     const [selectedDonationId, setSelectedDonationId] = useState(null);
+    const [listLoaded, setListLoaded] = useState(false);
+
+    const donations = DonationDetailData?.donations ?? [];
 
     const handleMenuOpen = (e, id) => {
         e.stopPropagation();
@@ -58,10 +63,12 @@ const DonationHistory = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            setDonationDetailData(response?.data?.data || []);
+            setDonationDetailData(response?.data?.data ?? { donations: [] });
         } catch (error) {
-            setDonationDetailData([]);
-            toast.error(error.response?.data?.message);
+            setDonationDetailData({ donations: [] });
+            toast.error(getApiErrorMessage(error, "Could not load donation history"));
+        } finally {
+            setListLoaded(true);
         }
     };
 
@@ -84,7 +91,23 @@ const DonationHistory = () => {
             <DashboardPageHeader accentSegment="Other Donation History" />
 
             <Grid container spacing={2} sx={{ mt: { xs: 1, md: 2 } }}>
-                {DonationDetailData?.donations?.map((ev) => (
+                {!listLoaded ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white", py: 6 }}>
+                            <ListEmptyPlaceholder title="Loading…" minHeight={120} />
+                        </Box>
+                    </Grid>
+                ) : donations.length === 0 ? (
+                    <Grid size={{ xs: 12 }}>
+                        <Box sx={{ borderRadius: "20px", bgcolor: "white" }}>
+                            <ListEmptyPlaceholder
+                                title="No donation history available"
+                                description="There are no completed donations to show yet."
+                            />
+                        </Box>
+                    </Grid>
+                ) : (
+                donations.map((ev) => (
                     <Grid key={ev.id} size={{ xs: 12, sm: 6, md: 3 }}>
                         <ResourcePreviewCard
                             variant="donation"
@@ -104,7 +127,8 @@ const DonationHistory = () => {
                             onView={() => handleDetail(ev?._id || ev?.id)}
                         />
                     </Grid>
-                ))}
+                ))
+                )}
             </Grid>
 
 

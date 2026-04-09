@@ -23,6 +23,7 @@ import SendMessage from "./SendMessage.jsx";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 
@@ -111,6 +112,7 @@ const Chats = () => {
         } catch (error) {
             console.error("Failed to fetch messages", error);
             setMessages([]);
+            toast.error(getApiErrorMessage(error, "Could not load messages"));
         } finally {
             setIsMessagesLoading(false);
         }
@@ -148,7 +150,7 @@ const Chats = () => {
             }
         } catch (error) {
             console.error("Upload failed", error);
-            toast.error(error.response?.data?.message || "Failed to upload media");
+            toast.error(getApiErrorMessage(error, "Failed to upload media"));
         } finally {
             setIsUploading(false);
         }
@@ -177,6 +179,7 @@ const Chats = () => {
             setChatGroups([]);
             setSelectedGroupId(null);
             console.error("Failed to fetch groups", error);
+            toast.error(getApiErrorMessage(error, "Could not load chat groups"));
         }
     };
 
@@ -212,10 +215,9 @@ const Chats = () => {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            toast.success("QR Code download started");
         } catch (error) {
             console.error("Download failed", error);
-            toast.error("Failed to download QR Code");
+            toast.error(getApiErrorMessage(error, "Failed to download QR code"));
         }
     };
 
@@ -271,7 +273,7 @@ const Chats = () => {
                 }));
                 setSendMessageOpen(false);
             } catch (error) {
-                toast.error(error.response?.data?.message || "Failed to send message");
+                toast.error(getApiErrorMessage(error, "Failed to send message"));
             }
         };
 
@@ -290,7 +292,7 @@ const Chats = () => {
             setEventDetailData(response?.data?.data?.events || []);
         } catch (error) {
             setEventDetailData([]);
-            toast.error(error.response?.data?.message || "Failed to fetch Event");
+            toast.error(getApiErrorMessage(error, "Failed to load events"));
         }
     };
 
@@ -346,7 +348,7 @@ const Chats = () => {
                 pollContent: ""
             }));
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to send message");
+            toast.error(getApiErrorMessage(error, "Failed to send message"));
         }
     };
 

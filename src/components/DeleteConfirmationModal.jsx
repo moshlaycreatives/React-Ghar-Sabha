@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, Modal, Typography, Divider } from "@mui/material";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../utils/apiErrorMessage.js";
 
 
 
@@ -15,11 +16,10 @@ const DeleteConfirmationModal = ({ open, onClose, id, onDelete, endpoint, title,
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            toast.success(response.data.message);
             onClose();
             onDelete();
         } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong");
+            toast.error(getApiErrorMessage(error, "Could not delete"));
         }
     };
 

@@ -7,6 +7,7 @@ import { useImageFilePicker } from "../../../hooks/useImageFilePicker.js";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 import { uploadSingleMedia } from "../../../api/uploadMedia.js";
 
 const labelSx = {
@@ -138,7 +139,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                 }
             } catch (error) {
                 console.error("Error fetching event details:", error);
-                toast.error("Failed to fetch event details");
+                toast.error(getApiErrorMessage(error, "Failed to load event details"));
             } finally {
                 setFetching(false);
             }
@@ -210,8 +211,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
             handleClose();
         } catch (error) {
             console.error("Error updating event:", error);
-            const msg = error.response?.data?.message || error.message || "Failed to update event";
-            toast.error(msg);
+            toast.error(getApiErrorMessage(error, "Failed to update event"));
         } finally {
             setLoading(false);
         }
