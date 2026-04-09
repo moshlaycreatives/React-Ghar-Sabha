@@ -2,6 +2,8 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./Login/Login";
 import AdminPortal from "./AdminPanel/Sidebar/AdminPortal";
+import TermsAndConditions from "./AdminPanel/Pages/Legal/TermsAndConditions";
+import PrivacyPolicy from "./AdminPanel/Pages/Legal/PrivacyPolicy";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 
@@ -45,6 +47,8 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route
           path="/dashboard/*"
           element={

@@ -11,8 +11,9 @@ import {
     alpha,
     Checkbox,
     FormControlLabel,
+    Link as MuiLink,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
     Visibility,
     VisibilityOff,
@@ -409,6 +410,25 @@ const Login = () => {
                         </form>
 
                         <Box sx={{ mt: { xs: 4, md: 5 }, textAlign: "center" }}>
+                            <Typography variant="body2" sx={{ color: "#9CA3AF", fontWeight: 500, mb: 1 }}>
+                                <MuiLink
+                                    component={RouterLink}
+                                    to="/terms-and-conditions"
+                                    underline="hover"
+                                    sx={{ color: "#6B7280", fontWeight: 600, mr: 1.5 }}
+                                >
+                                    Terms
+                                </MuiLink>
+                                <span style={{ color: "#D1D5DB" }} aria-hidden>·</span>
+                                <MuiLink
+                                    component={RouterLink}
+                                    to="/privacy-policy"
+                                    underline="hover"
+                                    sx={{ color: "#6B7280", fontWeight: 600, ml: 1.5 }}
+                                >
+                                    Privacy
+                                </MuiLink>
+                            </Typography>
                             <Typography variant="body2" sx={{ color: "#9CA3AF", fontWeight: 500 }}>
                                 © {new Date().getFullYear()} Ghar Sabha. All rights reserved.
                             </Typography>
