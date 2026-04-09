@@ -9,6 +9,7 @@ import {
     Typography,
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
@@ -45,6 +46,7 @@ const fieldTitleSx = {
 
 
 const AddTemple = () => {
+    const navigate = useNavigate();
     const [formdata, setformdata] = useState({
         title: "",
         images: [],
@@ -112,7 +114,7 @@ const AddTemple = () => {
                     },
                 }
             );
-
+            handleNavigate();
             toast.success(response.data?.message ?? "Temple added successfully");
             // Reset form if needed
             setformdata({
@@ -137,6 +139,9 @@ const AddTemple = () => {
     };
 
 
+    const handleNavigate = () => {
+        navigate(`/dashboard/temples`)
+    }
 
 
     return (
@@ -154,7 +159,7 @@ const AddTemple = () => {
                     p: { xs: 2, md: 0 },
                     borderRadius: "20px",
                     backgroundColor: "#fff",
-                   
+
                 }}
             >
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>

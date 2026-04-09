@@ -68,7 +68,7 @@ const Members = () => {
             });
 
             setmemberData(response?.data?.data?.users || []);
-            setTotalCount(response?.data?.data?.totalCount || 0);
+            setTotalCount(response?.data?.data?.pagination?.total || 0);
         } catch (error) {
             setmemberData([]);
             setTotalCount(0);
@@ -227,33 +227,33 @@ const Members = () => {
 
                         {/* Pagination Numbers */}
                         <Box sx={{ display: "flex", gap: "5px" }}>
-                            {/* Logic to show pagination items */}
                             {(() => {
                                 const pages = [];
+                                const maxVisiblePages = 5;
 
-                                if (totalPages <= 7) {
+                                if (totalPages <= maxVisiblePages + 2) {
                                     for (let i = 1; i <= totalPages; i++) {
                                         pages.push(i);
                                     }
                                 } else {
-                                    if (page <= 4) {
-                                        for (let i = 1; i <= 5; i++) {
+                                    if (page <= 3) {
+                                        for (let i = 1; i <= 4; i++) {
                                             pages.push(i);
                                         }
                                         pages.push("...");
                                         pages.push(totalPages);
-                                    } else if (page >= totalPages - 3) {
+                                    } else if (page >= totalPages - 2) {
                                         pages.push(1);
                                         pages.push("...");
-                                        for (let i = totalPages - 4; i <= totalPages; i++) {
+                                        for (let i = totalPages - 3; i <= totalPages; i++) {
                                             pages.push(i);
                                         }
                                     } else {
                                         pages.push(1);
                                         pages.push("...");
-                                        for (let i = page - 1; i <= page + 1; i++) {
-                                            pages.push(i);
-                                        }
+                                        pages.push(page - 1);
+                                        pages.push(page);
+                                        pages.push(page + 1);
                                         pages.push("...");
                                         pages.push(totalPages);
                                     }

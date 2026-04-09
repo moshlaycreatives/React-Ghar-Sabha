@@ -26,7 +26,7 @@ const Dashboard = () => {
 
             setDashboardStats(response?.data?.data || []);
         } catch (error) {
-            toast.error(error.response?.data?.message);
+            toast.error(error.response?.data?.message || "Faild to fetch data");
         }
 
     }
