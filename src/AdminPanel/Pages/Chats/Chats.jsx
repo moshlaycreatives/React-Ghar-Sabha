@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
     Box,
     Grid,
@@ -10,6 +10,7 @@ import {
     CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
@@ -97,6 +98,11 @@ const Chats = () => {
     const [isUploading, setIsUploading] = useState(false);
     const imageInputRef = useRef(null);
     const fileInputRef = useRef(null);
+    const groupSearchInputRef = useRef(null);
+
+    const [groupSearchOpen, setGroupSearchOpen] = useState(false);
+    const [groupSearch, setGroupSearch] = useState("");
+    const [debouncedGroupSearch, setDebouncedGroupSearch] = useState("");
 
     // Fetch messages for selected group
     const fetchMessages = async (groupId) => {
@@ -156,14 +162,17 @@ const Chats = () => {
         }
     };
 
-    // Get groups for selected event
-    const fetchGroups = async (eventId) => {
+    // Get groups for selected event; optional search matches backend ?eventId=&search=
+    const fetchGroups = useCallback(async (eventId, searchTerm = "") => {
         try {
             const token = localStorage.getItem('token');
-            // If eventId is 0 (Ghar Sabha Group), don't send eventId parameter
-            const url = eventId === 0
-                ? `${endpoints.CreateChatGroup}?eventId=`
-                : `${endpoints.CreateChatGroup}?eventId=${eventId}`;
+            const params = new URLSearchParams();
+            params.set("eventId", eventId === 0 ? "" : String(eventId));
+            const trimmed = (searchTerm || "").trim();
+            if (trimmed) {
+                params.set("search", trimmed);
+            }
+            const url = `${endpoints.CreateChatGroup}?${params.toString()}`;
 
             const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -181,12 +190,31 @@ const Chats = () => {
             console.error("Failed to fetch groups", error);
             toast.error(getApiErrorMessage(error, "Could not load chat groups"));
         }
-    };
+    }, []);
 
     useEffect(() => {
-        // Always fetch groups, even for selectedCarouselId === 0
-        fetchGroups(selectedCarouselId);
-    }, [selectedCarouselId]);
+        if (!groupSearchOpen) {
+            setDebouncedGroupSearch("");
+            return;
+        }
+        const id = setTimeout(() => setDebouncedGroupSearch(groupSearch.trim()), 300);
+        return () => clearTimeout(id);
+    }, [groupSearch, groupSearchOpen]);
+
+    useEffect(() => {
+        const q = groupSearchOpen ? debouncedGroupSearch.trim() : "";
+        fetchGroups(selectedCarouselId, q);
+    }, [selectedCarouselId, debouncedGroupSearch, groupSearchOpen, fetchGroups]);
+
+    const toggleGroupSearch = () => {
+        if (groupSearchOpen) {
+            setGroupSearch("");
+            setGroupSearchOpen(false);
+        } else {
+            setGroupSearchOpen(true);
+            requestAnimationFrame(() => groupSearchInputRef.current?.focus());
+        }
+    };
 
     const activeGroup = chatGroups.find(g => g.id === selectedGroupId);
 
@@ -235,7 +263,8 @@ const Chats = () => {
     const handleCreateGroup = (data) => {
         console.log("Creating new group:", data);
         if (selectedCarouselId !== 0) {
-            fetchGroups(selectedCarouselId);
+            const q = groupSearchOpen ? debouncedGroupSearch.trim() : "";
+            fetchGroups(selectedCarouselId, q);
         }
     };
 
@@ -490,9 +519,11 @@ const Chats = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
+                                gap: 1,
                                 px: 2,
                                 py: 2,
                                 borderBottom: "1px solid rgba(0,0,0,0.06)",
+                                minWidth: 0,
                             }}
                         >
                             <Typography
@@ -501,23 +532,71 @@ const Chats = () => {
                                     fontWeight: 700,
                                     fontSize: "18px",
                                     color: "#2F2F2F",
+                                    flexShrink: 0,
                                 }}
                             >
                                 Messages
                             </Typography>
-                            <IconButton
-                                size="small"
-                                aria-label="Search"
+                            <Box
                                 sx={{
-                                    border: "1px solid #E0E0E0",
-                                    borderRadius: "10px",
-                                    width: 40,
-                                    height: 40,
-                                    color: "#2F2F2F",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    flex: groupSearchOpen ? 1 : 0,
+                                    minWidth: 0,
+                                    justifyContent: "flex-end",
                                 }}
                             >
-                                <SearchIcon fontSize="small" />
-                            </IconButton>
+                                {groupSearchOpen && (
+                                    <InputBase
+                                        inputRef={groupSearchInputRef}
+                                        placeholder="Search groups or messages…"
+                                        value={groupSearch}
+                                        onChange={(e) => setGroupSearch(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Escape") {
+                                                e.preventDefault();
+                                                toggleGroupSearch();
+                                            }
+                                        }}
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            fontFamily: "Inter",
+                                            fontSize: "14px",
+                                            color: "#2F2F2F",
+                                            border: "1px solid #E0E0E0",
+                                            borderRadius: "10px",
+                                            px: 1.5,
+                                            py: 0.75,
+                                            bgcolor: "#FAFAFA",
+                                        }}
+                                        inputProps={{
+                                            "aria-label": "Search chat groups",
+                                        }}
+                                    />
+                                )}
+                                <IconButton
+                                    size="small"
+                                    onClick={toggleGroupSearch}
+                                    aria-label={groupSearchOpen ? "Close search" : "Search"}
+                                    aria-expanded={groupSearchOpen}
+                                    sx={{
+                                        border: "1px solid #E0E0E0",
+                                        borderRadius: "10px",
+                                        width: 40,
+                                        height: 40,
+                                        flexShrink: 0,
+                                        color: "#2F2F2F",
+                                    }}
+                                >
+                                    {groupSearchOpen ? (
+                                        <CloseIcon fontSize="small" />
+                                    ) : (
+                                        <SearchIcon fontSize="small" />
+                                    )}
+                                </IconButton>
+                            </Box>
                         </Box>
 
                         <Box

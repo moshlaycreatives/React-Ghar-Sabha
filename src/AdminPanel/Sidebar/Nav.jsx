@@ -83,7 +83,17 @@ const Nav = ({ menuData }) => {
   };
 
   const drawer = (
-    <div style={{ backgroundColor: "#FFFFFF", height: "100vh", width: drawerWidth }}>
+    <div
+      style={{
+        backgroundColor: "#FFFFFF",
+        height: "100vh",
+        width: drawerWidth,
+        maxWidth: "100%",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+        overflowY: "auto",
+      }}
+    >
       {ProfileData.map((item, index) => (
         <Box
           key={index}
@@ -107,7 +117,7 @@ const Nav = ({ menuData }) => {
         </Box>
       ))}
 
-      <List>
+      <List sx={{ py: 0, width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
         {menuData.map((item, index) => {
 
           const isSignOut = item.label === "Sign Out";
@@ -118,20 +128,24 @@ const Nav = ({ menuData }) => {
               component={isSignOut ? "button" : NavLink}
               to={isSignOut ? undefined : item.path}
               onClick={isSignOut ? handleSignOut : undefined}
-              style={{
+              sx={{
                 backgroundColor: isActive ? "#FBEEE5" : "transparent",
                 color: isActive ? "#F36100" : "#2F2F2F",
-                // width: "265px",
-                margin: "7px 17px",
+                margin: "7px 12px",
                 fontFamily: "Inter",
-                fontSize:"18px",
+                fontSize: "18px",
                 fontWeight: 400,
                 borderRadius: "8px",
+                maxWidth: "100%",
+                boxSizing: "border-box",
+                alignItems: "flex-start",
               }}
             >
               <ListItemIcon
-                style={{
-                  minWidth: "40px",
+                sx={{
+                  minWidth: 40,
+                  alignSelf: "flex-start",
+                  mt: "2px",
                 }}
               >
                 {renderIcon(item.icon, isActive)}
@@ -139,11 +153,16 @@ const Nav = ({ menuData }) => {
               <ListItemText
                 primary={item.label}
                 sx={{
+                  minWidth: 0,
+                  flex: "1 1 auto",
                   "& .MuiTypography-root": {
                     fontSize: "21px",
                     fontFamily: "Inter",
                     fontWeight: 400,
                     lineHeight: "26px",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word",
                   },
                 }}
               />
@@ -252,6 +271,8 @@ const Nav = ({ menuData }) => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              maxWidth: "100%",
+              overflowX: "hidden",
             },
           }}
           variant="temporary"
@@ -267,6 +288,8 @@ const Nav = ({ menuData }) => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              maxWidth: "100%",
+              overflowX: "hidden",
             },
           }}
           open
