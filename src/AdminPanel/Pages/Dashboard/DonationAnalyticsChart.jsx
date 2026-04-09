@@ -61,8 +61,8 @@ function CustomTooltip({ active, payload, label }) {
 
 const DonationAnalyticsChart = () => {
     const theme = useTheme();
-    const primaryBar = theme.palette.primary.main;
-    const secondaryBar = theme.palette.text.primary;
+    const primaryBar = "#F36100";
+    const secondaryBar = "#2F2F2F";
 
     const [range, setRange] = useState("month");
     const [analyticsData, setAnalyticsData] = useState([]);
@@ -79,8 +79,8 @@ const DonationAnalyticsChart = () => {
             if (response.data.success) {
                 const formattedData = response.data.data.analytics.map(item => ({
                     label: item.date, // You might want to format this date based on the filter
-                    primary: item.templeDonations,
-                    secondary: item.otherDonations
+                    primary: Number(item.templeDonations) || 0,
+                    secondary: Number(item.otherDonations) || 0
                 }));
                 setAnalyticsData(formattedData);
             }
@@ -109,7 +109,8 @@ const DonationAnalyticsChart = () => {
         else if (m > 100_000) step = 100_000;
         else if (m > 10_000) step = 10_000;
         else if (m > 1_000) step = 1_000;
-        else step = 100;
+        else if (m > 100) step = 100;
+        else step = 10;
 
         const maxY = Math.ceil(m / step) * step || step;
         
@@ -118,6 +119,9 @@ const DonationAnalyticsChart = () => {
             chartTicks: [0, maxY / 2, maxY],
         };
     }, [data]);
+
+    console.log("Analytics Data for Chart:", data);
+    console.log("Chart Max Y:", chartMaxY);
 
     return (
         <Box
@@ -262,6 +266,7 @@ const DonationAnalyticsChart = () => {
                                 fill={primaryBar}
                                 radius={[4, 4, 0, 0]}
                                 maxBarSize={28}
+                                minPointSize={10}
                             />
                             <Bar
                                 dataKey="secondary"
@@ -269,6 +274,7 @@ const DonationAnalyticsChart = () => {
                                 fill={secondaryBar}
                                 radius={[4, 4, 0, 0]}
                                 maxBarSize={28}
+                                minPointSize={2}
                             />
                         </BarChart>
                     </ResponsiveContainer>

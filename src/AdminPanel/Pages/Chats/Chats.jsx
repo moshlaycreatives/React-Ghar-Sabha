@@ -555,9 +555,30 @@ const Chats = () => {
                                                 fontFamily: "Inter",
                                                 fontWeight: 700,
                                                 fontSize: "14px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                "& .MuiAvatar-fallback": {
+                                                    display: "none"
+                                                }
                                             }}
                                         >
-                                            {group.profile || group.name?.substring(0, 2).toUpperCase()}
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "12px",
+                                                    fontWeight: 700,
+                                                    textAlign: "center",
+                                                    lineHeight: 1.2,
+                                                    px: 0.5,
+                                                    wordBreak: "break-word",
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 3,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden"
+                                                }}
+                                            >
+                                                {group.profile || group.name?.substring(0, 2).toUpperCase()}
+                                            </Typography>
                                         </Avatar>
                                         <Box sx={{ flex: 1, minWidth: 0 }}>
                                             <Box
@@ -587,7 +608,7 @@ const Chats = () => {
                                                         flexShrink: 0,
                                                     }}
                                                 >
-                                                    10:32 AM
+                                                    {group.lastMessageAt ? new Date(group.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "10:32 AM"}
                                                 </Typography>
                                             </Box>
                                             <Typography
@@ -604,7 +625,7 @@ const Chats = () => {
                                                     overflow: "hidden",
                                                 }}
                                             >
-                                                Lorem ipsum dolor sit amet, consectetur.
+                                                {group.lastMessage || "No messages yet"}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -646,9 +667,27 @@ const Chats = () => {
                                     fontFamily: "Inter",
                                     fontWeight: 700,
                                     fontSize: "14px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center"
                                 }}
                             >
-                                {activeGroup?.profile || activeGroup?.name?.substring(0, 2).toUpperCase() || "GS"}
+                                <Typography
+                                    sx={{
+                                        fontSize: "12px",
+                                        fontWeight: 700,
+                                        textAlign: "center",
+                                        lineHeight: 1.2,
+                                        px: 0.5,
+                                        wordBreak: "break-word",
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden"
+                                    }}
+                                >
+                                    {activeGroup?.profile || activeGroup?.name?.substring(0, 2).toUpperCase() || "GS"}
+                                </Typography>
                             </Avatar>
                             <Box sx={{ flex: 1 }}>
                                 <Typography
@@ -721,6 +760,7 @@ const Chats = () => {
                                                     percentage={msg.percentage}
                                                     senderName={msg.senderName}
                                                     profile={activeGroup?.profile}
+                                                    colorCode={activeGroup?.colorCode}
                                                 />
                                             ) : msg.imageUrl ? (
                                                 <OutgoingImage
@@ -729,6 +769,7 @@ const Chats = () => {
                                                     text={msg.text}
                                                     senderName={msg.senderName}
                                                     profile={activeGroup?.profile}
+                                                    colorCode={activeGroup?.colorCode}
                                                 />
                                             ) : msg.fileUrl ? (
                                                 <OutgoingFile
@@ -737,6 +778,7 @@ const Chats = () => {
                                                     text={msg.text}
                                                     senderName={msg.senderName}
                                                     profile={activeGroup?.profile}
+                                                    colorCode={activeGroup?.colorCode}
                                                 />
                                             ) : (
                                                 <OutgoingText
@@ -744,6 +786,7 @@ const Chats = () => {
                                                     time={time}
                                                     senderName={msg.senderName}
                                                     profile={activeGroup?.profile}
+                                                    colorCode={activeGroup?.colorCode}
                                                 />
                                             )}
                                         </Box>
@@ -894,7 +937,7 @@ function DateDivider({ label }) {
     );
 }
 
-function OutgoingText({ text, time, senderName, profile }) {
+function OutgoingText({ text, time, senderName, profile, colorCode }) {
     if (!text) return null;
     return (
         <Box
@@ -942,19 +985,37 @@ function OutgoingText({ text, time, senderName, profile }) {
                 sx={{
                     width: 36,
                     height: 36,
-                    bgcolor: ORANGE,
+                    bgcolor: colorCode || ORANGE,
                     fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}
             >
-                {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                <Typography
+                    sx={{
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        textAlign: "center",
+                        lineHeight: 1.1,
+                        px: 0.3,
+                        wordBreak: "break-word",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden"
+                    }}
+                >
+                    {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                </Typography>
             </Avatar>
         </Box>
     );
 }
 
-function OutgoingImage({ time, src, text, senderName, profile }) {
+function OutgoingImage({ time, src, text, senderName, profile, colorCode }) {
     return (
         <Box
             sx={{
@@ -1011,19 +1072,37 @@ function OutgoingImage({ time, src, text, senderName, profile }) {
                 sx={{
                     width: 36,
                     height: 36,
-                    bgcolor: ORANGE,
+                    bgcolor: colorCode || ORANGE,
                     fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}
             >
-                {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                <Typography
+                    sx={{
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        textAlign: "center",
+                        lineHeight: 1.1,
+                        px: 0.3,
+                        wordBreak: "break-word",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden"
+                    }}
+                >
+                    {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                </Typography>
             </Avatar>
         </Box>
     );
 }
 
-function OutgoingFile({ time, fileUrl, text, senderName, profile }) {
+function OutgoingFile({ time, fileUrl, text, senderName, profile, colorCode }) {
     const fileName = fileUrl.split('/').pop();
     return (
         <Box
@@ -1105,19 +1184,37 @@ function OutgoingFile({ time, fileUrl, text, senderName, profile }) {
                 sx={{
                     width: 36,
                     height: 36,
-                    bgcolor: ORANGE,
+                    bgcolor: colorCode || ORANGE,
                     fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}
             >
-                {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                <Typography
+                    sx={{
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        textAlign: "center",
+                        lineHeight: 1.1,
+                        px: 0.3,
+                        wordBreak: "break-word",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden"
+                    }}
+                >
+                    {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                </Typography>
             </Avatar>
         </Box>
     );
 }
 
-function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percentage, senderName, profile }) {
+function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percentage, senderName, profile, colorCode }) {
     return (
         <Box
             sx={{
@@ -1199,13 +1296,31 @@ function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percen
                 sx={{
                     width: 36,
                     height: 36,
-                    bgcolor: ORANGE,
+                    bgcolor: colorCode || ORANGE,
                     fontFamily: "Inter",
                     fontWeight: 700,
                     fontSize: "11px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}
             >
-                {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                <Typography
+                    sx={{
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        textAlign: "center",
+                        lineHeight: 1.1,
+                        px: 0.3,
+                        wordBreak: "break-word",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden"
+                    }}
+                >
+                    {profile || senderName?.substring(0, 2).toUpperCase() || "GS"}
+                </Typography>
             </Avatar>
         </Box>
     );

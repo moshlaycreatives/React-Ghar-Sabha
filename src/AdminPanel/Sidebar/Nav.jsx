@@ -185,7 +185,7 @@ const Nav = ({ menuData }) => {
               >
                 <MenuIcon style={{ color: "rgb(101,106,110)" }} />
               </IconButton>
-              <Box sx={{ marginLeft: { xs: "0px", lg: `335px` } }}>
+              <Box sx={{ marginLeft: { xs: "0px", lg: `320px` } }}>
                 <Typography sx={{
                   fontFamily: "Inter",
                   fontWeight: 600,
