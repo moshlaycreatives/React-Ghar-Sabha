@@ -1,23 +1,80 @@
-import React, { useState } from "react";
-import { Box, Typography, Menu, Divider, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Menu, Divider, Button, CircularProgress } from "@mui/material";
+import { getApiErrorMessage } from "../../utils/apiErrorMessage";
+import axios from "axios";
+import { endpoints } from "../../apiEndpoints";
+import toast from "react-hot-toast";
+
+function formatRelativeTime(isoString) {
+  if (!isoString) return "";
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+  const now = Date.now();
+  const diffSec = Math.floor((now - date.getTime()) / 1000);
+  if (diffSec < 60) return "Just now";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin} min${diffMin === 1 ? "" : "s"} ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr} hour${diffHr === 1 ? "" : "s"} ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 7) return `${diffDay} day${diffDay === 1 ? "" : "s"} ago`;
+  return date.toLocaleDateString();
+}
 
 const NotificationPopup = ({ anchorEl, open, handleClose }) => {
+  const [notifications, setNotifications] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [markingAllRead, setMarkingAllRead] = useState(false);
 
-  const notifications = [
-    { id: 1, title: "New Order Received", message: "You have a new order from Kunal.", time: "2 mins ago" },
-    { id: 2, title: "System Update", message: "Maintenance is scheduled for tonight.", time: "1 hour ago" },
-    { id: 3, title: "Payment Success", message: "Payment for order #1234 was successful.", time: "3 hours ago" },
-    { id: 4, title: "New Message", message: "You have a new message from support.", time: "5 hours ago" },
-    { id: 5, title: "Inventory Alert", message: "Item 'Product A' is low on stock.", time: "Yesterday" },
-    { id: 6, title: "New User Registered", message: "A new user has joined the platform.", time: "Yesterday" },
-    { id: 7, title: "Review Received", message: "A customer left a 5-star review.", time: "2 days ago" },
-    { id: 8, title: "Order Shipped", message: "Order #5678 has been shipped.", time: "3 days ago" },
-    { id: 9, title: "Refund Processed", message: "Refund for order #9012 was processed.", time: "4 days ago" },
-    { id: 10, title: "Security Alert", message: "New login from a different device.", time: "5 days ago" },
-  ];
+  const hasUnread = notifications.some((n) => !n.isRead);
 
-  const displayedNotifications = showAll ? notifications : notifications.slice(0, 6);
+  useEffect(() => {
+    if (!open) {
+      setShowAll(false);
+      return;
+    }
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(endpoints.GetAllNotification, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const list = response?.data?.data?.notifications;
+        setNotifications(Array.isArray(list) ? list : []);
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "Could not load notification"));
+        setNotifications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [open]);
+
+  const handleMarkAllRead = async () => {
+    if (!hasUnread || markingAllRead) return;
+    setMarkingAllRead(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        endpoints.MarkAllNotificationsRead,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      toast.success("All notifications marked as read");
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Could not mark notifications as read"));
+    } finally {
+      setMarkingAllRead(false);
+    }
+  };
+
+  const displayedNotifications = showAll ? notifications : notifications.slice(0, 4);
 
   return (
     <Menu
@@ -41,38 +98,72 @@ const NotificationPopup = ({ anchorEl, open, handleClose }) => {
           All Notification
         </Typography>
         <Typography
+          component="button"
+          type="button"
+          onClick={handleMarkAllRead}
+          disabled={!hasUnread || loading || markingAllRead}
           sx={{
             fontSize: "13px",
-            color: "#F36100",
-            cursor: "pointer",
+            color: hasUnread && !loading ? "#F36100" : "#B0B0B0",
+            cursor: hasUnread && !loading && !markingAllRead ? "pointer" : "default",
             fontWeight: 500,
-            "&:hover": { textDecoration: "underline" },
+            border: "none",
+            background: "none",
+            padding: 0,
+            fontFamily: "inherit",
+            "&:hover": {
+              textDecoration: hasUnread && !markingAllRead ? "underline" : "none",
+            },
           }}
         >
-          Mark all read
+          {markingAllRead ? "Saving…" : "Mark all read"}
         </Typography>
       </Box>
       <Divider sx={{ mb: 1 }} />
-      
+
       <Box sx={{ maxHeight: showAll ? "400px" : "auto", overflowY: showAll ? "auto" : "visible" }}>
-        {displayedNotifications.map((notif, index) => (
-          <React.Fragment key={notif.id}>
-            <Box sx={{ p: 1, "&:hover": { backgroundColor: "#F9F9F9" }, borderRadius: "8px", cursor: "pointer" }}>
-              <Typography sx={{ fontSize: "14px", fontWeight: 500 }}>{notif.title}</Typography>
-              <Typography sx={{ fontSize: "12px", color: "#6D6E71" }}>{notif.message}</Typography>
-              <Typography sx={{ fontSize: "10px", color: "#999", mt: 0.5 }}>{notif.time}</Typography>
-            </Box>
-            {index < displayedNotifications.length - 1 && (
-              <Divider variant="inset" component="li" sx={{ listStyle: "none", my: 0.5 }} />
-            )}
-          </React.Fragment>
-        ))}
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
+            <CircularProgress size={28} sx={{ color: "#F36100" }} />
+          </Box>
+        ) : displayedNotifications.length === 0 ? (
+          <Typography sx={{ fontSize: "13px", color: "#6D6E71", textAlign: "center", py: 2, px: 1 }}>
+            No notifications yet
+          </Typography>
+        ) : (
+          displayedNotifications.map((notif, index) => (
+            <React.Fragment key={notif.id}>
+              <Box
+                sx={{
+                  p: 1,
+                  backgroundColor: notif.isRead ? "transparent" : "rgba(243, 97, 0, 0.06)",
+                  "&:hover": { backgroundColor: notif.isRead ? "#F9F9F9" : "rgba(243, 97, 0, 0.1)" },
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  borderLeft: notif.isRead ? "none" : "3px solid #F36100",
+                  pl: notif.isRead ? 1 : 0.75,
+                }}
+              >
+                <Typography sx={{ fontSize: "14px", fontWeight: notif.isRead ? 500 : 600, color: "#1A1A1A" }}>
+                  {notif.title}
+                </Typography>
+                <Typography sx={{ fontSize: "12px", color: "#6D6E71" }}>{notif.message}</Typography>
+                <Typography sx={{ fontSize: "10px", color: "#999", mt: 0.5 }}>
+                  {formatRelativeTime(notif.createdAt)}
+                </Typography>
+              </Box>
+              {index < displayedNotifications.length - 1 && (
+                <Divider variant="inset" component="li" sx={{ listStyle: "none", my: 0.5 }} />
+              )}
+            </React.Fragment>
+          ))
+        )}
       </Box>
 
-      {!showAll && notifications.length > 6 && (
+      {!showAll && notifications.length > 4 && (
         <Box sx={{ textAlign: "center", mt: 1 }}>
-          <Button 
-            fullWidth 
+          <Button
+            fullWidth
             onClick={() => setShowAll(true)}
             sx={{ color: "#F36100", textTransform: "none", fontWeight: 600 }}
           >

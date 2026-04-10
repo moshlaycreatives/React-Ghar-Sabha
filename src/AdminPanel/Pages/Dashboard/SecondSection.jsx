@@ -272,38 +272,38 @@ const SecondSection = () => {
                                                 description="No donation breakdown by country for this time range."
                                             />
                                         ) : (
-                                        countryStats.map((row, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                        <img
-                                                            src={`https://flagcdn.com/w40/${emojiToCountryCode(decodeEmoji(row.emojiU)).toLowerCase()}.png`}
-                                                            alt={row.country}
-                                                            style={{ 
-                                                                width: "36px", 
-                                                                height: "36px", 
-                                                                borderRadius: "50%", 
-                                                                objectFit: "cover",
-                                                                border: "1px solid #eee"
-                                                            }}
-                                                            onError={(e) => {
-                                                                e.target.style.display = 'none';
-                                                            }}
-                                                        />
-                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                            {row.country}
-                                                        </Typography>
-                                                    </Box>
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    {row.userCount}
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    ${row.amount?.toLocaleString()}
-                                                </TableCell>
+                                            countryStats?.slice(0,5)?.map((row, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>
+                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                            <img
+                                                                src={`https://flagcdn.com/w40/${emojiToCountryCode(decodeEmoji(row.emojiU)).toLowerCase()}.png`}
+                                                                alt={row.country}
+                                                                style={{
+                                                                    width: "36px",
+                                                                    height: "36px",
+                                                                    borderRadius: "50%",
+                                                                    objectFit: "cover",
+                                                                    border: "1px solid #eee"
+                                                                }}
+                                                                onError={(e) => {
+                                                                    e.target.style.display = 'none';
+                                                                }}
+                                                            />
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                                {row.country}
+                                                            </Typography>
+                                                        </Box>
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        {row.userCount}
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        ${row.amount?.toLocaleString()}
+                                                    </TableCell>
 
-                                            </TableRow>
-                                        ))
+                                                </TableRow>
+                                            ))
                                         )}
                                     </TableBody>
                                 </Table>
@@ -409,28 +409,28 @@ const SecondSection = () => {
                                                 description="No top supporters were returned for this period."
                                             />
                                         ) : (
-                                        topSupporters.map((row, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                        <img
-                                                            src={row.profilePicture || "/image/s1.png"}
-                                                            alt={row.name}
-                                                            style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
-                                                        />
-                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                            {row.name}
-                                                        </Typography>
-                                                    </Box>
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    {row.country}
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    ${row.amount?.toLocaleString()}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                            topSupporters?.slice(0, 5)?.map((row, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell>
+                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                            <img
+                                                                src={row.profilePicture}
+                                                                alt={row.name}
+                                                                style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
+                                                            />
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                                {row.name}
+                                                            </Typography>
+                                                        </Box>
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        {row.country}
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        ${row.amount?.toLocaleString()}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
                                         )}
                                     </TableBody>
                                 </Table>
@@ -498,28 +498,28 @@ const SecondSection = () => {
                                                 description="No open donation campaigns to display right now."
                                             />
                                         ) : (
-                                        DashboardStats.activeDonationNeeds.map((row) => (
-                                            <TableRow key={row.Id}>
-                                                <TableCell>
-                                                    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                        <img
-                                                            src={row.image}
-                                                            alt={row.title}
-                                                            style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
-                                                        />
-                                                        <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
-                                                            {row.title}
-                                                        </Typography>
-                                                    </Box>
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    {row.unit === "$" ? `${row.unit}${row.totalNeeded}` : row.totalNeeded}
-                                                </TableCell>
-                                                <TableCell sx={commonMutedTextSx}>
-                                                    {row.unit === "$" ? `${row.unit}${row.stillNeeded}` : row.stillNeeded}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                            DashboardStats.activeDonationNeeds.map((row) => (
+                                                <TableRow key={row.Id}>
+                                                    <TableCell>
+                                                        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                            <img
+                                                                src={row.image}
+                                                                alt={row.title}
+                                                                style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
+                                                            />
+                                                            <Typography sx={{ fontFamily: "Inter", fontWeight: 500, fontSize: "14px", color: "#2F2F2F" }}>
+                                                                {row.title}
+                                                            </Typography>
+                                                        </Box>
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        {row.unit === "$" ? `${row.unit}${row.totalNeeded}` : row.totalNeeded}
+                                                    </TableCell>
+                                                    <TableCell sx={commonMutedTextSx}>
+                                                        {row.unit === "$" ? `${row.unit}${row.stillNeeded}` : row.stillNeeded}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
                                         )}
                                     </TableBody>
                                 </Table>

@@ -26,7 +26,9 @@ export const endpoints = {
     CountryStatsDashboard: `${BASE_URL}/admin/stats/country-stats`,
     TopSupportStatsDashboard: `${BASE_URL}/admin/stats/top-supporters`,
     AllDashboardStats: `${BASE_URL}/admin/stats/dashboard`,
-   
+    GetAllNotification: `${BASE_URL}/admin/notifications`,
+    MarkAllNotificationsRead: `${BASE_URL}/admin/notifications/read-all`,
+
 
 
     /** POST multipart — single file (image/video). Supports `?path=profiles` etc. */
