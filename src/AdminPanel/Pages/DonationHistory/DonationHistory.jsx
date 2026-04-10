@@ -120,8 +120,8 @@ const DonationHistory = () => {
                             }
                             footer={
                                 ev.donationType === "Item-Based Donation"
-                                    ? `Price: ₹${formatCurrency(ev.price)} / ${ev.itemName}`
-                                    : `₹${formatCurrency(ev.raisedAmount)}/₹${formatCurrency(ev.price)} Donated`
+                                    ? `Price: $${formatCurrency(ev.price)} / ${ev.itemName}`
+                                    : `$${formatCurrency(ev.raisedAmount)}/$${formatCurrency(ev.price)} Donated`
                             }
                           
                             onView={() => handleDetail(ev?._id || ev?.id)}

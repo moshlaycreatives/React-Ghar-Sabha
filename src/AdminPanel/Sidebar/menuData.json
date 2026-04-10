@@ -33,36 +33,36 @@
         "id": 6,
         "label": "Other Donations",
         "path": "/dashboard/donations",
-        "icon": "PeopleAltOutlined"
+        "icon": "/image/Donation%20iocn.png"
     },
     {
         "id": 7,
         "label": "Temple Donations",
         "path": "/dashboard/temple-donations",
-        "icon": "PeopleAltOutlined"
+        "icon": "/image/temple%20Donation.png"
     },
     {
         "id": 8,
         "label": "Other Donation History",
         "path": "/dashboard/donation-history",
-        "icon": "PeopleAltOutlined"
+        "icon": "/image/Donation%20iocn.png"
     },
     {
         "id": 9,
         "label": "Event Banners",
         "path": "/dashboard/event-banners",
-        "icon": "PeopleAltOutlined"
+        "icon": "/image/Event%20Banner.png"
     },
     {
         "id": 10,
         "label": "Live Stream",
         "path": "/dashboard/live-stream",
-        "icon": "PeopleAltOutlined"
+        "icon": "LiveTvOutlined"
     },
     {
         "id": 11,
         "label": "Event History",
         "path": "/dashboard/event-history",
-        "icon": "PeopleAltOutlined"
+        "icon": "InsertInvitationOutlined"
     }
 ]

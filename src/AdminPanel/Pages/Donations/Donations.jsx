@@ -148,8 +148,8 @@ const Donations = () => {
                             }
                             footer={
                                 ev.donationType === "Item-Based Donation"
-                                    ? `Price: ₹${formatCurrency(ev.price)} / ${ev.itemName}`
-                                    : `₹${formatCurrency(ev.raisedAmount)}/₹${formatCurrency(ev.price)} Donated`
+                                    ? `Price: $${formatCurrency(ev.price)} / ${ev.itemName}`
+                                    : `$${formatCurrency(ev.raisedAmount)}/$${formatCurrency(ev.price)} Donated`
                             }
                             onMenuOpen={(e) => handleMenuOpen(e, ev?._id || ev?.id)}
                             onView={() => handleDetail(ev?._id || ev?.id)}

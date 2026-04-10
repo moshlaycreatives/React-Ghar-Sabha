@@ -33,11 +33,6 @@ const Root = styled(Box)(({ theme }) => ({
     boxSizing: "border-box",
     // Desktop: Sidebar Box takes 310px, we add 25px gap via padding
     padding: "130px 30px 30px 25px",
-    [theme.breakpoints.up("xl")]: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-    },
     [theme.breakpoints.down("lg")]: {
         // Below LG: Sidebar is temporary, so we use full standard padding
         padding: "120px 24px 24px 24px",
@@ -55,31 +50,27 @@ const AdminPortal = () => {
         <Box sx={{ display: "flex" }}>
             <Nav menuData={menuData} />
             <Root component="main">
-                <Box sx={{
-                    width: "100%",
-                    maxWidth: "1600px",
-                    margin: "0 auto"
-                }}>
-                    <Routes>
-                        <Route path="" element={<Dashboard />} />
-                        <Route path="members" element={<Members />} />
-                        <Route path="chats" element={<Chats />} />
-                        <Route path="events" element={<Event />} />
-                        <Route path="temples" element={<Temples />} />
-                        <Route path="donations" element={<Donations />} />
-                        <Route path="temple-donations" element={<TempleDonations />} />
-                        <Route path="donation-history" element={<DonationHistory />} />
-                        <Route path="event-banners" element={<EventBanners />} />
-                        <Route path="member-detail" element={<MemberDetail />} />
-                        <Route path="events-detail" element={<EventsDetail />} />
-                        <Route path="donation-detail" element={<DonationsDetail />} />
-                        <Route path="donation-detail/:id" element={<DonationsDetail />} />
-                        <Route path="add-temple" element={<AddTemple />} />
-                        <Route path="edit-temple/:id" element={<EditTemple />} />
-                        <Route path="live-stream" element={<LiveStream />} />
-                        <Route path="event-history" element={<EventHistory />} />
-                    </Routes>
-                </Box>
+                <Routes>
+                    <Route path="" element={<Dashboard />} />
+                    <Route path="members" element={<Members />} />
+                    <Route path="chats" element={<Chats />} />
+                    <Route path="events" element={<Event />} />
+                    <Route path="temples" element={<Temples />} />
+                    <Route path="donations" element={<Donations />} />
+                    <Route path="temple-donations" element={<TempleDonations />} />
+                    <Route path="donation-history" element={<DonationHistory />} />
+                    <Route path="event-banners" element={<EventBanners />} />
+                    <Route path="member-detail" element={<MemberDetail />} />
+                    <Route path="events-detail" element={<EventsDetail />} />
+                    <Route path="donation-detail" element={<DonationsDetail />} />
+                    <Route path="donation-detail/:id" element={<DonationsDetail />} />
+                    <Route path="add-temple" element={<AddTemple />} />
+                    <Route path="edit-temple/:id" element={<EditTemple />} />
+                    <Route path="live-stream" element={<LiveStream />} />
+                    <Route path="event-history" element={<EventHistory />} />
+
+
+                </Routes>
             </Root>
         </Box>
     );

@@ -31,6 +31,12 @@ const ProfileData = [
 
 const drawerWidth = 310;
 
+// Recolor sidebar PNGs to match MUI icons: inactive #737679, active #F36100
+const SIDEBAR_IMG_FILTER_INACTIVE =
+  "brightness(0) saturate(100%) invert(51%) sepia(8%) saturate(220%) hue-rotate(169deg) brightness(0.92) contrast(0.9)";
+const SIDEBAR_IMG_FILTER_ACTIVE =
+  "brightness(0) saturate(100%) invert(48%) sepia(93%) saturate(3207%) hue-rotate(360deg) brightness(103%) contrast(101%)";
+
 const Nav = ({ menuData }) => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
@@ -70,7 +76,9 @@ const Nav = ({ menuData }) => {
       const imageStyle = {
         width: "24px",
         height: "24px",
-        filter: isActive ? "brightness(0) invert(1)" : "none",
+        objectFit: "contain",
+        display: "block",
+        filter: isActive ? SIDEBAR_IMG_FILTER_ACTIVE : SIDEBAR_IMG_FILTER_INACTIVE,
       };
       return <img src={iconName} alt="icon" style={imageStyle} />;
     } else {
@@ -110,7 +118,7 @@ const Nav = ({ menuData }) => {
           <img src="/image/logo.png"
             width={180}
             style={{ cursor: "pointer" }}
-            onClick={handleHomapage}
+           
           />
 
 

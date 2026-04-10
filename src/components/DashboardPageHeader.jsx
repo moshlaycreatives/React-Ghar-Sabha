@@ -58,6 +58,8 @@ export function DashboardToolbarButton({ children, startIcon, onClick, ...props 
                 minWidth: { md: 160 },
                 height: "50px",
                 borderRadius: "10px",
+                boxShadow: "none",
+                "&:hover": { boxShadow: "none" },
             }}
             {...props}
         >

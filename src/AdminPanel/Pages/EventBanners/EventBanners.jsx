@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import AddBannerPopup from "./AddBannerPopup.jsx";
 import EditBanner from "./EditBanner.jsx";
 import DeleteBanner from "./DeleteBanner.jsx";
@@ -196,14 +198,21 @@ const EventBanners = () => {
                                             vertical: "top",
                                             horizontal: "right",
                                         }}
+                                        slotProps={{
+                                            paper: {
+                                                sx: { borderRadius: "10px", minWidth: 160 },
+                                            },
+                                        }}
                                     >
-                                        <MenuItem onClick={handleOpenEditBanner}>
+                                        <MenuItem onClick={handleOpenEditBanner} sx={{ fontSize: 14, gap: 1 }}>
+                                            <EditOutlinedIcon sx={{ fontSize: 18 }} />
                                             Edit
                                         </MenuItem>
                                         <MenuItem
                                             onClick={handleOpenDeleteBanner}
-                                            sx={{ color: "error.main" }}
+                                            sx={{ fontSize: 14, color: "error.main", gap: 1 }}
                                         >
+                                            <DeleteOutlineOutlinedIcon sx={{ fontSize: 18 }} />
                                             Delete
                                         </MenuItem>
                                     </Menu>

@@ -7,6 +7,8 @@ import {
 } from "../../../components/DashboardPageHeader.jsx";
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from "react-router-dom";
@@ -172,30 +174,37 @@ const Temples = () => {
                                             open={open && menuUserId === row.id}
                                             onClose={handleClose}
                                             anchorOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'left',
+                                                vertical: 'bottom',
+                                                horizontal: 'right',
                                             }}
                                             transformOrigin={{
                                                 vertical: 'top',
-                                                horizontal: 'left',
+                                                horizontal: 'right',
+                                            }}
+                                            slotProps={{
+                                                paper: {
+                                                    sx: { borderRadius: "10px", minWidth: 160 },
+                                                },
                                             }}
                                         >
 
                                             <MenuItem
                                                 onClick={() => navigate(`/dashboard/edit-temple/${menuUserId}`)}
-                                                sx={{ color: "#ED4040", gap: "5px" }}
+                                                sx={{ fontSize: 14, gap: 1 }}
                                             >
-                                                {/* <MdBlockFlipped fontSize="20px" /> */}
-                                                Edit</MenuItem>
+                                                <EditOutlinedIcon sx={{ fontSize: 18 }} />
+                                                Edit
+                                            </MenuItem>
                                             <MenuItem
                                                 onClick={() => {
                                                     setIsDeleteModalOpen(true);
                                                     setAnchorEl(null);
                                                 }}
-                                                sx={{ color: "#ED4040", gap: "5px" }}
+                                                sx={{ fontSize: 14, color: "error.main", gap: 1 }}
                                             >
-                                                {/* <RiDeleteBinLine fontSize="20px" /> */}
-                                                Delete</MenuItem>
+                                                <DeleteOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+                                                Delete
+                                            </MenuItem>
 
                                         </Menu>
                                     </TableCell>

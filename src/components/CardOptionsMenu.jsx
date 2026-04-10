@@ -1,6 +1,12 @@
 import { Menu, MenuItem } from "@mui/material";
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 
-/** Shared edit/delete menu for resource cards; each page wires onClose + future API. */
+
+
+
+
 export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete, onComplete }) {
     return (
         <Menu
@@ -15,15 +21,18 @@ export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete, onC
                 },
             }}
         >
-            <MenuItem onClick={() => { onEdit?.(); onClose(); }} sx={{ fontSize: 14 }}>
+            <MenuItem onClick={() => { onEdit?.(); onClose(); }} sx={{ fontSize: 14, gap: 1 }}>
+                <EditOutlinedIcon sx={{ fontSize: 18 }} />
                 Edit
             </MenuItem>
             {onComplete && (
-                <MenuItem onClick={() => { onComplete?.(); onClose(); }} sx={{ fontSize: 14 }}>
+                <MenuItem onClick={() => { onComplete?.(); onClose(); }} sx={{ fontSize: 14 , gap:"8px", color:"green" }}>
+                    <DoneOutlinedIcon sx={{ fontSize: 18, }} />
                     Complete
                 </MenuItem>
             )}
-            <MenuItem onClick={() => { onDelete?.(); onClose(); }} sx={{ fontSize: 14, color: "error.main" }}>
+            <MenuItem onClick={() => { onDelete?.(); onClose(); }} sx={{ fontSize: 14, color: "error.main", gap: 1 }}>
+                <DeleteOutlineOutlinedIcon sx={{ fontSize: 18 }} />
                 Delete
             </MenuItem>
         </Menu>
