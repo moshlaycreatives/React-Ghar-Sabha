@@ -89,6 +89,7 @@ const AddBannerPopup = ({ open = false, onClose, onAddBanner }) => {
             scrollable={false}
             dividerAfterHeader
             headerPaddingBottom={2}
+            loading={submitting}
         >
             <Box sx={{ px: 2.5, pt: 2.5, pb: 2 }}>
                 <Typography
@@ -112,6 +113,7 @@ const AddBannerPopup = ({ open = false, onClose, onAddBanner }) => {
                     previewUrl={previewUrl}
                     onZoneClick={handleZoneClick}
                     onFileChange={handleFileChange}
+                    disabled={submitting}
                     minHeight={200}
                     previewImageSx={{
                         width: "100%",

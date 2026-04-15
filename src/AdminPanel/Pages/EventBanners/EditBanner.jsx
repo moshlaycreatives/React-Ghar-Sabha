@@ -121,6 +121,7 @@ const EditBanner = ({ open = false, onClose, onUpdateBanner, id }) => {
             scrollable={false}
             dividerAfterHeader
             headerPaddingBottom={2}
+            loading={submitting}
         >
             {loading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
@@ -150,6 +151,7 @@ const EditBanner = ({ open = false, onClose, onUpdateBanner, id }) => {
                             previewUrl={previewUrl}
                             onZoneClick={handleZoneClick}
                             onFileChange={handleFileChange}
+                            disabled={submitting}
                             minHeight={200}
                             previewImageSx={{
                                 width: "100%",

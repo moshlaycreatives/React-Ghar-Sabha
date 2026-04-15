@@ -158,6 +158,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
     };
 
     const handleClose = () => {
+        if (loading) return;
         resetForm();
         onClose?.();
     };
@@ -224,6 +225,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
             title="Edit Event"
             titleFontSize="25px"
             bodyPaddingTop={0}
+            loading={loading}
         >
             {fetching ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
@@ -249,6 +251,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                         previewUrl={previewUrl}
                         onZoneClick={handleZoneClick}
                         onFileChange={handleFileChange}
+                        disabled={loading}
                         minHeight={{ xs: 120, sm: 170 }}
                     />
 
@@ -258,6 +261,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                             fullWidth
                             placeholder="Enter event name"
                             value={eventName}
+                            disabled={loading}
                             onChange={(e) => setEventName(e.target.value)}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
@@ -275,6 +279,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                                     select
                                     fullWidth
                                     value={country}
+                                    disabled={loading}
                                     onChange={(e) => {
                                         const nextCountry = e.target.value;
                                         setCountry(nextCountry);
@@ -303,6 +308,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                                     select
                                     fullWidth
                                     value={state}
+                                    disabled={loading}
                                     onChange={(e) => {
                                         const nextState = e.target.value;
                                         setState(nextState);
@@ -330,6 +336,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                                     select
                                     fullWidth
                                     value={city}
+                                    disabled={loading}
                                     onChange={(e) => setCity(e.target.value)}
                                     SelectProps={{ displayEmpty: true }}
                                     sx={{
@@ -357,6 +364,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                                     fullWidth
                                     type="date"
                                     value={startDate}
+                                    disabled={loading}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     InputLabelProps={{ shrink: true }}
                                     sx={{
@@ -370,6 +378,7 @@ const EditEvent = ({ open = false, onClose, onUpdateEvent, eventId }) => {
                                     fullWidth
                                     type="date"
                                     value={endDate}
+                                    disabled={loading}
                                     onChange={(e) => setEndDate(e.target.value)}
                                     InputLabelProps={{ shrink: true }}
                                     sx={{

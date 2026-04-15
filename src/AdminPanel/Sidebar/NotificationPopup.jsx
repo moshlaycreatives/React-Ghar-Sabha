@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Menu, Divider, Button, CircularProgress } from "@mui/material";
+import { MutationLoadingOverlay } from "../../components/MutationLoadingOverlay.jsx";
 import { getApiErrorMessage } from "../../utils/apiErrorMessage";
 import axios from "axios";
 import { endpoints } from "../../apiEndpoints";
@@ -88,11 +89,14 @@ const NotificationPopup = ({ anchorEl, open, handleClose }) => {
           mt: 1.5,
           boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
           padding: "10px",
+          position: "relative",
+          overflow: "hidden",
         },
       }}
       transformOrigin={{ horizontal: "right", vertical: "top" }}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
+      <MutationLoadingOverlay open={markingAllRead} />
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1, px: 1 }}>
         <Typography sx={{ fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>
           All Notification

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
     Box,
     Button,
+    CircularProgress,
     Typography,
     TextField,
     InputAdornment,
@@ -24,6 +25,7 @@ import axios from "axios";
 import { endpoints } from "../apiEndpoints";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../components/MutationLoadingOverlay.jsx";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -233,8 +235,10 @@ const Login = () => {
                             borderColor: alpha("#000", 0.05),
                             width: "100%",
                             maxWidth: "480px",
+                            position: "relative",
                         }}
                     >
+                        <MutationLoadingOverlay open={loading} />
                         <Box sx={{ mb: { xs: 4, md: 5 }, textAlign: { xs: "center", md: "left" } }}>
                             <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "center", mb: 3 }}>
                                 <img src="/image/logo.png" alt="Logo" style={{ width: "80px" }} />
@@ -282,6 +286,7 @@ const Login = () => {
                                     fullWidth
                                     placeholder="e.g. admin@gharsabha.com"
                                     value={email}
+                                    disabled={loading}
                                     onChange={(e) => setEmail(e.target.value)}
                                     InputProps={{
                                         startAdornment: (
@@ -319,6 +324,7 @@ const Login = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="••••••••"
                                     value={password}
+                                    disabled={loading}
                                     onChange={(e) => setPassword(e.target.value)}
                                     InputProps={{
                                         startAdornment: (
@@ -332,6 +338,7 @@ const Login = () => {
                                                     onClick={() => setShowPassword(!showPassword)}
                                                     edge="end"
                                                     size="small"
+                                                    disabled={loading}
                                                     sx={{ color: "#9CA3AF" }}
                                                 >
                                                     {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
@@ -362,6 +369,7 @@ const Login = () => {
                                         <Checkbox
                                             size="small"
                                             checked={rememberMe}
+                                            disabled={loading}
                                             onChange={(e) => setRememberMe(e.target.checked)}
                                             sx={{
                                                 color: "#D1D5DB",
@@ -405,7 +413,7 @@ const Login = () => {
                                     }
                                 }}
                             >
-                                {loading ? "Authenticating..." : "Access Dashboard"}
+                                {loading ? <CircularProgress size={26} color="inherit" /> : "Access Dashboard"}
                             </Button>
                         </form>
 

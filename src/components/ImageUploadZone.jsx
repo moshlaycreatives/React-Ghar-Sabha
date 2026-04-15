@@ -14,6 +14,7 @@ export function ImageUploadZone({
     previewImageSx,
     mb = 0,
     emptyLabel = "Upload Image",
+    disabled = false,
 }) {
     const defaultPreviewSx = {
         width: "100%",
@@ -29,13 +30,18 @@ export function ImageUploadZone({
                 type="file"
                 accept="image/*"
                 hidden
+                disabled={disabled}
                 onChange={onFileChange}
             />
             <Box
-                onClick={onZoneClick}
+                onClick={() => {
+                    if (!disabled) onZoneClick();
+                }}
                 role="button"
-                tabIndex={0}
+                tabIndex={disabled ? -1 : 0}
+                aria-disabled={disabled}
                 onKeyDown={(e) => {
+                    if (disabled) return;
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         onZoneClick();
@@ -49,10 +55,12 @@ export function ImageUploadZone({
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    cursor: "pointer",
+                    cursor: disabled ? "not-allowed" : "pointer",
                     bgcolor: "rgba(47, 47, 47, 0.02)",
                     overflow: "hidden",
                     mb,
+                    opacity: disabled ? 0.55 : 1,
+                    pointerEvents: disabled ? "none" : "auto",
                     "&:hover": {
                         borderColor: "rgba(243, 97, 0, 0.45)",
                         bgcolor: "rgba(243, 97, 0, 0.03)",

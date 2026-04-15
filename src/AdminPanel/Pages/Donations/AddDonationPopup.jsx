@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { ImageUploadZone } from "../../../components/ImageUploadZone.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
@@ -150,6 +150,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
             title="Add New Donation"
             titleFontSize="18px"
             bodyPaddingTop={1}
+            loading={loading}
         >
             <Typography
                 component="label"
@@ -172,6 +173,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                 previewUrl={previewUrl}
                 onZoneClick={handleZoneClick}
                 onFileChange={handleFileChange}
+                disabled={loading}
                 minHeight={{ xs: 100, sm: 120 }}
                 mb={2}
             />
@@ -183,6 +185,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                         fullWidth
                         placeholder="Enter donation title"
                         value={donationTitle}
+                        disabled={loading}
                         onChange={(e) => setDonationTitle(e.target.value)}
                         sx={{
                             "& .MuiOutlinedInput-root": {
@@ -198,6 +201,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                         select
                         fullWidth
                         value={donationType}
+                        disabled={loading}
                         onChange={(e) =>
                             handleDonationTypeChange(e.target.value)
                         }
@@ -246,6 +250,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                                 fullWidth
                                 placeholder="Enter product name"
                                 value={productName}
+                                disabled={loading}
                                 onChange={(e) => setProductName(e.target.value)}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
@@ -263,6 +268,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                                 fullWidth
                                 placeholder="Enter above product price"
                                 value={eachProductPrice}
+                                disabled={loading}
                                 onChange={(e) =>
                                     setEachProductPrice(e.target.value)
                                 }
@@ -287,6 +293,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                                 fullWidth
                                 placeholder="Enter quantity"
                                 value={quantity}
+                                disabled={loading}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
@@ -308,6 +315,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                         fullWidth
                         placeholder="Enter amount"
                         value={donationAmount}
+                        disabled={loading}
                         onChange={(e) => setDonationAmount(e.target.value)}
                         sx={{
                             "& .MuiOutlinedInput-root": {
@@ -329,7 +337,7 @@ const AddDonationPopup = ({ open = false, onClose, onAddDonation }) => {
                     disabled={!canAddDonation}
                     onClick={handleCreateDonations}
                 >
-                    Add Donation
+                    {loading ? <CircularProgress size={24} color="inherit" /> : "Add Donation"}
                 </FormSubmitButton>
             </Box>
         </FormDialogFrame>

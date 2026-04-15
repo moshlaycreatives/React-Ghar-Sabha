@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
 import axios from "axios";
@@ -22,6 +22,7 @@ const inputSx = {
 };
 
 const SendMessage = ({ open, onClose, onSend }) => {
+    const [sending, setSending] = useState(false);
     const [country, setCountry] = useState("");
     const [state, setState] = useState("");
     const [city, setCity] = useState("");
@@ -160,12 +161,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
         fetchTehsils();
     }, [country, state, district]);
 
-    const handleSend = () => {
-        onSend?.({ country, state, city, district, tehsil, poll, pollContent });
-        handleClose();
-    };
-
-    const handleClose = () => {
+    const resetForm = () => {
         setCountry("");
         setState("");
         setCity("");
@@ -173,8 +169,39 @@ const SendMessage = ({ open, onClose, onSend }) => {
         setTehsil("");
         setPoll("");
         setPollContent("");
+    };
+
+    const handleSend = async () => {
+        if (sending) return;
+        setSending(true);
+        try {
+            await onSend?.({ country, state, city, district, tehsil, poll, pollContent });
+        } catch {
+            // Parent shows toast and rethrows
+        } finally {
+            setSending(false);
+        }
+    };
+
+    const handleClose = () => {
+        if (sending) return;
+        resetForm();
         onClose();
     };
+
+
+    useEffect(() => {
+        if (!open) {
+            setCountry("");
+            setState("");
+            setCity("");
+            setDistrict("");
+            setTehsil("");
+            setPoll("");
+            setPollContent("");
+            setSending(false);
+        }
+    }, [open]);
 
     return (
         <FormDialogFrame
@@ -185,6 +212,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
             titleFontWeight={600}
             dividerAfterHeader={true}
             bodyPaddingTop={2.5}
+            loading={sending}
         >
             <Grid container spacing={2}>
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -192,6 +220,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={country}
                         onChange={(e) => {
                             setCountry(e.target.value);
@@ -218,6 +247,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={state}
                         onChange={(e) => {
                             setState(e.target.value);
@@ -243,6 +273,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         variant="outlined"
@@ -263,6 +294,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={district}
                         onChange={(e) => {
                             setDistrict(e.target.value);
@@ -286,6 +318,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={tehsil}
                         onChange={(e) => setTehsil(e.target.value)}
                         variant="outlined"
@@ -306,6 +339,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                     <TextField
                         select
                         fullWidth
+                        disabled={sending}
                         value={poll}
                         onChange={(e) => setPoll(e.target.value)}
                         variant="outlined"
@@ -325,6 +359,7 @@ const SendMessage = ({ open, onClose, onSend }) => {
                             fullWidth
                             placeholder="Enter poll content"
                             value={pollContent}
+                            disabled={sending}
                             onChange={(e) => setPollContent(e.target.value)}
                             variant="outlined"
                             sx={inputSx}
@@ -335,13 +370,14 @@ const SendMessage = ({ open, onClose, onSend }) => {
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
                 <FormSubmitButton
+                    disabled={sending}
                     onClick={handleSend}
                     sx={{
                         width: { xs: "100%", sm: "auto" },
                         minWidth: 200,
                     }}
                 >
-                    Send Message
+                    {sending ? <CircularProgress size={24} color="inherit" /> : "Send Message"}
                 </FormSubmitButton>
             </Box>
         </FormDialogFrame>

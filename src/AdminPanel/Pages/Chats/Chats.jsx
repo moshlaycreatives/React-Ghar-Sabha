@@ -25,6 +25,7 @@ import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 
@@ -96,6 +97,7 @@ const Chats = () => {
     const [messages, setMessages] = useState([]);
     const [isMessagesLoading, setIsMessagesLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [isPostingMessage, setIsPostingMessage] = useState(false);
     const imageInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const groupSearchInputRef = useRef(null);
@@ -279,9 +281,7 @@ const Chats = () => {
         }
     };
 
-    const handleSendMessage = (data) => {
-        console.log("Sending information from popup:", data);
-        // Combine SendText (which has chatGroupId, text, imageUrl, fileUrl) with popup data
+    const handleSendMessage = async (data) => {
         const finalPayload = {
             ...SendText,
             country: data.country || "",
@@ -293,34 +293,29 @@ const Chats = () => {
             pollContent: data.pollContent || ""
         };
 
-        console.log("Final Payload for Ghar Sabha Group:", finalPayload);
-
-        const sendGharSabhaMsg = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.post(`${endpoints.AdminSendMessage}`, finalPayload, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                toast.success("Message sent successfully to Ghar Sabha Group");
-                if (finalPayload.chatGroupId) {
-                    fetchMessages(finalPayload.chatGroupId);
-                }
-                // Clear input after sending
-                setSendText(prev => ({
-                    ...prev,
-                    text: "",
-                    imageUrl: "",
-                    fileUrl: "",
-                    isPollEnabled: false,
-                    pollContent: ""
-                }));
-                setSendMessageOpen(false);
-            } catch (error) {
-                toast.error(getApiErrorMessage(error, "Failed to send message"));
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${endpoints.AdminSendMessage}`, finalPayload, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            toast.success("Message sent successfully to Ghar Sabha Group");
+            if (finalPayload.chatGroupId) {
+                fetchMessages(finalPayload.chatGroupId);
             }
-        };
-
-        sendGharSabhaMsg();
+            setSendText((prev) => ({
+                ...prev,
+                text: "",
+                imageUrl: "",
+                fileUrl: "",
+                isPollEnabled: false,
+                pollContent: ""
+            }));
+            setSendMessageOpen(false);
+            return response;
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Failed to send message"));
+            throw error;
+        }
     };
 
 
@@ -352,37 +347,31 @@ const Chats = () => {
             return;
         }
 
-        // Debugging: check the state before sending
-        console.log("Current SendText state:", SendText);
-
         if (!SendText.text && !SendText.imageUrl && !SendText.fileUrl) {
             toast.error("Please enter a message or upload a file");
             return;
         }
 
+        if (isPostingMessage) return;
+
+        setIsPostingMessage(true);
         try {
-            const token = localStorage.getItem('token');
-            // Ensure we are sending the latest state
+            const token = localStorage.getItem("token");
             const payload = {
                 ...SendText,
-                // Double check these are exactly what the API expects
                 imageUrl: SendText.imageUrl || "",
                 fileUrl: SendText.fileUrl || "",
                 text: SendText.text || ""
             };
 
-            console.log("Sending payload:", payload);
-
-            const response = await axios.post(`${endpoints.AdminSendMessage}`, payload, {
+            await axios.post(`${endpoints.AdminSendMessage}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success("Message sent successfully");
 
-            // Refresh messages after sending
             fetchMessages(SendText.chatGroupId);
 
-            // Clear input after sending
-            setSendText(prev => ({
+            setSendText((prev) => ({
                 ...prev,
                 text: "",
                 imageUrl: "",
@@ -392,6 +381,8 @@ const Chats = () => {
             }));
         } catch (error) {
             toast.error(getApiErrorMessage(error, "Failed to send message"));
+        } finally {
+            setIsPostingMessage(false);
         }
     };
 
@@ -742,8 +733,10 @@ const Chats = () => {
                             display: "flex",
                             flexDirection: "column",
                             overflow: "hidden",
+                            position: "relative",
                         }}
                     >
+                        <MutationLoadingOverlay open={isPostingMessage || isUploading} />
                         <Box
                             sx={{
                                 display: "flex",
@@ -918,10 +911,16 @@ const Chats = () => {
                                 }}
                             >
                                 <InputBase
-                                    placeholder={isUploading ? "Uploading media..." : "Type your message..."}
+                                    placeholder={
+                                        isUploading
+                                            ? "Uploading media..."
+                                            : isPostingMessage
+                                                ? "Sending..."
+                                                : "Type your message..."
+                                    }
                                     fullWidth
                                     value={SendText.text}
-                                    disabled={isUploading}
+                                    disabled={isUploading || isPostingMessage}
                                     onChange={(e) => setSendText(prev => ({ ...prev, text: e.target.value }))}
                                     sx={{
                                         fontFamily: "Inter",
@@ -956,7 +955,7 @@ const Chats = () => {
                                         p: 0.5
                                     }}
                                     aria-label="Gallery"
-                                    disabled={isUploading}
+                                    disabled={isUploading || isPostingMessage}
                                     onClick={() => imageInputRef.current?.click()}
                                 >
                                     {isUploading ? <CircularProgress size={20} color="inherit" /> : <ImageOutlinedIcon fontSize="small" />}
@@ -970,18 +969,18 @@ const Chats = () => {
                                         p: 0.5
                                     }}
                                     aria-label="Attach"
-                                    disabled={isUploading}
+                                    disabled={isUploading || isPostingMessage}
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     <AttachFileIcon fontSize="small" sx={{ transform: "rotate(45deg)" }} />
                                 </IconButton>
                                 <IconButton
                                     aria-label="Send"
+                                    disabled={isPostingMessage || isUploading}
                                     onClick={() => {
                                         if (selectedCarouselId === 0) {
                                             setSendMessageOpen(true);
                                         } else {
-                                            // Call CreateGroupMsg for regular event groups
                                             CreateGroupMsg();
                                         }
                                     }}
@@ -993,7 +992,11 @@ const Chats = () => {
                                         "&:hover": { bgcolor: "#d95600" },
                                     }}
                                 >
-                                    <SendIcon sx={{ fontSize: 20 }} />
+                                    {isPostingMessage ? (
+                                        <CircularProgress size={22} color="inherit" />
+                                    ) : (
+                                        <SendIcon sx={{ fontSize: 20 }} />
+                                    )}
                                 </IconButton>
                             </Box>
                         </Box>

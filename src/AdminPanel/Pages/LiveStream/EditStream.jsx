@@ -19,6 +19,7 @@ import { endpoints } from "../../../apiEndpoints";
 import { uploadMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 
 /** API often returns "2:30 PM" etc.; <input type="time"> only accepts "HH:mm" (24h). */
 function toTimeInputValue(raw) {
@@ -156,21 +157,27 @@ const EditStream = ({ open, onClose, data, onSave }) => {
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={() => {
+                if (!submitting) onClose();
+            }}
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: "20px",
-                    p: 1,
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: "20px",
+                        p: 1,
+                        position: "relative",
+                    },
                 },
             }}
         >
+            <MutationLoadingOverlay open={submitting} />
             <DialogTitle sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     Edit Live Stream
                 </Typography>
-                <IconButton onClick={onClose} sx={{ color: (theme) => theme.palette.grey[500] }}>
+                <IconButton disabled={submitting} onClick={onClose} sx={{ color: (theme) => theme.palette.grey[500] }}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -203,7 +210,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                         }}
                         component="label"
                     >
-                        <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+                        <input type="file" hidden accept="image/*" disabled={submitting} onChange={handleImageChange} />
                         {imagePreview ? (
                             <img
                                 src={imagePreview}
@@ -229,6 +236,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                         name="title"
                         placeholder="Enter stream title"
                         value={formData.title}
+                        disabled={submitting}
                         onChange={handleChange}
                         variant="outlined"
                         size="small"
@@ -249,6 +257,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                         name="youtubeLiveLink"
                         placeholder="Paste YouTube link here"
                         value={formData.youtubeLiveLink}
+                        disabled={submitting}
                         onChange={handleChange}
                         variant="outlined"
                         size="small"
@@ -271,6 +280,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                                 type="date"
                                 name="date"
                                 value={formData.date}
+                                disabled={submitting}
                                 onChange={handleChange}
                                 InputLabelProps={{ shrink: true }}
                                 variant="outlined"
@@ -291,6 +301,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                                 type="time"
                                 name="time"
                                 value={formData.time}
+                                disabled={submitting}
                                 onChange={handleChange}
                                 InputLabelProps={{ shrink: true }}
                                 variant="outlined"

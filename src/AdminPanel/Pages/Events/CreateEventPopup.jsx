@@ -196,6 +196,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
             title="Create New Event"
             titleFontSize="25px"
             bodyPaddingTop={0}
+            loading={loading}
         >
             <Typography
                 component="label"
@@ -215,6 +216,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                 previewUrl={previewUrl}
                 onZoneClick={handleZoneClick}
                 onFileChange={handleFileChange}
+                disabled={loading}
                 minHeight={{ xs: 120, sm: 170 }}
             />
 
@@ -224,6 +226,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                     fullWidth
                     placeholder="Enter event name"
                     value={eventName}
+                    disabled={loading}
                     onChange={(e) => setEventName(e.target.value)}
                     sx={{
                         "& .MuiOutlinedInput-root": {
@@ -241,6 +244,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             select
                             fullWidth
                             value={country}
+                            disabled={loading}
                             onChange={(e) => {
                                 const nextCountry = e.target.value;
                                 setCountry(nextCountry);
@@ -269,6 +273,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             select
                             fullWidth
                             value={state}
+                            disabled={loading}
                             onChange={(e) => {
                                 const nextState = e.target.value;
                                 setState(nextState);
@@ -296,6 +301,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             select
                             fullWidth
                             value={city}
+                            disabled={loading}
                             onChange={(e) => setCity(e.target.value)}
                             SelectProps={{ displayEmpty: true }}
                             sx={{
@@ -323,6 +329,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             fullWidth
                             type="date"
                             value={startDate}
+                            disabled={loading}
                             onChange={(e) => setStartDate(e.target.value)}
                             InputLabelProps={{ shrink: true }}
                             sx={{
@@ -336,6 +343,7 @@ const CreateEventPopup = ({ open = false, onClose, onCreateEvent }) => {
                             fullWidth
                             type="date"
                             value={endDate}
+                            disabled={loading}
                             onChange={(e) => setEndDate(e.target.value)}
                             InputLabelProps={{ shrink: true }}
                             sx={{

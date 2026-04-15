@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Grid, TextField, Typography, IconButton, Divider } from "@mui/material";
+import { Box, CircularProgress, Grid, TextField, Typography, IconButton, Divider } from "@mui/material";
 import { FormDialogFrame } from "../../../components/FormDialogFrame.jsx";
 import { FormSubmitButton } from "../../../components/FormSubmitButton.jsx";
 import axios from "axios";
@@ -42,7 +42,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
     const [isCreating, setIsCreating] = useState(false);
 
     const handleCreate = async () => {
-        if (!groupName || !profileName) return;
+        if (!groupName || !profileName || isCreating) return;
         setIsCreating(true);
         try {
             const token = localStorage.getItem("token");
@@ -90,6 +90,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
             titleFontWeight={600}
             dividerAfterHeader={true}
             bodyPaddingTop={2.5}
+            loading={isCreating}
         >
             <Grid container spacing={2}>
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -98,6 +99,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
                         fullWidth
                         placeholder="Enter group name"
                         value={groupName}
+                        disabled={isCreating}
                         onChange={(e) => setGroupName(e.target.value)}
                         variant="outlined"
                         sx={{
@@ -114,6 +116,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
                         fullWidth
                         placeholder="Enter profile picture name"
                         value={profileName}
+                        disabled={isCreating}
                         onChange={(e) => setProfileName(e.target.value)}
                         variant="outlined"
                         sx={{
@@ -131,6 +134,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
                         {COLORS.map((color) => (
                             <IconButton
                                 key={color}
+                                disabled={isCreating}
                                 onClick={() => setSelectedColor(color)}
                                 sx={{
                                     width: 36,
@@ -159,7 +163,7 @@ const CreateNewGroup = ({ open, onClose, onCreate, eventId }) => {
                         minWidth: 200,
                     }}
                 >
-                    {isCreating ? "Creating..." : "Create Group"}
+                    {isCreating ? <CircularProgress size={24} color="inherit" /> : "Create Group"}
                 </FormSubmitButton>
             </Box>
         </FormDialogFrame>

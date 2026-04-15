@@ -13,6 +13,7 @@ import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 import { QRCodeSVG } from "qrcode.react";
 import { commonDetailTitleSx, commonMutedTextSx, tableHeaderSx } from "../../CommonStyles";
 
@@ -321,6 +322,7 @@ const MemberDetail = () => {
     const { id } = location.state || {};
     const [memberData, setMemberData] = useState(null);
     const [cardThemeId, setCardThemeId] = useState("golden");
+    const [patchingCardColor, setPatchingCardColor] = useState(false);
 
     const profile = memberData?.profile;
     const stats = memberData?.stats;
@@ -384,14 +386,19 @@ const MemberDetail = () => {
 
     const patchMemberCardColor = async (themeId) => {
         if (!id) return;
-        const backgroundColor = getMemberCardTheme(themeId).accent;
-        const token = localStorage.getItem("token");
-        await axios.patch(
-            `${endpoints.GetAdminAllUser}/${id}/color`,
-            { backgroundColor },
-            { headers: { Authorization: `Bearer ${token}` } },
-        );
-        await GetAllmenber({ soft: true });
+        setPatchingCardColor(true);
+        try {
+            const backgroundColor = getMemberCardTheme(themeId).accent;
+            const token = localStorage.getItem("token");
+            await axios.patch(
+                `${endpoints.GetAdminAllUser}/${id}/color`,
+                { backgroundColor },
+                { headers: { Authorization: `Bearer ${token}` } },
+            );
+            await GetAllmenber({ soft: true });
+        } finally {
+            setPatchingCardColor(false);
+        }
     };
 
     return (
@@ -656,6 +663,7 @@ const MemberDetail = () => {
 
                 <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{ ...detailsCardSx, position: "relative" }}>
+                        <MutationLoadingOverlay open={patchingCardColor} />
                         <Box
                             sx={{
                                 display: "flex",
@@ -671,7 +679,7 @@ const MemberDetail = () => {
                                     labelId="member-card-theme-label"
                                     id="member-card-theme"
                                     value={cardThemeId}
-
+                                    disabled={patchingCardColor}
                                     onChange={async (e) => {
                                         const next = e.target.value;
                                         const previous = cardThemeId;

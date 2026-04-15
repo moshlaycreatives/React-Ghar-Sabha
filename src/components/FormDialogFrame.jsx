@@ -1,10 +1,12 @@
 import { Box, Dialog, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { MutationLoadingOverlay } from "./MutationLoadingOverlay.jsx";
 
-export function DialogCloseButton({ onClose }) {
+export function DialogCloseButton({ onClose, disabled = false }) {
     return (
         <IconButton
             onClick={onClose}
+            disabled={disabled}
             size="small"
             aria-label="close"
             sx={{
@@ -23,6 +25,7 @@ const paperScrollable = {
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
+    position: "relative",
     maxHeight: {
         xs: "calc(100dvh - 16px)",
         sm: "calc(100dvh - 32px)",
@@ -34,6 +37,7 @@ const paperSimple = {
     borderRadius: "12px",
     boxShadow: "0px 8px 32px rgba(47, 47, 47, 0.12)",
     overflow: "hidden",
+    position: "relative",
 };
 
 /**
@@ -50,12 +54,18 @@ export function FormDialogFrame({
     dividerAfterHeader = false,
     headerPaddingBottom = 1.5,
     bodyPaddingTop = 0,
+    loading = false,
     children,
 }) {
+    const handleDialogClose = (event, reason) => {
+        if (loading) return;
+        onClose?.(event, reason);
+    };
+
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleDialogClose}
             maxWidth="sm"
             fullWidth
             slotProps={{
@@ -84,7 +94,7 @@ export function FormDialogFrame({
                 >
                     {title}
                 </Typography>
-                <DialogCloseButton onClose={onClose} />
+                <DialogCloseButton onClose={onClose} disabled={loading} />
             </Box>
 
             {dividerAfterHeader ? (
@@ -109,6 +119,7 @@ export function FormDialogFrame({
             ) : (
                 children
             )}
+            <MutationLoadingOverlay open={loading} />
         </Dialog>
     );
 }

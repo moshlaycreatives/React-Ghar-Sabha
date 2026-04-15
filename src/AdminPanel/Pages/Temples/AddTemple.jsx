@@ -15,6 +15,7 @@ import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 
 
 
@@ -159,9 +160,10 @@ const AddTemple = () => {
                     p: { xs: 2, md: 0 },
                     borderRadius: "20px",
                     backgroundColor: "#fff",
-
+                    position: "relative",
                 }}
             >
+                <MutationLoadingOverlay open={submitting} />
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>
                     <Typography sx={{ fontFamily: "Inter", fontSize: "25px", lineHeight: "24px", fontWeight: 500, color: "#2F2F2F" }}>
                         Add Temple Details
@@ -177,6 +179,7 @@ const AddTemple = () => {
                             placeholder="Enter temple name"
                             sx={inputSx}
                             value={formdata.title}
+                            disabled={submitting}
                             onChange={handleInputChange("title")}
                         />
                     </Grid>
@@ -188,6 +191,7 @@ const AddTemple = () => {
                             placeholder="Enter phone no."
                             sx={inputSx}
                             value={formdata.phone}
+                            disabled={submitting}
                             onChange={handleInputChange("phone")}
                         />
                     </Grid>
@@ -199,6 +203,7 @@ const AddTemple = () => {
                             placeholder="Enter email"
                             sx={inputSx}
                             value={formdata.email}
+                            disabled={submitting}
                             onChange={handleInputChange("email")}
                         />
                     </Grid>
@@ -211,6 +216,7 @@ const AddTemple = () => {
                             placeholder="Enter whatsapp no."
                             sx={inputSx}
                             value={formdata.whatsappNumber}
+                            disabled={submitting}
                             onChange={handleInputChange("whatsappNumber")}
                         />
                     </Grid>
@@ -222,6 +228,7 @@ const AddTemple = () => {
                             placeholder="Enter map url"
                             sx={inputSx}
                             value={formdata.googleMapUrl}
+                            disabled={submitting}
                             onChange={handleInputChange("googleMapUrl")}
                         />
                     </Grid>
@@ -232,6 +239,7 @@ const AddTemple = () => {
                             fullWidth
                             size="small"
                             value={formdata.country}
+                            disabled={submitting}
                             onChange={handleInputChange("country")}
                             sx={inputSx}
                         >
@@ -254,6 +262,7 @@ const AddTemple = () => {
                             minRows={4}
                             placeholder="Enter details"
                             value={formdata.introduction}
+                            disabled={submitting}
                             onChange={handleInputChange("introduction")}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
@@ -281,6 +290,7 @@ const AddTemple = () => {
                                         size="small"
                                         placeholder="Example: 7:30am to 10:15am"
                                         value={timing}
+                                        disabled={submitting}
                                         onChange={(e) => handleTimingChange(index, e.target.value)}
                                         sx={inputSx}
                                     />
@@ -291,6 +301,7 @@ const AddTemple = () => {
                                     variant="outlined"
                                     color="primary"
                                     onClick={handleAddMoreTiming}
+                                    disabled={submitting}
                                     sx={{
                                         borderRadius: "8px",
                                         px: 2,
@@ -316,6 +327,7 @@ const AddTemple = () => {
                             accept="image/*"
                             multiple
                             hidden
+                            disabled={submitting}
                             onChange={handleTempleImagesChange}
                         />
                         <Box

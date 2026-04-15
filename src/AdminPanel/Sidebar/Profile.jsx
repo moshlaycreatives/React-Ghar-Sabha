@@ -117,7 +117,7 @@ const Profile = () => {
               sx={{ width: 50, height: 50, margin: "15px 0px 15px 15px" }}
             /> */}
 
-            <img src="/image/profile.png" style={{ width: 55, height: 55, margin: "5px 0px 5px 15px" }} />
+            <img src="/image/avatorimage.png" style={{ width: 55, height: 55, margin: "5px 0px 5px 15px" }} />
           </Box>
         </IconButton>
         <Menu
@@ -140,7 +140,7 @@ const Profile = () => {
           fontSize: { xs: "11px", md: "16px" },
           color: "#F36100"
         }}>
-          Kunal Verma
+          Ghar Sabha
         </Typography>
         <Typography style={{
           fontFamily: "Inter",

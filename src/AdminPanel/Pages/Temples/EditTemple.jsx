@@ -15,6 +15,7 @@ import { endpoints } from "../../../apiEndpoints";
 import { uploadMultipleMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 
 const countries = ["India", "USA", "UK", "Canada", "Australia"];
 const inputSx = {
@@ -183,9 +184,10 @@ const EditTemple = () => {
                     p: { xs: 2, md: 0 },
                     borderRadius: "20px",
                     backgroundColor: "#fff",
-
+                    position: "relative",
                 }}
             >
+                <MutationLoadingOverlay open={submitting} />
                 <Box sx={{ px: { xs: 2, md: 3 }, py: 1.7, borderBottom: "1px solid #EFEFEF" }}>
                     <Typography sx={{ fontFamily: "Inter", fontSize: "25px", lineHeight: "24px", fontWeight: 500, color: "#2F2F2F" }}>
                         Edit Temple Details
@@ -201,6 +203,7 @@ const EditTemple = () => {
                             placeholder="Enter temple name"
                             sx={inputSx}
                             value={formdata.title}
+                            disabled={submitting}
                             onChange={handleInputChange("title")}
                         />
                     </Grid>
@@ -212,6 +215,7 @@ const EditTemple = () => {
                             placeholder="Enter phone no."
                             sx={inputSx}
                             value={formdata.phone}
+                            disabled={submitting}
                             onChange={handleInputChange("phone")}
                         />
                     </Grid>
@@ -223,6 +227,7 @@ const EditTemple = () => {
                             placeholder="Enter email"
                             sx={inputSx}
                             value={formdata.email}
+                            disabled={submitting}
                             onChange={handleInputChange("email")}
                         />
                     </Grid>
@@ -235,6 +240,7 @@ const EditTemple = () => {
                             placeholder="Enter whatsapp no."
                             sx={inputSx}
                             value={formdata.whatsappNumber}
+                            disabled={submitting}
                             onChange={handleInputChange("whatsappNumber")}
                         />
                     </Grid>
@@ -246,6 +252,7 @@ const EditTemple = () => {
                             placeholder="Enter map url"
                             sx={inputSx}
                             value={formdata.googleMapUrl}
+                            disabled={submitting}
                             onChange={handleInputChange("googleMapUrl")}
                         />
                     </Grid>
@@ -256,6 +263,7 @@ const EditTemple = () => {
                             fullWidth
                             size="small"
                             value={formdata.country}
+                            disabled={submitting}
                             onChange={handleInputChange("country")}
                             sx={inputSx}
                         >
@@ -278,6 +286,7 @@ const EditTemple = () => {
                             minRows={4}
                             placeholder="Enter details"
                             value={formdata.introduction}
+                            disabled={submitting}
                             onChange={handleInputChange("introduction")}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
@@ -305,6 +314,7 @@ const EditTemple = () => {
                                         size="small"
                                         placeholder="Example: 7:30am to 10:15am"
                                         value={timing}
+                                        disabled={submitting}
                                         onChange={(e) => handleTimingChange(index, e.target.value)}
                                         sx={inputSx}
                                     />
@@ -315,6 +325,7 @@ const EditTemple = () => {
                                     variant="outlined"
                                     color="primary"
                                     onClick={handleAddMoreTiming}
+                                    disabled={submitting}
                                     sx={{
                                         borderRadius: "8px",
                                         px: 2,
@@ -340,6 +351,7 @@ const EditTemple = () => {
                             accept="image/*"
                             multiple
                             hidden
+                            disabled={submitting}
                             onChange={handleTempleImagesChange}
                         />
                         <Box

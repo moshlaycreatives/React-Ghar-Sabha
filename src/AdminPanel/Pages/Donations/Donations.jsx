@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Grid } from "@mui/material";
+import { MutationLoadingOverlay } from "../../../components/MutationLoadingOverlay.jsx";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import AddDonationPopup from "./AddDonationPopup";
@@ -31,6 +32,7 @@ const Donations = () => {
     const [deleteDonationOpen, setDeleteDonationOpen] = useState(false);
     const [selectedDonationId, setSelectedDonationId] = useState(null);
     const [listLoaded, setListLoaded] = useState(false);
+    const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
     const donations = DonationDetailData?.donations ?? [];
 
@@ -51,6 +53,8 @@ const Donations = () => {
 
 
     const handleCompleteClick = async () => {
+        handleMenuClose();
+        setIsUpdatingStatus(true);
         try {
             const token = localStorage.getItem('token');
             await axios.patch(`${endpoints.AdminDonations}/${selectedDonationId}/status`, { status: true }, {
@@ -60,8 +64,9 @@ const Donations = () => {
             GetAllDonation();
         } catch (error) {
             toast.error(getApiErrorMessage(error, "Could not update donation status"));
+        } finally {
+            setIsUpdatingStatus(false);
         }
-        handleMenuClose();
     };
 
     const handleDeleteClick = () => {
@@ -105,7 +110,8 @@ const Donations = () => {
     };
 
     return (
-        <>
+        <Box sx={{ position: "relative", minHeight: "100%" }}>
+            <MutationLoadingOverlay open={isUpdatingStatus} />
             <DashboardPageHeader
                 accentSegment="Other Donations"
                 action={
@@ -189,7 +195,7 @@ const Donations = () => {
                 onDelete={GetAllDonation}
                 id={selectedDonationId}
             />
-        </>
+        </Box>
     );
 };
 
