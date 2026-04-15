@@ -25,24 +25,17 @@ import EventHistory from "../Pages/EventHistory/EventHistory";
 
 
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
     backgroundColor: "#FCF6F2",
     flexGrow: 1,
     height: "100vh",
     overflowY: "auto",
     boxSizing: "border-box",
-    // Desktop: Sidebar Box takes 310px, we add 25px gap via padding
-    padding: "130px 30px 30px 25px",
-    [theme.breakpoints.down("lg")]: {
-        // Below LG: Sidebar is temporary, so we use full standard padding
-        padding: "120px 24px 24px 24px",
-    },
-    [theme.breakpoints.down("md")]: {
-        padding: "115px 20px 20px 20px",
-    },
-    [theme.breakpoints.down("sm")]: {
-        padding: "110px 15px 15px 15px",
-    },
+    // Keep top spacing smooth across screen sizes instead of abrupt breakpoint jumps.
+    paddingTop: "clamp(100px, 11vh, 120px)",
+    paddingRight: "clamp(15px, 2.5vw, 30px)",
+    paddingBottom: "clamp(15px, 2.5vw, 30px)",
+    paddingLeft: "clamp(15px, 2.5vw, 25px)",
 }));
 
 const AdminPortal = () => {

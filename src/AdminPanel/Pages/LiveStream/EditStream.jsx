@@ -20,6 +20,30 @@ import { uploadMedia } from "../../../api/uploadMedia";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../utils/apiErrorMessage.js";
 
+/** API often returns "2:30 PM" etc.; <input type="time"> only accepts "HH:mm" (24h). */
+function toTimeInputValue(raw) {
+    if (raw == null || raw === "") return "";
+    const s = String(raw).trim();
+    const has12h = /\b(AM|PM)\b/i.test(s);
+    if (!has12h) {
+        const m = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+        if (m) {
+            const h = parseInt(m[1], 10);
+            const min = m[2];
+            if (h >= 0 && h <= 23) return `${String(h).padStart(2, "0")}:${min}`;
+        }
+        return "";
+    }
+    const m12 = s.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)\s*$/i);
+    if (!m12) return "";
+    let h = parseInt(m12[1], 10);
+    const min = m12[2];
+    const ap = m12[3].toUpperCase();
+    if (ap === "PM" && h !== 12) h += 12;
+    if (ap === "AM" && h === 12) h = 0;
+    return `${String(h).padStart(2, "0")}:${min}`;
+}
+
 const EditStream = ({ open, onClose, data, onSave }) => {
     const [formData, setFormData] = useState({
         image: "",
@@ -40,7 +64,7 @@ const EditStream = ({ open, onClose, data, onSave }) => {
                 title: data.title || "",
                 youtubeLiveLink: data.youtubeLiveLink || data.link || "",
                 date: data.date || "",
-                time: data.time || "",
+                time: toTimeInputValue(data.time) || "",
             });
             setImagePreview(data.image || null);
             setSelectedFile(null);

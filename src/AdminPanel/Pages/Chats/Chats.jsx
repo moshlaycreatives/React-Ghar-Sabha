@@ -99,6 +99,7 @@ const Chats = () => {
     const imageInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const groupSearchInputRef = useRef(null);
+    const messagesScrollRef = useRef(null);
 
     const [groupSearchOpen, setGroupSearchOpen] = useState(false);
     const [groupSearch, setGroupSearch] = useState("");
@@ -229,6 +230,16 @@ const Chats = () => {
         }
     }, [activeGroup]);
 
+    // Scroll chat to the latest message when opening a group or when messages update
+    useEffect(() => {
+        if (isMessagesLoading) return;
+        const el = messagesScrollRef.current;
+        if (!el || messages.length === 0) return;
+        requestAnimationFrame(() => {
+            el.scrollTop = el.scrollHeight;
+        });
+    }, [messages, isMessagesLoading, selectedGroupId]);
+
     const handleDownloadQRCode = () => {
         if (!activeGroup?.qrCode) {
             toast.error("QR Code not available for this group");
@@ -291,6 +302,9 @@ const Chats = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 toast.success("Message sent successfully to Ghar Sabha Group");
+                if (finalPayload.chatGroupId) {
+                    fetchMessages(finalPayload.chatGroupId);
+                }
                 // Clear input after sending
                 setSendText(prev => ({
                     ...prev,
@@ -811,6 +825,7 @@ const Chats = () => {
                         </Box>
 
                         <Box
+                            ref={messagesScrollRef}
                             sx={{
                                 flex: 1,
                                 overflowY: "auto",
@@ -836,6 +851,7 @@ const Chats = () => {
                                                 <OutgoingEventPoll
                                                     time={time}
                                                     imageSrc={msg.imageUrl}
+                                                    text={msg.text}
                                                     pollContent={msg.pollContent}
                                                     totalPollCount={msg.totalPollCount}
                                                     percentage={msg.percentage}
@@ -1295,7 +1311,9 @@ function OutgoingFile({ time, fileUrl, text, senderName, profile, colorCode }) {
     );
 }
 
-function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percentage, senderName, profile, colorCode }) {
+function OutgoingEventPoll({ time, imageSrc, text, pollContent, totalPollCount, percentage, senderName, profile, colorCode }) {
+    const bodyText = (text || "").trim();
+    const pollQuestion = pollContent || "Will you be attending this event?";
     return (
         <Box
             sx={{
@@ -1325,6 +1343,20 @@ function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percen
                     />
                 )}
                 <Box sx={{ px: 2, py: 1.5 }}>
+                    {bodyText && (
+                        <Typography
+                            sx={{
+                                fontFamily: "Inter",
+                                fontWeight: 400,
+                                fontSize: "14px",
+                                lineHeight: 1.45,
+                                color: "#2F2F2F",
+                                mb: 1.5,
+                            }}
+                        >
+                            {bodyText}
+                        </Typography>
+                    )}
                     <Typography
                         sx={{
                             fontFamily: "Inter",
@@ -1334,7 +1366,7 @@ function OutgoingEventPoll({ time, imageSrc, pollContent, totalPollCount, percen
                             mb: 1.5,
                         }}
                     >
-                        {pollContent || "Will you be attending this event?"}
+                        {pollQuestion}
                     </Typography>
                     <LinearProgress
                         variant="determinate"

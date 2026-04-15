@@ -48,8 +48,8 @@ const CARD_HEADER_PNG =
 /** Orange card top wave — `public/image/member-card-header-orange.png` (upload / replace yahi file). */
 const CARD_HEADER_ORANGE_PNG = "/image/member-card-header-orange.png";
 
-const PROFILE_IMG =
-    "https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2F0SNz11IwWISrcdILYBXz%2F84811f687c2aba3e47ecabaf86e7097407df88a9Ellipse%201588.png?alt=media&token=46db9646-01e3-4522-b9b1-e05001fe770d";
+/** Same placeholder as top profile when API has no `profilePicture`. */
+const AVATAR_FALLBACK = "/image/avatorimage.png";
 
 const MEMBER_CARD_THEMES = [
     { id: "golden", label: "Gold", accent: "#FECA38", titleColor: "#2F2F2F", headerImage: CARD_HEADER_PNG },
@@ -95,7 +95,7 @@ const MembershipCard = ({
     const titleColor = theme.titleColor ?? "#2F2F2F";
     /** Location bar ke dono sides — green asset ki jagah theme accent (gold / orange). */
     const footerBarGradient = `linear-gradient(90deg, ${accent} 0%, color-mix(in srgb, ${accent} 55%, white) 10%, rgba(255,255,255,0.97) 38%, rgba(255,255,255,0.97) 62%, color-mix(in srgb, ${accent} 55%, white) 90%, ${accent} 100%)`;
-    const photoSrc = profileImageUrl || PROFILE_IMG;
+    const photoSrc = profileImageUrl || AVATAR_FALLBACK;
 
     const COLORS = {
         darkText: "#2E2E2E",
@@ -421,7 +421,7 @@ const MemberDetail = () => {
                             }}
                         >
                             <img
-                                src={profile?.profilePicture || "/image/ProfileImage.png"}
+                                src={profile?.profilePicture || AVATAR_FALLBACK}
                                 style={{
                                     width: "120px",
                                     height: "120px",
@@ -594,7 +594,7 @@ const MemberDetail = () => {
                                 </Typography>
                             </Box>
                             <Box sx={{ display: "grid", gridTemplateColumns: "150px minmax(0, 1fr)", columnGap: "12px", alignItems: "start" }}>
-                                <Typography sx={commonDetailTitleSx}>WhatsApp No.:</Typography>
+                                <Typography sx={commonDetailTitleSx}>WhatsApp No:</Typography>
                                 <Typography sx={{ ...commonMutedTextSx, lineHeight: "31px", wordBreak: "break-word" }}>
                                     {profile?.isPhoneOnWhatsApp === false
                                         ? "—"

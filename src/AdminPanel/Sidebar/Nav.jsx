@@ -106,7 +106,7 @@ const Nav = ({ menuData }) => {
         <Box
           key={index}
           style={{
-            margin: "20px 0px 15px 0px",
+            margin: "0px 0px 15px 0px",
             // backgroundColor: "#FFA201",
             height: "100px",
             display: "flex",
