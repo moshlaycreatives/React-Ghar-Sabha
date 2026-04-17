@@ -414,7 +414,7 @@ const SecondSection = () => {
                                                     <TableCell>
                                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                             <img
-                                                                src={row.profilePicture}
+                                                                src={row.profilePicture || "/image/avatorimage.png"}
                                                                 alt={row.name}
                                                                 style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                                             />
