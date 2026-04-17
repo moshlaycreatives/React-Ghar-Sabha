@@ -121,10 +121,6 @@ const MembershipCard = ({
             <style>
                 {`
           @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap');
-          @font-face {
-            font-family: 'PoetsenOne';
-            src: url('https://fonts.gstatic.com/s/poetsenone/v12/ijwaLr6T_Vv36_u22-W4P0Z6.woff2') format('woff2');
-          }
         `}
             </style>
 
@@ -157,6 +153,7 @@ const MembershipCard = ({
                 </Box>
 
                 <Typography
+                    className="member-card-title-poetsen"
                     sx={{
                         position: "absolute",
                         left: 42,
@@ -164,7 +161,7 @@ const MembershipCard = ({
                         zIndex: 4,
                         color: titleColor,
                         fontSize: "35px",
-                        fontFamily: "PoetsenOne, sans-serif",
+                        fontWeight: 400,
                     }}
                 >
                     Ghar Sabha
@@ -680,6 +677,43 @@ const MemberDetail = () => {
                                     id="member-card-theme"
                                     value={cardThemeId}
                                     disabled={patchingCardColor}
+                                    sx={{
+                                        borderRadius: 999,
+                                        bgcolor: "#f2f2f2",
+                                        color: "#4a4a4a",
+                                        fontFamily: "Inter, system-ui, sans-serif",
+                                        fontSize: "0.875rem",
+                                        fontWeight: 500,
+                                        boxShadow: "none",
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            border: "none",
+                                        },
+                                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                                            border: "none",
+                                        },
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border: "none",
+                                        },
+                                        "&.Mui-focused": {
+                                            boxShadow: "none",
+                                        },
+                                        "& .MuiSelect-select": {
+                                            py: 0.75,
+                                            px: 2,
+                                            pr: 3.75,
+                                            minHeight: "unset",
+                                            display: "flex",
+                                            alignItems: "center",
+                                        },
+                                        "& .MuiSelect-icon": {
+                                            color: "#4a4a4a",
+                                            right: 10,
+                                        },
+                                        "&.Mui-disabled": {
+                                            bgcolor: "#f2f2f2",
+                                            opacity: 0.72,
+                                        },
+                                    }}
                                     onChange={async (e) => {
                                         const next = e.target.value;
                                         const previous = cardThemeId;

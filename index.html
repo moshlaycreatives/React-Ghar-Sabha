@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poetsen+One&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -20,6 +20,10 @@
       .MuiTableCell-root,
       .MuiButton-root {
         font-family: "Inter", sans-serif !important;
+      }
+      /* Must beat rule above: Inter uses !important on .MuiTypography-root */
+      .MuiTypography-root.member-card-title-poetsen {
+        font-family: "Poetsen One", sans-serif !important;
       }
     </style>
     <title>Ghar Sabha</title>

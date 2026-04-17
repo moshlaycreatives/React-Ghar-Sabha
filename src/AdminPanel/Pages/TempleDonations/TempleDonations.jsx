@@ -124,7 +124,7 @@ const TempleDonations = () => {
                                             </Typography>
                                         </Box>
                                     </TableCell>
-                                    <TableCell sx={commonMutedTextSx}>{row.amount}{row.currencySymbol}</TableCell>
+                                    <TableCell sx={commonMutedTextSx}>{row.currencySymbol}{row.amount}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.country}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>{row.state}</TableCell>
                                     <TableCell sx={commonMutedTextSx}>
