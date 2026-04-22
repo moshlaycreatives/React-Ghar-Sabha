@@ -2,12 +2,23 @@ import { Menu, MenuItem } from "@mui/material";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
+import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
 
 
 
 
 
-export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete, onComplete }) {
+export function CardOptionsMenu({
+    anchorEl,
+    open,
+    onClose,
+    onEdit,
+    onDelete,
+    onComplete,
+    inactive,
+    onInactiveToggle,
+}) {
+    const showInactiveToggle = typeof inactive === "boolean" && typeof onInactiveToggle === "function";
     return (
         <Menu
             anchorEl={anchorEl}
@@ -29,6 +40,18 @@ export function CardOptionsMenu({ anchorEl, open, onClose, onEdit, onDelete, onC
                 <MenuItem onClick={() => { onComplete?.(); onClose(); }} sx={{ fontSize: 14 , gap:"8px", color:"green" }}>
                     <DoneOutlinedIcon sx={{ fontSize: 18, }} />
                     Complete
+                </MenuItem>
+            )}
+            {showInactiveToggle && (
+                <MenuItem
+                    onClick={() => {
+                        onInactiveToggle?.();
+                        onClose();
+                    }}
+                    sx={{ fontSize: 14, gap: 1 }}
+                >
+                    <ToggleOffOutlinedIcon sx={{ fontSize: 18 }} />
+                    {inactive ? "Active" : "Deactive"}
                 </MenuItem>
             )}
             <MenuItem onClick={() => { onDelete?.(); onClose(); }} sx={{ fontSize: 14, color: "error.main", gap: 1 }}>

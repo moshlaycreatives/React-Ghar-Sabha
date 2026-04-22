@@ -4,11 +4,13 @@ import {
     Button,
     CircularProgress,
     Grid,
+    IconButton,
     MenuItem,
     TextField,
     Typography,
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { endpoints } from "../../../apiEndpoints";
@@ -42,6 +44,30 @@ const fieldTitleSx = {
     color: "#2F2F2F",
 };
 
+function coerceTempleImageUrl(entry) {
+    if (!entry) return "";
+    if (typeof entry === "string") return entry.trim();
+    if (typeof entry === "object") {
+        const u = entry.url ?? entry.fileUrl ?? entry.mediaUrl ?? entry.path ?? entry.location;
+        return typeof u === "string" ? u.trim() : "";
+    }
+    return "";
+}
+
+function normalizeTempleImageList(raw) {
+    if (raw == null) return [];
+    const list = Array.isArray(raw) ? raw : [raw];
+    return list.map(coerceTempleImageUrl).filter(Boolean);
+}
+
+const templeThumbSx = {
+    width: "100%",
+    height: 120,
+    objectFit: "cover",
+    borderRadius: "8px",
+    display: "block",
+};
+
 const EditTemple = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -59,9 +85,22 @@ const EditTemple = () => {
 
     const [darshanTimings, setDarshanTimings] = useState(["", "", ""]);
     const [templeImages, setTempleImages] = useState([]);
+    const [newImagePreviewUrls, setNewImagePreviewUrls] = useState([]);
     const [existingImages, setExistingImages] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (templeImages.length === 0) {
+            setNewImagePreviewUrls([]);
+            return;
+        }
+        const urls = templeImages.map((file) => URL.createObjectURL(file));
+        setNewImagePreviewUrls(urls);
+        return () => {
+            urls.forEach((u) => URL.revokeObjectURL(u));
+        };
+    }, [templeImages]);
 
     const fetchTempleDetails = useCallback(async () => {
         setLoading(true);
@@ -74,9 +113,10 @@ const EditTemple = () => {
             });
             const data = response.data?.data?.temple;
             if (data) {
+                const imageUrls = normalizeTempleImageList(data.images);
                 setformdata({
                     title: data.title || "",
-                    images: data.images || [],
+                    images: imageUrls,
                     phone: data.phone || "",
                     whatsappNumber: data.whatsappNumber || "",
                     googleMapUrl: data.googleMapUrl || "",
@@ -86,7 +126,7 @@ const EditTemple = () => {
                     timeSlots: data.timeSlots || []
                 });
                 setDarshanTimings(data.timeSlots?.length > 0 ? data.timeSlots : ["", "", ""]);
-                setExistingImages(data.images || []);
+                setExistingImages(imageUrls);
             }
         } catch (error) {
             toast.error(getApiErrorMessage(error, "Failed to load temple details"));
@@ -121,6 +161,18 @@ const EditTemple = () => {
         const selectedFiles = Array.from(event.target.files || []);
         if (!selectedFiles.length) return;
         setTempleImages(selectedFiles);
+    };
+
+    const removeExistingImageAt = (index) => {
+        setExistingImages((prev) => prev.filter((_, i) => i !== index));
+        setformdata((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
+    };
+
+    const removeNewTempleImageAt = (index) => {
+        setTempleImages((prev) => prev.filter((_, i) => i !== index));
     };
 
     const UpdateTemple = async () => {
@@ -399,10 +451,87 @@ const EditTemple = () => {
                                         px: 2,
                                     }}
                                 >
-                                    {existingImages.length} existing image(s)
+                                    {existingImages.length} saved image(s)
                                 </Typography>
                             ) : null}
                         </Box>
+                        {(existingImages.length > 0 || newImagePreviewUrls.length > 0) ? (
+                            <Grid container spacing={1.5} sx={{ mt: 1.5 }}>
+                                {existingImages.map((src, index) => (
+                                    <Grid key={`existing-${src}-${index}`} size={{ xs: 6, sm: 4, md: 3 }}>
+                                        <Box sx={{ position: "relative", borderRadius: "8px", overflow: "hidden" }}>
+                                            <Box
+                                                component="img"
+                                                src={src}
+                                                alt={`Temple image ${index + 1}`}
+                                                sx={templeThumbSx}
+                                            />
+                                            <IconButton
+                                                type="button"
+                                                size="small"
+                                                aria-label="Remove saved image"
+                                                disabled={submitting}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    removeExistingImageAt(index);
+                                                }}
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: 6,
+                                                    right: 6,
+                                                    width: 28,
+                                                    height: 28,
+                                                    bgcolor: "rgba(255,255,255,0.95)",
+                                                    boxShadow: 1,
+                                                    "&:hover": { bgcolor: "#fff" },
+                                                }}
+                                            >
+                                                <CloseIcon sx={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                                {newImagePreviewUrls.map((src, index) => (
+                                    <Grid key={`new-${index}`} size={{ xs: 6, sm: 4, md: 3 }}>
+                                        <Box sx={{ position: "relative", borderRadius: "8px", overflow: "hidden" }}>
+                                            <Box
+                                                component="img"
+                                                src={src}
+                                                alt={`New image preview ${index + 1}`}
+                                                sx={{
+                                                    ...templeThumbSx,
+                                                    boxShadow: "inset 0 0 0 2px #F36100",
+                                                }}
+                                            />
+                                            <IconButton
+                                                type="button"
+                                                size="small"
+                                                aria-label="Remove new image"
+                                                disabled={submitting}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    removeNewTempleImageAt(index);
+                                                }}
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: 6,
+                                                    right: 6,
+                                                    width: 28,
+                                                    height: 28,
+                                                    bgcolor: "rgba(255,255,255,0.95)",
+                                                    boxShadow: 1,
+                                                    "&:hover": { bgcolor: "#fff" },
+                                                }}
+                                            >
+                                                <CloseIcon sx={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : null}
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 4 }}>

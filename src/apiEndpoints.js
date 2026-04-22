@@ -1,7 +1,8 @@
 
-const BASE_URL = "http://192.168.18.158:3000/api"
+// const BASE_URL = "http://192.168.18.158:3000/api"
 
 
+const BASE_URL = "https://gharsabha.app/core/api"
 
 
 
@@ -11,9 +12,13 @@ export const endpoints = {
     GetAdminAllUser: `${BASE_URL}/admin/users`,
     AdminEventBanner: `${BASE_URL}/event-banners/admin`,
     AdminAddTemple: `${BASE_URL}/admin/temples`,
+    /** PATCH body: `{ inactive: boolean }` */
+    AdminTempleInactive: (id) => `${BASE_URL}/admin/temples/${id}/inactive`,
     GetTempleDonations: `${BASE_URL}/admin/donations/temple-payments`,
     AdminCreateNewEvent: `${BASE_URL}/events/admin`,
     AdminDonations: `${BASE_URL}/admin/donations`,
+    /** PATCH body: `{ inactive: boolean }` */
+    AdminDonationInactive: (id) => `${BASE_URL}/admin/donations/${id}/inactive`,
     GetAllCountry: `${BASE_URL}/public/countries`,
     GetAllStates: `${BASE_URL}/public/states`,
     GetAllCity: `${BASE_URL}/public/cities`,

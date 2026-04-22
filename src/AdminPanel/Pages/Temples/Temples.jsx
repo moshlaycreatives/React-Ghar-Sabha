@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,15 @@ import {
     Button,
 } from "@mui/material";
 
+function templeRowImageUrl(images) {
+    const first = images?.[0];
+    if (!first) return null;
+    if (typeof first === "string") return first;
+    if (typeof first === "object") {
+        return first.url ?? first.fileUrl ?? first.mediaUrl ?? first.path ?? first.location ?? null;
+    }
+    return null;
+}
 
 
 const Temples = () => {
@@ -67,6 +77,21 @@ const Temples = () => {
         navigate(`/dashboard/add-temple`)
     };
 
+    const patchTempleInactive = async (templeId, nextInactive) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.patch(
+                endpoints.AdminTempleInactive(templeId),
+                { inactive: nextInactive },
+                { headers: { Authorization: `Bearer ${token}` } },
+            );
+            toast.success(nextInactive ? "Temple deactivated" : "Temple activated");
+            handleClose();
+            await GetAlltemple(page, limit);
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Failed to update temple status"));
+        }
+    };
 
     const GetAlltemple = async (currentPage = page, currentLimit = limit) => {
         try {
@@ -144,7 +169,7 @@ const Temples = () => {
                                     <TableCell>
                                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <img
-                                                src={row.images?.[0] || "/image/Tpimage.png"}
+                                                src={templeRowImageUrl(row.images) || "/image/Tpimage.png"}
                                                 alt={row.title}
                                                 style={{ width: "36px", height: "36px", borderRadius: "20px", objectFit: "cover" }}
                                             />
@@ -194,6 +219,13 @@ const Temples = () => {
                                             >
                                                 <EditOutlinedIcon sx={{ fontSize: 18 }} />
                                                 Edit
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() => patchTempleInactive(row.id, !row.inactive)}
+                                                sx={{ fontSize: 14, gap: 1 }}
+                                            >
+                                                <ToggleOffOutlinedIcon sx={{ fontSize: 18 }} />
+                                                {row.inactive ? "Activate" : "Deactivate"}
                                             </MenuItem>
                                             <MenuItem
                                                 onClick={() => {

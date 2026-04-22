@@ -31,15 +31,17 @@ const Donations = () => {
     const [editDonationOpen, setEditDonationOpen] = useState(false);
     const [deleteDonationOpen, setDeleteDonationOpen] = useState(false);
     const [selectedDonationId, setSelectedDonationId] = useState(null);
+    const [selectedDonationInactive, setSelectedDonationInactive] = useState(false);
     const [listLoaded, setListLoaded] = useState(false);
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
     const donations = DonationDetailData?.donations ?? [];
 
-    const handleMenuOpen = (e, id) => {
+    const handleMenuOpen = (e, id, inactive = false) => {
         e.stopPropagation();
         setMenuAnchor(e.currentTarget);
         setSelectedDonationId(id);
+        setSelectedDonationInactive(Boolean(inactive));
     };
 
     const handleMenuClose = () => {
@@ -72,6 +74,29 @@ const Donations = () => {
     const handleDeleteClick = () => {
         setDeleteDonationOpen(true);
         handleMenuClose();
+    };
+
+    /** PATCH /api/admin/donations/:id/inactive — body `{ inactive }`
+     *  Deactive click (item active): send `inactive: true`
+     *  Active click (item inactive): send `inactive: false` */
+    const handleInactiveToggle = async () => {
+        handleMenuClose();
+        const inactivePayload = selectedDonationInactive ? false : true;
+        setIsUpdatingStatus(true);
+        try {
+            const token = localStorage.getItem("token");
+            await axios.patch(
+                endpoints.AdminDonationInactive(selectedDonationId),
+                { inactive: inactivePayload },
+                { headers: { Authorization: `Bearer ${token}` } },
+            );
+            toast.success(inactivePayload ? "Donation deactivated" : "Donation activated");
+            GetAllDonation();
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Could not update donation active status"));
+        } finally {
+            setIsUpdatingStatus(false);
+        }
     };
 
     const handleDetail = (id) => {
@@ -157,7 +182,9 @@ const Donations = () => {
                                     ? `Price: $${formatCurrency(ev.price)} / ${ev.itemName}`
                                     : `$${formatCurrency(ev.raisedAmount)}/$${formatCurrency(ev.price)} Donated`
                             }
-                            onMenuOpen={(e) => handleMenuOpen(e, ev?._id || ev?.id)}
+                            onMenuOpen={(e) =>
+                                handleMenuOpen(e, ev?._id || ev?.id, ev?.inactive)
+                            }
                             onView={() => handleDetail(ev?._id || ev?.id)}
                             menuAriaLabel="Donation options"
                             viewAriaLabel="View donation"
@@ -174,6 +201,8 @@ const Donations = () => {
                 onEdit={handleEditClick}
                 onComplete={handleCompleteClick}
                 onDelete={handleDeleteClick}
+                inactive={selectedDonationInactive}
+                onInactiveToggle={handleInactiveToggle}
             />
 
             <AddDonationPopup

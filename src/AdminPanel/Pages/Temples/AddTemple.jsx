@@ -4,11 +4,13 @@ import {
     Button,
     CircularProgress,
     Grid,
+    IconButton,
     MenuItem,
     TextField,
     Typography,
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { endpoints } from "../../../apiEndpoints";
@@ -45,6 +47,13 @@ const fieldTitleSx = {
     color: "#2F2F2F",
 };
 
+const templeThumbSx = {
+    width: "100%",
+    height: 120,
+    objectFit: "cover",
+    borderRadius: "8px",
+    display: "block",
+};
 
 
 const AddTemple = () => {
@@ -62,7 +71,8 @@ const AddTemple = () => {
     });
 
     const [darshanTimings, setDarshanTimings] = useState(["", "", ""]);
-    const [templeImages, setTempleImages] = useState([]);
+    const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
+    const [uploadingImages, setUploadingImages] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     const handleInputChange = (field) => (event) => {
@@ -82,24 +92,34 @@ const AddTemple = () => {
         setDarshanTimings((prev) => [...prev, ""]);
     };
 
-    const handleTempleImagesChange = (event) => {
+    const handleTempleImagesChange = async (event) => {
         const selectedFiles = Array.from(event.target.files || []);
+        if (event.target) {
+            event.target.value = "";
+        }
         if (!selectedFiles.length) return;
-        setTempleImages(selectedFiles);
+
+        setUploadingImages(true);
+        try {
+            const { urls } = await uploadMultipleMedia(selectedFiles, { path: "temples" });
+            setUploadedImageUrls(urls);
+        } catch (error) {
+            toast.error(getApiErrorMessage(error, "Image upload failed"));
+        } finally {
+            setUploadingImages(false);
+        }
+    };
+
+    const removeTempleImageAt = (index) => {
+        setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
     };
 
 
     const CreateTemple = async () => {
-        if (submitting) return;
+        if (submitting || uploadingImages) return;
 
         setSubmitting(true);
         try {
-            let uploadedImageUrls = [];
-            if (templeImages.length > 0) {
-                const { urls } = await uploadMultipleMedia(templeImages, { path: "temples" });
-                uploadedImageUrls = urls;
-            }
-
             const payload = {
                 ...formdata,
                 images: uploadedImageUrls,
@@ -131,7 +151,7 @@ const AddTemple = () => {
                 timeSlots: []
             });
             setDarshanTimings(["", "", ""]);
-            setTempleImages([]);
+            setUploadedImageUrls([]);
         } catch (error) {
             toast.error(getApiErrorMessage(error, "Could not add temple"));
         } finally {
@@ -327,7 +347,7 @@ const AddTemple = () => {
                             accept="image/*"
                             multiple
                             hidden
-                            disabled={submitting}
+                            disabled={submitting || uploadingImages}
                             onChange={handleTempleImagesChange}
                         />
                         <Box
@@ -343,14 +363,19 @@ const AddTemple = () => {
                                 justifyContent: "center",
                                 flexDirection: "column",
                                 gap: 0.6,
-                                cursor: "pointer",
+                                cursor: submitting || uploadingImages ? "default" : "pointer",
+                                opacity: submitting || uploadingImages ? 0.7 : 1,
                             }}
                         >
-                            <CloudUploadOutlinedIcon sx={{ fontSize: 36, color: "#2F2F2F" }} />
+                            {uploadingImages ? (
+                                <CircularProgress size={32} sx={{ color: "primary.main" }} />
+                            ) : (
+                                <CloudUploadOutlinedIcon sx={{ fontSize: 36, color: "#2F2F2F" }} />
+                            )}
                             <Typography sx={{ fontFamily: "Inter", color: "#2F2F2F", fontSize: "18px", lineHeight: "26px", fontWeight: 500 }}>
-                                Upload Images
+                                {uploadingImages ? "Uploading…" : "Upload Images"}
                             </Typography>
-                            {templeImages.length > 0 ? (
+                            {!uploadingImages && uploadedImageUrls.length > 0 ? (
                                 <Typography
                                     sx={{
                                         fontFamily: "Inter",
@@ -361,10 +386,49 @@ const AddTemple = () => {
                                         px: 2,
                                     }}
                                 >
-                                    {templeImages.length} image(s) selected
+                                    {uploadedImageUrls.length} image(s) uploaded
                                 </Typography>
                             ) : null}
                         </Box>
+                        {uploadedImageUrls.length > 0 ? (
+                            <Grid container spacing={1.5} sx={{ mt: 1.5 }}>
+                                {uploadedImageUrls.map((src, index) => (
+                                    <Grid key={`preview-${index}`} size={{ xs: 6, sm: 4, md: 3 }}>
+                                        <Box sx={{ position: "relative", borderRadius: "8px", overflow: "hidden" }}>
+                                            <Box
+                                                component="img"
+                                                src={src}
+                                                alt={`Temple preview ${index + 1}`}
+                                                sx={templeThumbSx}
+                                            />
+                                            <IconButton
+                                                type="button"
+                                                size="small"
+                                                aria-label="Remove image"
+                                                disabled={submitting || uploadingImages}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    removeTempleImageAt(index);
+                                                }}
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: 6,
+                                                    right: 6,
+                                                    width: 28,
+                                                    height: 28,
+                                                    bgcolor: "rgba(255,255,255,0.95)",
+                                                    boxShadow: 1,
+                                                    "&:hover": { bgcolor: "#fff" },
+                                                }}
+                                            >
+                                                <CloseIcon sx={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : null}
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 4 }}>
@@ -373,7 +437,7 @@ const AddTemple = () => {
                             variant="contained"
                             color="primary"
                             onClick={CreateTemple}
-                            disabled={submitting}
+                            disabled={submitting || uploadingImages}
                             sx={{ mt: 1, height: "40px", fontFamily: "Inter", borderRadius: "6px", fontSize: "16px", fontWeight: 400 }}
                         >
                             {submitting ? <CircularProgress size={24} color="inherit" /> : "Add Temple"}
