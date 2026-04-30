@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Grid, Typography, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import { Box, Grid, Typography, MenuItem, Select, FormControl, Button } from "@mui/material";
 import {
     Table,
     TableBody,
@@ -320,10 +320,17 @@ const MemberDetail = () => {
     const [memberData, setMemberData] = useState(null);
     const [cardThemeId, setCardThemeId] = useState("golden");
     const [patchingCardColor, setPatchingCardColor] = useState(false);
+    const [donationPage, setDonationPage] = useState(1);
 
     const profile = memberData?.profile;
     const stats = memberData?.stats;
     const donationHistory = memberData?.donationHistory ?? [];
+    const DONATION_ROWS_PER_PAGE = 6;
+    const totalDonationPages = Math.max(1, Math.ceil(donationHistory.length / DONATION_ROWS_PER_PAGE));
+    const paginatedDonationHistory = donationHistory.slice(
+        (donationPage - 1) * DONATION_ROWS_PER_PAGE,
+        donationPage * DONATION_ROWS_PER_PAGE,
+    );
 
     const fullName = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ").trim() || "—";
     const currencySym = profile?.currencySymbol ?? stats?.currency ?? "";
@@ -374,6 +381,16 @@ const MemberDetail = () => {
     useEffect(() => {
         GetAllmenber();
     }, [id]);
+
+    useEffect(() => {
+        setDonationPage(1);
+    }, [id, donationHistory.length]);
+
+    useEffect(() => {
+        if (donationPage > totalDonationPages) {
+            setDonationPage(totalDonationPages);
+        }
+    }, [donationPage, totalDonationPages]);
 
     /** API `baseColor` / `colorCard.backgroundColor` → card theme (sirf #FECA38 / #F36100). */
     useEffect(() => {
@@ -788,7 +805,7 @@ const MemberDetail = () => {
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        donationHistory.map((row) => (
+                                        paginatedDonationHistory.map((row) => (
                                             <TableRow key={row.id}>
                                                 <TableCell>
                                                     <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -817,6 +834,42 @@ const MemberDetail = () => {
                             </Table>
 
                         </Box>
+
+                        {donationHistory.length > 0 ? (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    px: 2,
+                                    pb: 2,
+                                    pt: 1,
+                                    gap: 1,
+                                }}
+                            >
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    disabled={donationPage === 1}
+                                    onClick={() => setDonationPage((prev) => Math.max(1, prev - 1))}
+                                    sx={{ textTransform: "none" }}
+                                >
+                                    Previous
+                                </Button>
+                                <Typography sx={{ ...commonMutedTextSx, fontSize: "13px" }}>
+                                    Page {donationPage} of {totalDonationPages}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    disabled={donationPage === totalDonationPages}
+                                    onClick={() => setDonationPage((prev) => Math.min(totalDonationPages, prev + 1))}
+                                    sx={{ textTransform: "none" }}
+                                >
+                                    Next
+                                </Button>
+                            </Box>
+                        ) : null}
 
 
                     </Box>
