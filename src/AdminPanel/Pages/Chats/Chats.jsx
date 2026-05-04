@@ -74,6 +74,9 @@ const carouselVisualBoxSx = {
 
 const FIXED_CAROUSEL_ITEM = { id: 0, kind: "brand", caption: "Ghar Sabha Group" };
 
+/** First carousel tile (Ghar Sabha Group) uses the send dialog; event chats send inline. */
+const isGharSabhaCarouselContext = (carouselId) => carouselId === 0;
+
 const Chats = () => {
     const [EventDetailData, setEventDetailData] = useState([]);
     const [selectedCarouselId, setSelectedCarouselId] = useState(0);
@@ -96,7 +99,9 @@ const Chats = () => {
     })
     const [messages, setMessages] = useState([]);
     const [isMessagesLoading, setIsMessagesLoading] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
+    /** null | "image" | "file" — which control is uploading (so only that button shows a spinner). */
+    const [uploadingMediaKind, setUploadingMediaKind] = useState(null);
+    const isUploading = uploadingMediaKind !== null;
     const [isPostingMessage, setIsPostingMessage] = useState(false);
     const imageInputRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -124,44 +129,6 @@ const Chats = () => {
             toast.error(getApiErrorMessage(error, "Could not load messages"));
         } finally {
             setIsMessagesLoading(false);
-        }
-    };
-
-    const handleUploadMedia = async (file, type) => {
-        if (!file) return;
-        setIsUploading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('file', file);
-
-            // Using UploadMediaSingle endpoint which is used in ImageUploadZone logic
-            const response = await axios.post(
-                `${endpoints.UploadMediaSingle}?path=chats`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-                    },
-                }
-            );
-
-            const uploadedUrl = response?.data?.data?.file?.url;
-            if (uploadedUrl) {
-                if (type === 'image') {
-                    setSendText(prev => ({ ...prev, imageUrl: uploadedUrl }));
-                    toast.success("Image uploaded successfully");
-                } else {
-                    setSendText(prev => ({ ...prev, fileUrl: uploadedUrl }));
-                    toast.success("File uploaded successfully");
-                }
-            }
-        } catch (error) {
-            console.error("Upload failed", error);
-            toast.error(getApiErrorMessage(error, "Failed to upload media"));
-        } finally {
-            setIsUploading(false);
         }
     };
 
@@ -220,6 +187,50 @@ const Chats = () => {
     };
 
     const activeGroup = chatGroups.find(g => g.id === selectedGroupId);
+
+    const handleUploadMedia = useCallback(async (file, type) => {
+        if (!file) return;
+        setUploadingMediaKind(type);
+        try {
+            const token = localStorage.getItem("token");
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await axios.post(
+                `${endpoints.UploadMediaSingle}?path=chats`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            const uploadedUrl = response?.data?.data?.file?.url;
+            if (uploadedUrl) {
+                if (type === "image") {
+                    setSendText((prev) => ({ ...prev, imageUrl: uploadedUrl }));
+                    if (isGharSabhaCarouselContext(selectedCarouselId)) {
+                        toast.success("Image uploaded — complete the form and send");
+                        setSendMessageOpen(true);
+                    } else {
+                        toast.success("Image ready — tap Send to post");
+                    }
+                } else {
+                    setSendText((prev) => ({ ...prev, fileUrl: uploadedUrl }));
+                    toast.success("File uploaded — tap Send to post");
+                }
+            } else {
+                toast.error("Upload finished but no file URL was returned");
+            }
+        } catch (error) {
+            console.error("Upload failed", error);
+            toast.error(getApiErrorMessage(error, "Failed to upload media"));
+        } finally {
+            setUploadingMediaKind(null);
+        }
+    }, [selectedCarouselId]);
 
     // Update chatGroupId and fetch messages when activeGroup changes
     useEffect(() => {
@@ -386,6 +397,13 @@ const Chats = () => {
         }
     };
 
+    const clearPendingImage = () => {
+        setSendText((prev) => ({ ...prev, imageUrl: "" }));
+        if (imageInputRef.current) imageInputRef.current.value = "";
+    };
+
+    const showEventGroupImagePreview =
+        Boolean(SendText.imageUrl) && !isGharSabhaCarouselContext(selectedCarouselId);
 
     return (
         <Box
@@ -899,6 +917,64 @@ const Chats = () => {
                                 bgcolor: "#FFFFFF",
                             }}
                         >
+                            {uploadingMediaKind === "image" && (
+                                <LinearProgress
+                                    sx={{
+                                        mb: 1,
+                                        borderRadius: 1,
+                                        height: 3,
+                                        bgcolor: "rgba(243, 97, 0, 0.12)",
+                                        "& .MuiLinearProgress-bar": { bgcolor: ORANGE },
+                                    }}
+                                />
+                            )}
+                            {showEventGroupImagePreview && (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                        mb: 1,
+                                        p: 1,
+                                        borderRadius: "12px",
+                                        border: "1px solid rgba(0,0,0,0.08)",
+                                        bgcolor: "#FAFAFA",
+                                    }}
+                                >
+                                    <Box
+                                        component="img"
+                                        src={SendText.imageUrl}
+                                        alt="Attached"
+                                        sx={{
+                                            width: 52,
+                                            height: 52,
+                                            borderRadius: "10px",
+                                            objectFit: "cover",
+                                            flexShrink: 0,
+                                            border: "1px solid rgba(0,0,0,0.06)",
+                                        }}
+                                    />
+                                    <Typography
+                                        sx={{
+                                            flex: 1,
+                                            fontFamily: "Inter",
+                                            fontSize: "13px",
+                                            color: GREY_MUTED,
+                                        }}
+                                    >
+                                        Image attached — tap Send to post
+                                    </Typography>
+                                    <IconButton
+                                        size="small"
+                                        aria-label="Remove image"
+                                        onClick={clearPendingImage}
+                                        disabled={isPostingMessage || isUploading}
+                                        sx={{ color: GREY_MUTED }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                </Box>
+                            )}
                             <Box
                                 sx={{
                                     display: "flex",
@@ -912,11 +988,15 @@ const Chats = () => {
                             >
                                 <InputBase
                                     placeholder={
-                                        isUploading
-                                            ? "Uploading media..."
-                                            : isPostingMessage
-                                                ? "Sending..."
-                                                : "Type your message..."
+                                        uploadingMediaKind === "image"
+                                            ? "Uploading image…"
+                                            : uploadingMediaKind === "file"
+                                                ? "Uploading file…"
+                                                : isPostingMessage
+                                                    ? "Sending…"
+                                                    : showEventGroupImagePreview
+                                                        ? "Caption optional — tap Send to post"
+                                                        : "Type your message…"
                                     }
                                     fullWidth
                                     value={SendText.text}
@@ -938,13 +1018,21 @@ const Chats = () => {
                                     accept="image/*"
                                     hidden
                                     ref={imageInputRef}
-                                    onChange={(e) => handleUploadMedia(e.target.files[0], 'image')}
+                                    onChange={(e) => {
+                                        const f = e.target.files?.[0];
+                                        if (f) handleUploadMedia(f, "image");
+                                        e.target.value = "";
+                                    }}
                                 />
                                 <input
                                     type="file"
                                     hidden
                                     ref={fileInputRef}
-                                    onChange={(e) => handleUploadMedia(e.target.files[0], 'file')}
+                                    onChange={(e) => {
+                                        const f = e.target.files?.[0];
+                                        if (f) handleUploadMedia(f, "file");
+                                        e.target.value = "";
+                                    }}
                                 />
                                 <IconButton
                                     size="small"
@@ -958,7 +1046,11 @@ const Chats = () => {
                                     disabled={isUploading || isPostingMessage}
                                     onClick={() => imageInputRef.current?.click()}
                                 >
-                                    {isUploading ? <CircularProgress size={20} color="inherit" /> : <ImageOutlinedIcon fontSize="small" />}
+                                    {uploadingMediaKind === "image" ? (
+                                        <CircularProgress size={20} color="inherit" />
+                                    ) : (
+                                        <ImageOutlinedIcon fontSize="small" />
+                                    )}
                                 </IconButton>
                                 <IconButton
                                     size="small"
@@ -972,7 +1064,11 @@ const Chats = () => {
                                     disabled={isUploading || isPostingMessage}
                                     onClick={() => fileInputRef.current?.click()}
                                 >
-                                    <AttachFileIcon fontSize="small" sx={{ transform: "rotate(45deg)" }} />
+                                    {uploadingMediaKind === "file" ? (
+                                        <CircularProgress size={20} color="inherit" />
+                                    ) : (
+                                        <AttachFileIcon fontSize="small" sx={{ transform: "rotate(45deg)" }} />
+                                    )}
                                 </IconButton>
                                 <IconButton
                                     aria-label="Send"
